@@ -8,7 +8,7 @@ class Sample < VarlandPdf
     super()
 
     # Sample logo.
-    self.logo(0.25, 10.75, 3, 1, variant: :stacked, h_align: :left, v_align: :center, fill_color: '000000', invert_colors: true, mono: true)
+    self.logo(0.25, 10.75, 3, 1, variant: :stacked, h_align: :center, v_align: :center, fill_color: '000000', invert_colors: true, mono: false)
 
     # Sample signature & rectangles.
     self.rect(4.75, 10.75, 3.5, 1)
