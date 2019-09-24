@@ -27,7 +27,7 @@ class Sample < VarlandPdf
     self.vline(8.25, 9.4, 0.8, line_color: 'ffff00', line_width: 0.1)
 
     # Sample barcode.
-    self.barcode(299944.to_s.rjust(10), 3, 9.25, 2.5, 0.5, fill_color: 'dddddd')
+    self.barcode(299944.to_s.rjust(10), 3, 9.25, 2.5, 0.5)
 
     # Sample QR code.
     self.qr_code('http://www.varland.com', 7.25, 5.75, 1, 1)
