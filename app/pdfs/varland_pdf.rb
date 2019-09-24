@@ -1,8 +1,12 @@
 # Load dependencies.
 require 'prawn/measurement_extensions'
 require 'barby'
+require 'barby/barcode'
 require 'barby/barcode/code_39'
+require 'barby/barcode/qr_code'
 require 'barby/outputter/prawn_outputter'
+require 'barby/outputter/png_outputter'
+require 'tempfile'
 
 # Parent class for all Varland PDFs. Defines common functions.
 class VarlandPdf < Prawn::Document
@@ -30,6 +34,9 @@ class VarlandPdf < Prawn::Document
 
   # Default header fill color. May be overridden in child classes.
   DEFAULT_HEADER_FILL_COLOR = 'cccccc'
+
+  # Default QR code sode. May be overridden in child classes.
+  DEFAULT_QR_CODE_SIZE = 14
 
   # Constructor. Initializes Prawn document and loads custom font files.
   def initialize
@@ -102,6 +109,29 @@ class VarlandPdf < Prawn::Document
     codes.each_with_index do |code, index|
       text.gsub!(code, replacements[index])
     end
+
+  end
+
+  # Draws QR code.
+  def qr_code(text, x, y, width, height, options = {})
+
+    # Exit if no text passed.
+    return if text.blank?
+
+    # Generate barcode.
+    code = Barby::QrCode.new(text.to_s)
+
+    # Save PNG file.
+    png_file = Tempfile.new(['qr', '.png'])
+    png_file.binmode()
+    png_file.write(code.to_png(margin: 0))
+    png_file.close()
+
+    # Draw QR code on PDF.
+    self.image(png_file.path, at: [x.in, y.in], width: width.in, height: height.in)
+
+    # Delete tempfile.
+    png_file.unlink()
 
   end
 

@@ -29,6 +29,9 @@ class Sample < VarlandPdf
     # Sample barcode.
     self.barcode(299944.to_s.rjust(10), 2, 9.25, 4.5, 0.5, fill_color: 'dddddd')
 
+    # Sample QR code.
+    self.qr_code('http://www.varland.com', 7.25, 5.75, 1, 1)
+
     # Sample text box.
     self.txtb("This is a sample text box. Formatting options include <b>bold</b>, <i>italics</i>, <u>underline</u>, <strikethrough>strike through</strikethrough>, <sup>superscript</sup>, and <sub>subscript</sub>. You can also modify the <font name='Whitney Index Rounded'>font name</font>, <font size='8'>font size</font>, and <font character_spacing='4'>character spacing</font>. You can do inline <color rgb='0000ff'>color</color> formatting. Finally, you can add <color rgb='0000ff'><u><link href='http://www.varland.com'>links</link></u></color>.", 0.25, 8.25, 8, 1)
 
