@@ -15,8 +15,8 @@ class Sample < VarlandPdf
     self.rect(4.95, 10.5, 3.1, 0.5, line_color: nil, fill_color: 'ffffcc')
     self.hline(4.95, 10, 3.1)
     self.txtb('Signature', 4.95, 10, 3.1, 0.25, size: 8, font: 'Whitney Index Squared')
-    self.signature(:toby_varland, 4.95, 10.65, 3.1, 0.65, baseline_shift: -0.05)
-    #self.signature(:tim_hudson, 4.95, 10.65, 3.1, 0.65, baseline_shift: -0.25)
+    self.signature(:tim_hudson, 4.95, 10.65, 3.1, 0.65, baseline_shift: -0.25)
+    #self.signature(:toby_varland, 4.95, 10.65, 3.1, 0.65, baseline_shift: -0.05)
     #self.signature(:terry_marshall, 4.95, 10.65, 3.1, 0.65, baseline_shift: -0.175)
     #self.signature(:rob_caudill, 4.95, 10.65, 3.1, 0.65, baseline_shift: -0.075)
 
@@ -27,7 +27,7 @@ class Sample < VarlandPdf
     self.vline(8.25, 9.4, 0.8, line_color: 'ffff00', line_width: 0.1)
 
     # Sample barcode.
-    self.barcode(299944.to_s.rjust(10), 2, 9.25, 4.5, 0.5, fill_color: 'dddddd')
+    self.barcode(299944.to_s.rjust(10), 3, 9.25, 2.5, 0.5, fill_color: 'dddddd')
 
     # Sample QR code.
     self.qr_code('http://www.varland.com', 7.25, 5.75, 1, 1)

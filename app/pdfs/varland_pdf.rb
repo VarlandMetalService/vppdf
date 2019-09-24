@@ -7,6 +7,7 @@ require 'barby/barcode/qr_code'
 require 'barby/outputter/prawn_outputter'
 require 'barby/outputter/png_outputter'
 require 'tempfile'
+require 'fastimage'
 
 # Parent class for all Varland PDFs. Defines common functions.
 class VarlandPdf < Prawn::Document
@@ -141,19 +142,21 @@ class VarlandPdf < Prawn::Document
     # Exit if no text passed.
     return if text.blank?
 
-    # Load passed options or fall back to defaults.
-    fill_color = options.fetch(:fill_color, nil)
-
     # Generate barcode.
     code = Barby::Code39.new(text.to_s)
 
-    # Shade background.
-    self.rect(x, y, width, height, fill_color: fill_color, line_color: nil)
+    # Save PNG file.
+    png_file = Tempfile.new(['barcode', '.png'])
+    png_file.binmode()
+    png_file.write(code.to_png(margin: 0))
+    png_file.close()
+    png_width, png_height = FastImage.size(png_file.path)
 
-    # Print barcode on PDF.
-    self.bounding_box([x.in, y.in], width: width.in, height: height.in) do
-      code.annotate_pdf(self, height: height.in)
-    end
+    # Draw barcode.
+    self.image(png_file.path, at: [x.in, y.in], width: width.in, height: height.in)
+
+    # Delete tempfile.
+    png_file.unlink()
 
   end
 
