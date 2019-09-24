@@ -113,6 +113,68 @@ class VarlandPdf < Prawn::Document
 
   end
 
+  # Draws standard graphic.
+  def standard_graphic(graphic, x, y, width, height, options = {})
+
+    # Exit if no graphic passed.
+    return if graphic.blank?
+
+    # Load passed options or fall back to defaults.
+    h_align = options.fetch(:h_align, :center)
+    v_align = options.fetch(:v_align, :center)
+    fill_color = options.fetch(:fill_color, nil)
+
+    # Determine if graphic file exists. Return error if not.
+    path = Rails.root.join('lib', 'assets', 'standard_graphics', "#{graphic.to_s}.png")
+    unless File.file?(path)
+      self.txtb("Graphic Error: #{graphic.to_s}", x, y, width, height, fill_color: 'ff0000', color: 'ffffff', style: :bold)
+      return
+    end
+    
+    # Shade area.
+    self.rect(x, y, width, height, fill_color: fill_color, line_color: nil)
+
+    # Read image dimensions.
+    image_width, image_height = FastImage.size(path)
+
+    # Calculate ratio.
+    graphic_ratio = image_height.to_f / image_width.to_f
+
+    # Calculate actual height and width.
+    graphic_width = width
+    graphic_height = graphic_ratio * graphic_width
+    if graphic_height > height
+      graphic_height = height
+      graphic_width = graphic_height / graphic_ratio
+    end
+
+    # Calculate position.
+    x_buffer = width - graphic_width
+    y_buffer = height - graphic_height
+    case h_align
+    when :left
+      x_buffer_multiplier = 0
+    when :center
+      x_buffer_multiplier = 0.5
+    when :right
+      x_buffer_multiplier = 1
+    end
+    case v_align
+    when :top
+      y_buffer_multiplier = 0
+    when :center
+      y_buffer_multiplier = 0.5
+    when :bottom
+      y_buffer_multiplier = 1
+    end
+    graphic_x = x + x_buffer_multiplier * x_buffer
+    graphic_y = y - y_buffer_multiplier * y_buffer
+
+    # Draw graphic.
+    self.image(path, at: [graphic_x.in, graphic_y.in], width: graphic_width.in, height: graphic_height.in)
+
+  end
+
   # Draws QR code.
   def qr_code(text, x, y, width, height, options = {})
 
@@ -462,27 +524,91 @@ class VarlandPdf < Prawn::Document
     v_align = options.fetch(:v_align, :center)
     baseline_shift = options.fetch(:baseline_shift, 0)
 
-    # Define signature properties.
-    case person
-    when :tim_hudson
-      image_width = 880
-      image_height = 281
-    when :rob_caudill
-      image_width = 887
-      image_height = 519
-    when :terry_marshall
-      image_width = 665
-      image_height = 323
-    when :toby_varland
-      image_width = 396
-      image_height = 176
-    else
+    # Determine if graphic file exists. Return error if not.
+    path = Rails.root.join('lib', 'assets', 'signatures', "#{person.to_s}.png")
+    unless File.file?(path)
       self.txtb("Signature Error: #{person.to_s}", x, y, width, height, fill_color: 'ff0000', color: 'ffffff', style: :bold)
       return
     end
 
+    # Read image dimensions.
+    image_width, image_height = FastImage.size(path)
+
+    # Define signature properties.
+    # case person
+    # when :andrea_wilson
+    #   image_width = 553
+    #   image_height = 109
+    # when :art_mink
+    #   image_width = 485
+    #   image_height = 165
+    # when :brian_mangold
+    #   image_width = 494
+    #   image_height = 123
+    # when :cliff_queen
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :rob_caudill
+    #   image_width = 887
+    #   image_height = 519
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :andrea_wilson
+    #   image_width = 880
+    #   image_height = 281
+    # when :terry_marshall
+    #   image_width = 665
+    #   image_height = 323
+    # when :tim_hudson
+    #   image_width = 880
+    #   image_height = 281
+    # when :toby_varland
+    #   image_width = 396
+    #   image_height = 176
+    # when :tom_varland
+    #   image_width = 880
+    #   image_height = 281
+    # else
+    #   self.txtb("Signature Error: #{person.to_s}", x, y, width, height, fill_color: 'ff0000', color: 'ffffff', style: :bold)
+    #   return
+    # end
+
     # Store image path.
-    path = Rails.root.join('lib', 'assets', 'signatures', "#{person.to_s}.png")
+    # path = Rails.root.join('lib', 'assets', 'signatures', "#{person.to_s}.png")
 
     # Calculate ratio.
     signature_ratio = image_height.to_f / image_width.to_f
