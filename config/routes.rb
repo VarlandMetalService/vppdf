@@ -1,3 +1,7 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  
+  # Set up routes for PDFs. Allow GET or POST.
+  match "/sample" => "pdf#sample", via: [:post, :get]
+  match "/purchase_order" => "pdf#purchase_order", via: [:post, :get]
+
 end
