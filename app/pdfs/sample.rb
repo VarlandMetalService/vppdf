@@ -7,6 +7,14 @@ class Sample < VarlandPdf
     # Call parent constructor.
     super()
 
+    # Call function to draw format.
+    self.draw_format()
+
+  end
+
+  # Function to draw format.
+  def draw_format
+
     # Sample logo.
     self.logo(0.25, 10.75, 3, 1, variant: :stacked, h_align: :center, v_align: :center, fill_color: '000000', invert_colors: true, mono: false)
 
@@ -41,18 +49,20 @@ class Sample < VarlandPdf
     self.txtb("You can pass rectangle parameters to text boxes to include a border or shading.\nYou can include <code>fill_color</code>, <code>line_color</code>, and <code>line_width</code>.", 0.25, 7, 8, 1, fill_color: 'cccccc', line_color: '000000', line_width: 0.05)
 
     # Sample table.
-    self.table(0.25,
-               5.75,
-               [2, 2],
-               5,
-               0.25,
-               header_row: true,
-               row_colors: ['ffffff', 'edf3fe'],
-               headers: ['Column 1', 'Column 2'],
-               headers_h_align: [:center, :center],
-               data: [['String', 5.526], ['String', 2.572]],
-               data_h_align: [:center, :right],
-               data_format_codes: ['%s', '$%.2f'])
+    table = DataTable.new(x: 0.25,
+                          y: 5.75,
+                          width: 8,
+                          height: 5.5,
+                          column_widths: [5, 1, 1, 1],
+                          headers: ['Normal', 'Binary', 'Hex', 'Currency'],
+                          headers_h_align: [:left, :center, :center, :center],
+                          rows_h_align: [:left, :right, :right, :right],
+                          rows_format: ['%s', '%b', '%x', '$%.2f'],
+                          row_bg_colors: ['edf3fe', 'ffffff'])
+    (1..4).each do |i|
+      table.rows << [i, i, i, i]
+    end
+    table.draw(self)
 
   end
 
