@@ -16,11 +16,7 @@ class Bakesheet < VarlandPdf
   def draw_format
 
     # Draw logo and title.
-    logo_ratio = 13.0 / 15.0
-    logo_height = 0.5
-    logo_width = logo_height * logo_ratio
-    self.logo(0.25, 10.75, logo_width, logo_height, variant: :mark, h_align: :center, v_align: :center)
-    self.txtb("Bakesheet", 0.35 + logo_width, 10.75, 4, 0.5, font: 'Whitney', h_align: :left, style: :bold, size: 20)
+    self.form_title("Bakesheet", 0.25, 10.75)
 
     # Draw table for baking parameters.
     self.txtb("Oven", 1.25, 10, 1, 0.25, line_color: '000000', fill_color: 'cccccc', size: 10, style: :bold, line_width: 0.015)
@@ -37,7 +33,7 @@ class Bakesheet < VarlandPdf
     self.rect(6.25, 9.75, 1, 0.5, line_width: 0.015)
 
     # Draw text fields under table.
-    text_width = self.calcwidth("Date/Time Out of Plating:", size: 10, style: :bold) + 0.01
+    text_width = self.calcwidth("Date/Time Out of Plating:", size: 10, style: :bold) 
     self.txtb("Date/Time Out of Plating:", 1.25, 9.25, text_width, 0.5, size: 10, style: :bold, h_align: :right, v_align: :bottom)
     self.txtb("Put In Oven By:", 1.25, 8.75, text_width, 0.5, size: 10, style: :bold, h_align: :right, v_align: :bottom)
     self.rect(1.25 + text_width + 0.05, 9.05, 5.95 - text_width, 0.3, fill_color: 'ffffcc', line_color: nil)
