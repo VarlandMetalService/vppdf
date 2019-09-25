@@ -127,6 +127,18 @@ class VarlandPdf < Prawn::Document
 
   end
 
+  # Draws form title.
+  def form_title(text, x, y)
+
+    # Draw logo and title.
+    logo_ratio = 13.0 / 15.0
+    logo_height = 0.5
+    logo_width = logo_height * logo_ratio
+    self.logo(x, y, logo_width, logo_height, variant: :mark, h_align: :center, v_align: :center)
+    self.txtb(text, x + 0.1 + logo_width, y, 8, 0.5, font: 'Whitney', h_align: :left, style: :bold, size: 20)
+
+  end
+
   # Draws standard graphic.
   def standard_graphic(graphic, x, y, width, height, options = {})
 
