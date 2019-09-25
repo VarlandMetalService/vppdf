@@ -76,6 +76,46 @@ class Bakesheet < VarlandPdf
       y -= 0.3
     end
 
+    # Draw bakestand diagram.
+    y = 3.75
+    rows = 11
+    columns = 4
+    tray_width = 1.5
+    tray_height = 0.3
+    total_width = columns * tray_width
+    x = 0.25 + ((8 - total_width) / 2)
+    1.upto(columns) do |c|
+      1.upto(rows) do |r|
+        tray_x = x + ((c - 1) * tray_width)
+        tray_y = y - ((r - 1) * tray_height)
+        if r == 1
+          self.txtb("DO NOT USE",
+                    tray_x,
+                    tray_y,
+                    tray_width,
+                    tray_height,
+                    fill_color: 'cccccc',
+                    line_color: '000000',
+                    line_width: 0.015,
+                    style: :bold,
+                    color: '999999',
+                    size: 6)
+        else
+          self.rect(tray_x, tray_y, tray_width, tray_height)
+        end
+      end
+    end
+    y -= rows * tray_height
+    self.txtb("VIEW FROM LOADING SIDE OF BAKESTAND",
+              0.25,
+              y,
+              8,
+              0.2,
+              style: :bold,
+              size: 7,
+              v_align: :top,
+              v_pad: 0.05)
+
   end
 
 end
