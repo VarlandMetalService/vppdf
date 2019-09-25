@@ -56,6 +56,7 @@ class Sample < VarlandPdf
                           column_widths: [5, 1, 1, 1],
                           headers: ['Normal', 'Binary', 'Hex', 'Currency'],
                           headers_h_align: [:left, :center, :center, :center],
+                          header_font: 'Whitney Bold',
                           rows_h_align: [:left, :right, :right, :right],
                           rows_format: ['%s', '%b', '%x', '$%.2f'],
                           row_bg_colors: ['edf3fe', 'ffffff'])

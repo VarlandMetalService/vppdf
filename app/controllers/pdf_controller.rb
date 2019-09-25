@@ -8,6 +8,10 @@ class PdfController < ApplicationController
     self.send_pdf(Sample.new, 'Sample')
   end
 
+  def bakesheet
+    self.send_pdf(Bakesheet.new, 'Bakesheet')
+  end
+
 protected
 
   def send_pdf(pdf, name)

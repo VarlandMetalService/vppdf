@@ -58,27 +58,41 @@ class VarlandPdf < Prawn::Document
   def load_fonts
 
     # Load fonts.
-    self.load_single_font('Arial', 'Arial', 'Arial-Italic', 'Arial-Bold', 'Arial-BoldItalic')
-    self.load_single_font('Arial Narrow', 'ArialNarrow', 'ArialNarrow-Italic', 'ArialNarrow-Bold', 'ArialNarrow-BoldItalic')
-    self.load_single_font('Courier New', 'CourierNew', 'CourierNew-Italic', 'CourierNew-Bold', 'CourierNew-BoldItalic')
-    self.load_single_font('Menlo', 'Menlo', 'Menlo-Italic', 'Menlo-Bold', 'Menlo-BoldItalic')
-    self.load_single_font('SF Mono', 'SFMono-Medium', 'SFMono-Semibold', 'SFMono-Bold', 'SFMono-Heavy')
-    self.load_single_font('Source Code Pro', 'SourceCodePro', 'SourceCodePro-Italic', 'SourceCodePro-Bold', 'SourceCodePro-BoldItalic')
-    self.load_single_font('Whitney', 'Whitney-Book', 'Whitney-BookItalic', 'Whitney-Semibold', 'Whitney-SemiboldItalic')
-    self.load_single_font('Whitney Bold', 'Whitney-Bold', 'Whitney-BoldItalic', 'Whitney-Black', 'Whitney-BlackItalic')
-    self.load_single_font('Whitney Index Rounded', 'WhitneyIndexBlack-RoundMd', 'WhitneyIndexBlack-RoundMd', 'WhitneyIndexBlack-RoundBd', 'WhitneyIndexBlack-RoundBd')
-    self.load_single_font('Whitney Index Squared', 'WhitneyIndexBlack-SquareMd', 'WhitneyIndexBlack-SquareMd', 'WhitneyIndexBlack-SquareBd', 'WhitneyIndexBlack-SquareBd')
+    self.load_single_font('Arial')
+    self.load_single_font('Arial Narrow')
+    self.load_single_font('Courier New')
+    self.load_single_font('Menlo')
+    self.load_single_font('SF Mono')
+    self.load_single_font('Source Code Pro')
+    self.load_single_font('Whitney')
+    self.load_single_font('Whitney Bold')
+    self.load_single_font('Whitney Index Rounded')
+    self.load_single_font('Whitney Index Squared')
 
   end
 
   # Loads single font using Prawn's font_families.update method.
-  def load_single_font(name, normal, italic, bold, bold_italic)
-    font_families.update(name => {
-      normal: Rails.root.join('lib', 'assets', "#{normal}.ttf"),
-      italic: Rails.root.join('lib', 'assets', "#{italic}.ttf"),
-      bold: Rails.root.join('lib', 'assets', "#{bold}.ttf"),
-      bold_italic: Rails.root.join('lib', 'assets', "#{bold_italic}.ttf")
-    })
+  def load_single_font(name)
+    
+    # Determine path to font file.
+    font_file_name = name.gsub(/\s+/, "")
+    path = Rails.root.join('lib', 'assets', 'fonts', "#{font_file_name}.ttf")
+    return unless File.file?(path)
+
+    # Determine variants.
+    italics_path = Rails.root.join('lib', 'assets', 'fonts', "#{font_file_name}-Italic.ttf")
+    bold_path = Rails.root.join('lib', 'assets', 'fonts', "#{font_file_name}-Bold.ttf")
+    bold_italics_path = Rails.root.join('lib', 'assets', 'fonts', "#{font_file_name}-BoldItalic.ttf")
+
+    # Build hash of variants.
+    font_hash = { normal: path }
+    font_hash[:italic] = italics_path if File.file?(italics_path)
+    font_hash[:bold] = bold_path if File.file?(bold_path)
+    font_hash[:bold_italic] = bold_italics_path if File.file?(bold_italics_path)
+
+    # Add font.
+    self.font_families.update(name => font_hash)
+
   end
 
   # Saves current properties.
@@ -293,6 +307,8 @@ class VarlandPdf < Prawn::Document
     font_color = options.fetch(:color, self.class::DEFAULT_FONT_COLOR)
     h_align = options.fetch(:h_align, :center)
     v_align = options.fetch(:v_align, :center)
+    h_pad = options.fetch(:h_pad, 0)
+    v_pad = options.fetch(:v_pad, 0)
 
     # If stroke/fill options passed, draw rectangle.
     if fill_color || line_color
@@ -306,9 +322,9 @@ class VarlandPdf < Prawn::Document
 
     # Draw text box.
     self.text_box(text.to_s,
-                  at: [x.in, y.in],
-                  width: width.in,
-                  height: height.in,
+                  at: [(x + h_pad).in, (y - v_pad).in],
+                  width: (width - 2 * h_pad).in,
+                  height: (height - 2 * v_pad).in,
                   align: h_align,
                   valign: v_align,
                   inline_format: true,
