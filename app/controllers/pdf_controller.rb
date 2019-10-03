@@ -15,7 +15,7 @@ class PdfController < ApplicationController
 protected
 
   def send_pdf(pdf, name)
-    send_data pdf.render,
+    send_data pdf.render(),
               filename: "#{name}.pdf",
               type: 'application/pdf',
               disposition: 'inline'

@@ -13,10 +13,13 @@ require 'fastimage'
 class VarlandPdf < Prawn::Document
 
   # Default margin for Varland documents. May be overridden in child classes.
-  DEFAULT_MARGIN = 0.in
+  PAGE_MARGIN = 0.in
 
   # Default page orientation for Varland documents. May be overridden in child classes.
-  DEFAULT_ORIENTATION = :portrait
+  PAGE_ORIENTATION = :portrait
+
+  # Default letterhead format. May be overridden in child classes.
+  LETTERHEAD_FORMAT = :none
 
   # Default color for lines. May be overridden in child classes.
   DEFAULT_LINE_COLOR = '000000'
@@ -36,21 +39,57 @@ class VarlandPdf < Prawn::Document
   # Default header fill color. May be overridden in child classes.
   DEFAULT_HEADER_FILL_COLOR = 'cccccc'
 
-  # Default QR code sode. May be overridden in child classes.
-  DEFAULT_QR_CODE_SIZE = 14
-
   # Constructor. Initializes Prawn document and loads custom font files.
   def initialize
 
     # Initialize Prawn document.
-    super(top_margin: self.class::DEFAULT_MARGIN,
-          bottom_margin: self.class::DEFAULT_MARGIN,
-          left_margin: self.class::DEFAULT_MARGIN,
-          right_margin: self.class::DEFAULT_MARGIN,
-          page_layout: self.class::DEFAULT_ORIENTATION)
+    super(top_margin: self.class::PAGE_MARGIN,
+          bottom_margin: self.class::PAGE_MARGIN,
+          left_margin: self.class::PAGE_MARGIN,
+          right_margin: self.class::PAGE_MARGIN,
+          page_layout: self.class::PAGE_ORIENTATION)
     
     # Load fonts.
     self.load_fonts
+
+  end
+
+  # Intercept render method for drawing letterhead graphics.
+  def render()
+
+    # Determine letterhead properties.
+    path = nil
+    x = nil
+    y = nil
+    width = nil
+    height = 1.25
+    case self.class::LETTERHEAD_FORMAT
+    when :portrait
+      path = Rails.root.join('lib', 'assets', 'letterhead', "portrait.png")
+      x = 0.25
+      y = 10.75
+      width = 8
+    when :landscape
+      path = Rails.root.join('lib', 'assets', 'letterhead', "landscape.png")
+      x = 0.25
+      y = 8.25
+      width = 10.5
+    when :packing_list
+      path = Rails.root.join('lib', 'assets', 'letterhead', "packing_list.png")
+      x = 0.25
+      y = 8.25
+      width = 10.5
+    end
+
+    # Draw graphic on each page if necessary.
+    if path
+      self.repeat(:all) do
+        self.image(path, at: [x.in, y.in], width: width.in, height: height.in)
+      end
+    end
+
+    # Call parent render.
+    super
 
   end
 
