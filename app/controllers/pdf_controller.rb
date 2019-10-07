@@ -1,7 +1,7 @@
 class PdfController < ApplicationController
 
-  def certification
-    self.send_pdf(Certification.new, 'Certification')
+  def shipper
+    self.send_pdf(Shipper.new(params[:shipper]), 'Shipper')
   end
 
   def purchase_order

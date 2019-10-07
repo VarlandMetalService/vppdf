@@ -39,6 +39,18 @@ class VarlandPdf < Prawn::Document
   # Default header fill color. May be overridden in child classes.
   DEFAULT_HEADER_FILL_COLOR = 'cccccc'
 
+  # Formats number.
+  def format_number(number, options = {})
+
+    # Load default options.
+    decimals = options.fetch(:decimals, 0)
+    delimiter = options.fetch(:delimiter, ",")
+
+    # Return formatted number.
+    return self.helpers.number_with_precision(number, precision: decimals, delimiter: delimiter)
+
+  end
+
   # Constructor. Initializes Prawn document and loads custom font files.
   def initialize
 
@@ -640,7 +652,7 @@ class VarlandPdf < Prawn::Document
 
   # Protected methods.
   protected
-
+  
     # Reference Rails helpers.
     def helpers
       ApplicationController.helpers
