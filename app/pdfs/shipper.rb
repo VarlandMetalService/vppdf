@@ -117,7 +117,6 @@ class Shipper < VarlandPdf
     # Loads certification data.
     def load_data
       url = "http://as400railsapi.varland.com/v1/shipper?shipper=#{@shipper}"
-      puts url
       uri = URI(url)
       response = Net::HTTP.get(uri)
       @data = JSON.parse(response, symbolize_names: true)
