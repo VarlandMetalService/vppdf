@@ -362,7 +362,7 @@ class Shipper < VarlandPdf
       # Print second part of specification.
       data = false
       case @certification[:code]
-      when "01", "02", "04", "S3", "S8", "SF"
+      when "01", "02", "04"
         y -= 2 * height
         self.signature(:greg_turner, 7.4, y + 0.3, 2.5, 0.3, h_align: :left, baseline_shift: -0.06)
         self.hline(7.4, y, 2.5)
