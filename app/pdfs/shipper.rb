@@ -403,6 +403,10 @@ class Shipper < VarlandPdf
   
     # Draws certification format.
     def draw_certification_format
+
+      # Draw website QR code.
+      self.qr_code("http://www.varland.com", 5.5, 7.925, 0.5, 0.5)
+      self.txtb("varland.com", 5.5, 7.425, 0.5, 0.1, size: 6, style: :bold)
   
       # Print ship to and sold to labels.
       self.txtb("S\nO\nL\nD\n \nT\nO", 0.25, 6.75, 0.15, 1, v_align: :top, h_align: :center, size: 8)
@@ -454,6 +458,10 @@ class Shipper < VarlandPdf
 
       # Print remaining format on all pages.
       self.repeat(@vms_pages + @packing_list_pages) do
+
+        # Draw website QR code.
+        self.qr_code("http://www.varland.com", 5.5, 7.925, 0.5, 0.5)
+        self.txtb("varland.com", 5.5, 7.425, 0.5, 0.1, size: 6, style: :bold)
     
         # Print ship to and sold to labels.
         self.txtb("S\nO\nL\nD\n \nT\nO", 0.25, 6.75, 0.15, 1, v_align: :top, h_align: :center, size: 8)
