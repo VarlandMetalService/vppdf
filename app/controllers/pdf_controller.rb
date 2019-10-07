@@ -3,7 +3,7 @@ class PdfController < ApplicationController
   def shipper
     shipper = Shipper.new(params[:shipper])
     self.print_file(shipper, params[:user], [params[:ip_address]], "PackingSlip", "PS ##{params[:shipper]}")
-    self.send_pdf(shipper, 'Shipper')
+    render(status: 200, json: "")
   end
 
   def purchase_order
