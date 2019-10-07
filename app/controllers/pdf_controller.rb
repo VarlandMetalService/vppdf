@@ -2,7 +2,7 @@ class PdfController < ApplicationController
 
   def shipper
     shipper = Shipper.new(params[:shipper])
-    self.print_file(shipper, nil, "192.168.82.79", "PackingSlip", "PS ##{params[:shipper]}")
+    self.print_file(shipper, params[:user], [params[:ip_address]], "PackingSlip", "PS ##{params[:shipper]}")
     self.send_pdf(shipper, 'Shipper')
   end
 
