@@ -87,7 +87,7 @@ class DataTable
   def draw(pdf)
 
     # Determine number of pages needed.
-    pages = self.calculate_pages()
+    pages = self.calculate_pages
     return if pages == 0
 
     # Determine number of rows per page.
@@ -101,7 +101,7 @@ class DataTable
       # If this is the first row on a page, create new page if necessary and draw header.
       if index % rows_per_page == 0
         if index != 0
-          pdf.start_new_page()
+          pdf.start_new_page
         end
         #pdf.rect(@x, @y, @width, @height, fill_color: 'edf3fe', line_color: nil)
         self.draw_header(pdf)

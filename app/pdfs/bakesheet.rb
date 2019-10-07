@@ -5,10 +5,10 @@ class Bakesheet < VarlandPdf
   def initialize
 
     # Call parent constructor.
-    super()
+    super
 
     # Call function to draw format.
-    self.draw_format()
+    self.draw_format
 
   end
 

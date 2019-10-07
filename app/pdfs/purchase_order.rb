@@ -5,13 +5,13 @@ class PurchaseOrder < VarlandPdf
   PAGE_ORIENTATION = :landscape
 
   # Default letterhead format. May be overridden in child classes.
-  LETTERHEAD_FORMAT = :landscape
+  LETTERHEAD_FORMAT = :packing_list
 
   # Constructor.
   def initialize
 
     # Call parent constructor.
-    super()
+    super
 
   end
 

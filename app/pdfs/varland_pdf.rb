@@ -42,6 +42,9 @@ class VarlandPdf < Prawn::Document
   # Constructor. Initializes Prawn document and loads custom font files.
   def initialize
 
+    # Suppress character warning.
+    Prawn::Font::AFM.hide_m17n_warning = true
+
     # Initialize Prawn document.
     super(top_margin: self.class::PAGE_MARGIN,
           bottom_margin: self.class::PAGE_MARGIN,
@@ -55,37 +58,33 @@ class VarlandPdf < Prawn::Document
   end
 
   # Intercept render method for drawing letterhead graphics.
-  def render()
+  def render
 
-    # Determine letterhead properties.
-    path = nil
-    x = nil
-    y = nil
-    width = nil
-    height = 1.25
-    case self.class::LETTERHEAD_FORMAT
-    when :portrait
-      path = Rails.root.join('lib', 'assets', 'letterhead', "portrait.png")
-      x = 0.25
-      y = 10.75
-      width = 8
-    when :landscape
-      path = Rails.root.join('lib', 'assets', 'letterhead', "landscape.png")
-      x = 0.25
-      y = 8.25
-      width = 10.5
-    when :packing_list
-      path = Rails.root.join('lib', 'assets', 'letterhead', "packing_list.png")
-      x = 0.25
-      y = 8.25
-      width = 10.5
-    end
+    # Skip if page is not letterhead.
+    unless self.class::LETTERHEAD_FORMAT == :none
 
-    # Draw graphic on each page if necessary.
-    if path
+      # Determine letterhead properties.
+      path = Rails.root.join('lib', 'assets', 'letterhead', "#{self.class::LETTERHEAD_FORMAT.to_s}.png")
+      x = nil
+      y = nil
+      width = nil
+      height = 1.25
+      case self.class::LETTERHEAD_FORMAT
+      when :portrait, :portrait_mono
+        x = 0.25
+        y = 10.75
+        width = 8
+      when :landscape, :landscape_mono, :packing_list, :packing_list_mono
+        x = 0.25
+        y = 8.25
+        width = 10.5
+      end
+
+      # Draw graphic on each page.
       self.repeat(:all) do
         self.image(path, at: [x.in, y.in], width: width.in, height: height.in)
       end
+
     end
 
     # Call parent render.
@@ -251,15 +250,15 @@ class VarlandPdf < Prawn::Document
 
     # Save PNG file.
     png_file = Tempfile.new(['qr', '.png'])
-    png_file.binmode()
+    png_file.binmode
     png_file.write(code.to_png(margin: 0))
-    png_file.close()
+    png_file.close
 
     # Draw QR code on PDF.
     self.image(png_file.path, at: [x.in, y.in], width: width.in, height: height.in)
 
     # Delete tempfile.
-    png_file.unlink()
+    png_file.unlink
 
   end
 
@@ -274,22 +273,22 @@ class VarlandPdf < Prawn::Document
 
     # Save PNG file.
     png_file = Tempfile.new(['barcode', '.png'])
-    png_file.binmode()
+    png_file.binmode
     png_file.write(code.to_png(margin: 0))
-    png_file.close()
+    png_file.close
     png_width, png_height = FastImage.size(png_file.path)
 
     # Draw barcode.
     self.image(png_file.path, at: [x.in, y.in], width: width.in, height: height.in)
 
     # Delete tempfile.
-    png_file.unlink()
+    png_file.unlink
 
   end
 
   # Draws rectangle.
   def rect(x, y, width, height, options = {})
-    self.save_current_properties()
+    self.save_current_properties
     line_color = options.fetch(:line_color, self.class::DEFAULT_LINE_COLOR)
     fill_color = options.fetch(:fill_color, nil)
     unless fill_color.blank?
@@ -301,29 +300,29 @@ class VarlandPdf < Prawn::Document
       self.line_width = options[:line_width].in if options.key?(:line_width) && !options[:line_width].blank?
       self.stroke_rectangle([x.in, y.in], width.in, height.in)
     end
-    self.restore_saved_properties()
+    self.restore_saved_properties
   end
 
   # Draws horizontal line.
   def hline(x, y, length, options = {})
     line_color = options.fetch(:line_color, self.class::DEFAULT_LINE_COLOR)
     return if line_color.blank?
-    self.save_current_properties()
+    self.save_current_properties
     self.stroke_color(line_color)
     self.line_width = options[:line_width].in if options.key?(:line_width) && !options[:line_width].blank?
     self.stroke_line([x.in, y.in], [(x + length).in, y.in])
-    self.restore_saved_properties()
+    self.restore_saved_properties
   end
 
   # Draws vertical line.
   def vline(x, y, length, options = {})
     line_color = options.fetch(:line_color, self.class::DEFAULT_LINE_COLOR)
     return if line_color.blank?
-    self.save_current_properties()
+    self.save_current_properties
     self.stroke_color(line_color)
     self.line_width = options[:line_width].in if options.key?(:line_width) && !options[:line_width].blank?
     self.stroke_line([x.in, y.in], [x.in, (y - length).in])
-    self.restore_saved_properties()
+    self.restore_saved_properties
   end
 
   # Calculates width of given text.
@@ -387,7 +386,7 @@ class VarlandPdf < Prawn::Document
   def grid(x, y, column_widths, rows, row_height, options = {})
 
     # Save current properties.
-    self.save_current_properties()
+    self.save_current_properties
 
     # Load passed options or fall back to defaults.
     fill_color = options.fetch(:fill_color, nil)
@@ -494,7 +493,7 @@ class VarlandPdf < Prawn::Document
     end
 
     # Restore saved properties.
-    self.restore_saved_properties()
+    self.restore_saved_properties
 
   end
   alias_method :table, :grid
