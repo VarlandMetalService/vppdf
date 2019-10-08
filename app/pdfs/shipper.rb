@@ -195,6 +195,9 @@ class Shipper < VarlandPdf
           y -= line_height * (lines_needed + 2)
         end
 
+        # Decrease lines remaining.
+        lines_remaining -= (lines_needed + 2)
+
       end
 
     end
