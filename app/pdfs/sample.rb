@@ -23,7 +23,7 @@ class Sample < VarlandPdf
     self.rect(4.95, 10.5, 3.1, 0.5, line_color: nil, fill_color: 'ffffcc')
     self.hline(4.95, 10, 3.1)
     self.txtb('Signature', 4.95, 10, 3.1, 0.25, size: 8, font: 'Whitney Index Squared')
-    self.signature(:kelly_smith, 4.95, 10.65, 3.1, 0.65, baseline_shift: -0.1)
+    self.signature(:kelly_smith, 4.95, 10.65, 3.1, 0.65)
 
     # Sample lines.
     self.hline(0.35, 9.5, 7.8, line_color: 'ff0000', line_width: 0.1)

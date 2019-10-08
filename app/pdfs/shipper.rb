@@ -361,14 +361,16 @@ class Shipper < VarlandPdf
       case @certification[:code]
       when "01", "02", "04"
         y -= 2 * height
-        self.signature(:greg_turner, 7.4, y + 0.3, 2.5, 0.3, h_align: :left, baseline_shift: -0.06)
-        self.hline(7.4, y, 2.5)
+        sig_y = y
+        y-= height * 0.5
         self.txtb("GREG TURNER", 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         self.txtb("QUALITY CONTROL MANAGER", 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         self.txtb(ship_date, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
+        self.signature(:greg_turner, 7.45, sig_y + 0.5, 2.4, 0.5, h_align: :left)
+        self.hline(7.4, sig_y, 2.5)
         data = true
       else
         @certification[:part_2].each do |line|

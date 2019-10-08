@@ -1,5 +1,9 @@
 class PdfController < ApplicationController
 
+  def signature_sampler
+    self.send_pdf(SignatureSampler.new(params[:name]), 'SignatureSampler')
+  end
+
   def shipper
     shipper = Shipper.new(params[:shipper])
     if params[:autoprint]

@@ -122,16 +122,49 @@ class VarlandPdf < Prawn::Document
   def load_fonts
 
     # Load fonts.
+    self.load_single_font('Across The Road')
+    self.load_single_font('Alabama')
     self.load_single_font('Arial')
     self.load_single_font('Arial Narrow')
+    self.load_single_font('Arty Signature')
+    self.load_single_font('Asem Kandis')
+    self.load_single_font('Autograf')
+    self.load_single_font('Born Ready')
+    self.load_single_font('Brittany Signature')
+    self.load_single_font('Bulgatti')
     self.load_single_font('Courier New')
+    self.load_single_font('Estelly')
+    self.load_single_font('Friday Vibes')
+    self.load_single_font('From Skyler')
+    self.load_single_font('Gallatone')
+    self.load_single_font('Halimun')
+    self.load_single_font('Hello Santtiny')
+    self.load_single_font('Just Realize')
+    self.load_single_font('Just Signature')
+    self.load_single_font('Mayestica')
     self.load_single_font('Menlo')
+    self.load_single_font('Notera')
+    self.load_single_font('Prestige Signature')
+    self.load_single_font('Reinata')
+    self.load_single_font('Santos Dumont')
     self.load_single_font('SF Mono')
+    self.load_single_font('Shopping List')
+    self.load_single_font('Signatures')
+    self.load_single_font('Signerica')
+    self.load_single_font('Silver Pen')
+    self.load_single_font('Sophistica')
     self.load_single_font('Source Code Pro')
+    self.load_single_font('Southampton')
+    self.load_single_font('Thankfully')
+    self.load_single_font('The Jacklyn')
+    self.load_single_font('Tomatoes')
+    self.load_single_font('Wanted Signature')
+    self.load_single_font('White Angelica')
     self.load_single_font('Whitney')
     self.load_single_font('Whitney Bold')
     self.load_single_font('Whitney Index Rounded')
     self.load_single_font('Whitney Index Squared')
+    self.load_single_font('Xtreem')
 
   end
 
@@ -608,59 +641,149 @@ class VarlandPdf < Prawn::Document
 
   end
 
+  # Gets name for signature symbol.
+  def get_signature_name(person)
+    case person
+    when :john_mcguire
+      return "John McGuire"
+    else
+      return person.to_s.gsub('_', ' ').titleize
+    end
+  end
+
+  # Gets default size multiplier for signature font.
+  def default_size_multiplier(font)
+
+    # Define font hash.
+    factors = {
+      across_the_road: 0.7,
+      alabama: 0.8,
+      arty_signature: 2.5,
+      asem_kandis: 0.9,
+      autograf: 0.5,
+      born_ready: 0.5,
+      brittany_signature: 0.5,
+      bulgatti: 0.5,
+      estelly: 0.5,
+      friday_vibes: 0.8,
+      from_skyler: 0.6,
+      gallatone: 0.75,
+      halimun: 0.4,
+      hello_santtiny: 0.5,
+      just_realize: 0.7,
+      just_signature: 0.35,
+      mayestica: 0.9,
+      notera: 0.6,
+      prestige_signature: 0.8,
+      reinata: 1,
+      santos_dumont: 1,
+      shopping_list: 1,
+      signatures: 0.75,
+      signerica: 0.4,
+      silver_pen: 0.8,
+      sophistica: 0.75,
+      southampton: 0.75,
+      thankfully: 0.5,
+      the_jacklyn: 0.8,
+      tomatoes: 0.35,
+      wanted_signature: 0.7,
+      white_angelica: 0.4,
+      xtreem: 0.7      
+    }
+
+    # Return factor.
+    return factors.fetch(font.parameterize.underscore.to_sym, 0.5)
+
+  end
+
+  # Gets default baseline shift for signature font.
+  def default_signature_shift(font, size)
+    
+    # Build font hash.
+    factors = {
+      across_the_road: -0.2,
+      alabama: -0.3,
+      arty_signature: -0.18,
+      asem_kandis: -0.25,
+      autograf: -0.15,
+      born_ready: -0.35,
+      brittany_signature: -0.3,
+      bulgatti: -0.5,
+      estelly: -0.4,
+      friday_vibes: -0.27,
+      from_skyler: -0.5,
+      gallatone: -0.25,
+      halimun: -0.22,
+      hello_santtiny: -0.3,
+      just_realize: -0.5,
+      just_signature: -0.6,
+      mayestica: -0.25,
+      notera: -0.2,
+      prestige_signature: -0.5,
+      reinata: -0.22,
+      santos_dumont: -0.25,
+      shopping_list: -0.2,
+      signatures: -0.15,
+      signerica: -0.1,
+      silver_pen: -0.3,
+      sophistica: -0.45,
+      southampton: 0,
+      thankfully: -0.6,
+      the_jacklyn: -0.3,
+      tomatoes: -0.75,
+      wanted_signature: -0.4,
+      white_angelica: -0.3,
+      xtreem: -0.45      
+    }
+
+    # Return shift.
+    return factors.fetch(font.parameterize.underscore.to_sym, -0.2).to_f * size
+
+  end
+
+  # Loads default signature font by person.
+  def default_signature_font(person)
+
+    # Build hash.
+    people = {
+      toby_varland: "Gallatone",
+      tim_hudson: "Just Signature",
+      greg_turner: "Hello Santtiny",
+      john_mcguire: "Xtreem",
+      kevin_marsh: "Autograf",
+      art_mink: "Notera",
+      rob_caudill: "Across The Road",
+      mike_mitchell: "Tomatoes",
+      terry_marshall: "Brittany Signature",
+      ross_varland: "Wanted Signature"
+    }
+
+    # Return font.
+    return people.fetch(person, "Tomatoes")
+
+  end
+
   # Draws signature.
   def signature(person, x, y, width, height, options = {})
 
     # Load passed options or fall back to defaults.
     h_align = options.fetch(:h_align, :center)
-    v_align = options.fetch(:v_align, :center)
-    baseline_shift = options.fetch(:baseline_shift, 0)
+    mono = options.fetch(:mono, false)
+    font = options.fetch(:font, self.default_signature_font(person))
+    size_multiplier = self.default_size_multiplier(font)
+    baseline_shift = self.default_signature_shift(font, height * size_multiplier)
 
-    # Determine if graphic file exists. Return error if not.
-    path = Rails.root.join('lib', 'assets', 'signatures', "#{person.to_s}.png")
-    unless File.file?(path)
-      self.txtb("Signature Error: #{person.to_s}", x, y, width, height, fill_color: 'ff0000', color: 'ffffff', style: :bold)
-      return
-    end
-
-    # Read image dimensions.
-    image_width, image_height = FastImage.size(path)
-
-    # Calculate ratio.
-    signature_ratio = image_height.to_f / image_width.to_f
-
-    # Calculate actual height and width.
-    signature_width = width
-    signature_height = signature_ratio * signature_width
-    if signature_height > height
-      signature_height = height
-      signature_width = signature_height / signature_ratio
-    end
-
-    # Calculate position.
-    x_buffer = width - signature_width
-    y_buffer = height - signature_height
-    case h_align
-    when :left
-      x_buffer_multiplier = 0
-    when :center
-      x_buffer_multiplier = 0.5
-    when :right
-      x_buffer_multiplier = 1
-    end
-    case v_align
-    when :top
-      y_buffer_multiplier = 0
-    when :center
-      y_buffer_multiplier = 0.5
-    when :bottom
-      y_buffer_multiplier = 1
-    end
-    signature_x = x + x_buffer_multiplier * x_buffer
-    signature_y = y - y_buffer_multiplier * y_buffer + baseline_shift
-
-    # Draw signature.
-    self.image(path, at: [signature_x.in, signature_y.in], width: signature_width.in, height: signature_height.in)
+    # Print signature.
+    self.txtb(self.get_signature_name(person),
+              x,
+              y + baseline_shift,
+              width,
+              height,
+              h_align: h_align,
+              v_align: :bottom,
+              color: (mono ? '000000' : '0000ff'),
+              font: font,
+              size: (size_multiplier * height).in)
 
   end
 
