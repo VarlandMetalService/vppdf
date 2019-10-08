@@ -338,7 +338,7 @@ class VarlandPdf < Prawn::Document
   end
 
   # Calculates width of given text.
-  def calcwidth(text, options = {})
+  def calc_width(text, options = {})
     return 0 if text.blank?
     font_family = options.fetch(:font, self.class::DEFAULT_FONT_FAMILY)
     font_style = options.fetch(:style, self.class::DEFAULT_FONT_STYLE)

@@ -33,7 +33,7 @@ class Bakesheet < VarlandPdf
     self.rect(6.25, 9.75, 1, 0.5, line_width: 0.015)
 
     # Draw text fields under table.
-    text_width = self.calcwidth("Date/Time Out of Plating:", size: 10, style: :bold) 
+    text_width = self.calc_width("Date/Time Out of Plating:", size: 10, style: :bold) 
     self.txtb("Date/Time Out of Plating:", 1.25, 9.25, text_width, 0.5, size: 10, style: :bold, h_align: :right, v_align: :bottom)
     self.txtb("Put In Oven By:", 1.25, 8.75, text_width, 0.5, size: 10, style: :bold, h_align: :right, v_align: :bottom)
     self.rect(1.25 + text_width + 0.05, 9.05, 5.95 - text_width, 0.3, fill_color: 'ffffcc', line_color: nil)

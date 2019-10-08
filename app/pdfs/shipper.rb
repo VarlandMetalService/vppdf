@@ -192,7 +192,7 @@ class Shipper < VarlandPdf
           self.txtb(order[:is_complete] ? "COMPLETE" : "PARTIAL", 9.95, y, 0.8, line_height, size: 9, style: :bold)
           unless (order[:remarks].length == 0)
             remarks_y = y - (line_height * (lines_needed - order[:remarks].length))
-            label_width = self.calcwidth("REMARKS: ", style: :normal, size: 8)
+            label_width = self.calc_width("REMARKS: ", style: :normal, size: 8)
             self.rect(0.3, remarks_y + 0.05, 10.4, 0.1 + (line_height * order[:remarks].length), fill_color: "e3e3e3")
             self.txtb("REMARKS:", 0.35, remarks_y, label_width, line_height)
             self.txtb(order[:remarks].join("\n"), 0.35 + label_width, remarks_y, 9, line_height * order[:remarks].length, size: 10, style: :bold, h_align: :left)
@@ -439,7 +439,7 @@ class Shipper < VarlandPdf
   
       # Draw received by line.
       text = "Received By: "
-      width = self.calcwidth(text, size: 8)
+      width = self.calc_width(text, size: 8)
       self.txtb(text, 0.25, 0.5, width, 0.25, v_align: :bottom, size: 8, h_align: :left)
       self.hline(0.25 + width, 0.25, 4)
   
@@ -493,7 +493,7 @@ class Shipper < VarlandPdf
     
         # Draw received by line.
         text = "Received By: "
-        width = self.calcwidth(text, size: 8)
+        width = self.calc_width(text, size: 8)
         self.txtb(text, 0.25, 0.5, width, 0.25, v_align: :bottom, size: 8, h_align: :left)
         self.hline(0.25 + width, 0.25, 4)
 
