@@ -109,17 +109,12 @@ class Shipper < VarlandPdf
   
     # Loads sample data.
     def load_sample_data
-      path = Rails.root.join("lib", "assets", "sample_data", "shipper.json")
-      file_data = File.read(path)
-      @data = JSON.parse(file_data, symbolize_names: true)
+      @data = self.load_sample("shipper")
     end
   
     # Loads certification data.
     def load_data
-      url = "http://as400railsapi.varland.com/v1/shipper?shipper=#{@shipper}"
-      uri = URI(url)
-      response = Net::HTTP.get(uri)
-      @data = JSON.parse(response, symbolize_names: true)
+      @data = self.load_json("http://as400railsapi.varland.com/v1/shipper?shipper=#{@shipper}")
     end
 
     # Draws data on shipper.

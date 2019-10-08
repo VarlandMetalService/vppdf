@@ -39,6 +39,20 @@ class VarlandPdf < Prawn::Document
   # Default header fill color. May be overridden in child classes.
   DEFAULT_HEADER_FILL_COLOR = 'cccccc'
 
+  # Retrieves JSON using GET request and returns result.
+  def load_json(url)
+    uri = URI(url)
+    response = Net::HTTP.get(uri)
+    return JSON.parse(response, symbolize_names: true)
+  end
+
+  # Loads JSON file from `sample_data` directory.
+  def load_sample(file)
+    path = Rails.root.join("lib", "assets", "sample_data", "#{file}.json")
+    file_data = File.read(path)
+    return JSON.parse(file_data, symbolize_names: true)
+  end
+
   # Formats number.
   def format_number(number, options = {})
 
