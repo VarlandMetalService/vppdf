@@ -709,7 +709,7 @@ class VarlandPdf < Prawn::Document
       alabama: -0.3,
       arty_signature: -0.18,
       asem_kandis: -0.25,
-      autograf: -0.15,
+      autograf: -0.18,
       born_ready: -0.35,
       brittany_signature: -0.3,
       bulgatti: -0.5,
