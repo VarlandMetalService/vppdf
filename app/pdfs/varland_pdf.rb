@@ -783,7 +783,8 @@ class VarlandPdf < Prawn::Document
               v_align: :bottom,
               color: (mono ? '000000' : '0000ff'),
               font: font,
-              size: (size_multiplier * height).in)
+              size: (size_multiplier * height).in,
+              style: :bold)
 
   end
 
