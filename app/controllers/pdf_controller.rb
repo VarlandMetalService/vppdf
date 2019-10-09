@@ -4,10 +4,20 @@ class PdfController < ApplicationController
     self.send_pdf(SignatureSampler.new(params[:name]), 'SignatureSampler')
   end
 
+  def bill_of_lading
+    bill = BillOfLading.new(params[:timestamp], params[:ip_address])
+    if params[:autoprint]
+      self.print_file(bill, bill.user, bill.ip, "BillOfLading", "BoL #{bill.shipper}")
+      render(status: 200, json: "")
+    else
+      self.send_pdf(bill, "BoL #{bill.shipper}")
+    end
+  end
+
   def shipper
     shipper = Shipper.new(params[:shipper])
     if params[:autoprint]
-      self.print_file(shipper, params[:user], [params[:ip_address]], "PackingSlip", "PS ##{params[:shipper]}")
+      self.print_file(shipper, params[:user], params[:ip_address], "PackingSlip", "PS ##{params[:shipper]}")
       render(status: 200, json: "")
     else
       self.send_pdf(shipper, "PS ##{params[:shipper]}")

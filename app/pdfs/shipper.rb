@@ -1,10 +1,8 @@
-# Class for printing plating shipper from System i.
+# Class for printing shipper from System i.
 class Shipper < VarlandPdf
 
-    # Default page orientation for Varland documents. May be overridden in child classes.
+    # Landscape orientation and special letterhead format for shippers.
     PAGE_ORIENTATION = :landscape
-  
-    # Default letterhead format. May be overridden in child classes.
     LETTERHEAD_FORMAT = :packing_list
   
     # Constructor.

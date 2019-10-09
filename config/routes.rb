@@ -6,5 +6,6 @@ Rails.application.routes.draw do
   match "/purchase_order" => "pdf#purchase_order", via: [:post, :get]
   match "/bakesheet" => "pdf#bakesheet", via: [:post, :get]
   match "/shipper" => "pdf#shipper", via: [:post, :get]
+  match "/bill_of_lading" => "pdf#bill_of_lading", via: [:post, :get]
 
 end

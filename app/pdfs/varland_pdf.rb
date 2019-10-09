@@ -751,19 +751,19 @@ class VarlandPdf < Prawn::Document
     # Build hash.
     people = {
       toby_varland: "Gallatone",
-      tim_hudson: "Just Signature",
+      tim_hudson: "Hello Santtiny",
       greg_turner: "Hello Santtiny",
       john_mcguire: "Xtreem",
       kevin_marsh: "Autograf",
       art_mink: "Notera",
-      rob_caudill: "Across The Road",
-      mike_mitchell: "Tomatoes",
-      terry_marshall: "Brittany Signature",
+      rob_caudill: "Hello Santtiny",
+      mike_mitchell: "Hello Santtiny",
+      terry_marshall: "Hello Santtiny",
       ross_varland: "Wanted Signature"
     }
 
     # Return font.
-    return people.fetch(person, "Tomatoes")
+    return people.fetch(person, "Hello Santtiny")
 
   end
 
