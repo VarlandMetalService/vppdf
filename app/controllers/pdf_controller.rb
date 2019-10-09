@@ -6,22 +6,12 @@ class PdfController < ApplicationController
 
   def bill_of_lading
     bill = BillOfLading.new(params[:timestamp], params[:ip_address])
-    if params[:autoprint]
-      self.print_file(bill, bill.user, bill.ip, "BillOfLading", "BoL #{bill.shipper}")
-      render(status: 200, json: "")
-    else
-      self.send_pdf(bill, "BoL #{bill.shipper}")
-    end
+    self.print_or_display(bill, bill.user, bill.ip, "BillOfLading", "BoL #{bill.shipper}")
   end
 
   def shipper
     shipper = Shipper.new(params[:shipper])
-    if params[:autoprint]
-      self.print_file(shipper, params[:user], params[:ip_address], "PackingSlip", "PS ##{params[:shipper]}")
-      render(status: 200, json: "")
-    else
-      self.send_pdf(shipper, "PS ##{params[:shipper]}")
-    end
+    self.print_or_display(shipper, params[:user], params[:ip_address], "PackingSlip", "PS ##{params[:shipper]}")
   end
 
   def purchase_order
@@ -37,6 +27,16 @@ class PdfController < ApplicationController
   end
 
 protected
+
+  # Prints if autoprint parameter given, otherwise sends to screen.
+  def print_or_display(file, user, ip, type, description)
+    if params[:autoprint]
+      self.print_file(file, user, ip, type, description)
+      render(status: 200, json: "")
+    else
+      self.send_pdf(file, description)
+    end
+  end
 
   # Sends PDF to browser window.
   def send_pdf(pdf, name)
