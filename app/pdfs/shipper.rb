@@ -221,8 +221,9 @@ class Shipper < VarlandPdf
       self.txtb(@data[:customer][:code], 9.75, 6.25, 1, 0.25, style: :bold, size: 9)
   
       # Print certification date, ship via, and vendor code.
+      ship_via = @data[:how_shipped][:code] == "F" ? @data[:orders][0][:shipping_remark] : @data[:how_shipped][:description]
       self.txtb("CERTIFICATION DATE: <b>#{ship_date}</b>", 0.25, 5.77, 5.25, 0.25, v_align: :bottom, h_align: :left, size: 9)
-      self.txtb("SHIP VIA: <b>#{@data[:how_shipped][:description]}</b>", 5.5, 5.77, 3, 0.25, v_align: :bottom, h_align: :left, size: 9)
+      self.txtb("SHIP VIA: <b>#{ship_via}</b>", 5.5, 5.77, 3, 0.25, v_align: :bottom, h_align: :left, size: 9)
       unless @data[:customer][:vendor_id].blank?
         self.txtb("VENDOR: <b>#{@data[:customer][:vendor_id]}</b>", 9.75, 5.77, 1, 0.25, v_align: :bottom, h_align: :right, size: 9)
       end

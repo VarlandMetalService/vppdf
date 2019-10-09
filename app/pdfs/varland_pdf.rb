@@ -646,6 +646,10 @@ class VarlandPdf < Prawn::Document
     case person
     when :john_mcguire
       return "John McGuire"
+    when :ted_mckeehan
+      return "Ted McKeehan"
+    when :casey_mckeehan
+      return "Casey McKeehan"
     else
       return person.to_s.gsub('_', ' ').titleize
     end
@@ -783,8 +787,7 @@ class VarlandPdf < Prawn::Document
               v_align: :bottom,
               color: (mono ? '000000' : '0000ff'),
               font: font,
-              size: (size_multiplier * height).in,
-              style: :bold)
+              size: (size_multiplier * height).in)
 
   end
 
