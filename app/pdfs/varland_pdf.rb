@@ -394,6 +394,47 @@ class VarlandPdf < Prawn::Document
     return self.width_of(text.to_s, size: font_size) / 72.0
   end
 
+  # Draws text box for accounting amount.
+  def acctb(amount, x, y, width, height, options = {})
+
+    # Load passed options or fall back to defaults.
+    line = options.fetch(:line, nil)
+    h_pad = options.fetch(:h_pad, 0)
+    v_pad = options.fetch(:v_pad, 0)
+    font_size = options.fetch(:size, self.class::DEFAULT_FONT_SIZE)
+    fill_color = options.fetch(:fill_color, nil)
+    line_color = options.fetch(:line_color, nil)
+    line_width = options.fetch(:line_width, nil)
+    symbol = options.fetch(:symbol, "$")
+
+    # If stroke/fill options passed, draw rectangle.
+    if fill_color || line_color
+      self.rect(x, y, width, height, fill_color: fill_color, line_color: line_color, line_width: line_width)
+    end
+
+    # Set options for txtb method.
+    txtb_options = options.except(:h_align, :fill_color, :line_color, :v_align).merge(v_align: :center)
+
+    # Print right aligned value and left aligned symbol.
+    self.txtb(self.format_number(amount, decimals: 2), x, y, width, height, txtb_options.merge(h_align: :right))
+    self.txtb(symbol, x, y, width, height, txtb_options.merge(h_align: :left))
+
+    # If necessary, print line.
+    case line
+    when :above
+      self.hline(x + h_pad, y, width - 2 * h_pad, line_width: 0.005)
+    when :below
+      self.hline(x + h_pad, y - height, width - 2 * h_pad, line_width: 0.005)
+    when :double_above
+      self.hline(x + h_pad, y, width - 2 * h_pad, line_width: 0.005)
+      self.hline(x + h_pad, y - 0.015, width - 2 * h_pad, line_width: 0.005)
+    when :double_below
+      self.hline(x + h_pad, y - height, width - 2 * h_pad, line_width: 0.005)
+      self.hline(x + h_pad, y - height + 0.015, width - 2 * h_pad, line_width: 0.005)
+    end
+
+  end
+
   # Draws text box.
   def txtb(text, x, y, width, height, options = {})
 
@@ -418,6 +459,7 @@ class VarlandPdf < Prawn::Document
     v_align = options.fetch(:v_align, :center)
     h_pad = options.fetch(:h_pad, 0)
     v_pad = options.fetch(:v_pad, 0)
+    transform = options.fetch(:transform, nil)
 
     # If stroke/fill options passed, draw rectangle.
     if fill_color || line_color
@@ -429,8 +471,20 @@ class VarlandPdf < Prawn::Document
     self.font_size(font_size)
     self.fill_color(font_color)
 
+    # Transform text if necessary.
+    case transform
+    when :uppercase
+      text.upcase!
+    when :lowercase
+      text.downcase!
+    when :titleize
+      text = text.titleize
+    when :capitalize
+      text.capitalize!
+    end
+
     # Draw text box.
-    self.text_box(text.to_s,
+    self.text_box(text,
                   at: [(x + h_pad).in, (y - v_pad).in],
                   width: (width - 2 * h_pad).in,
                   height: (height - 2 * v_pad).in,
