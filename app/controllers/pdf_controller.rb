@@ -16,7 +16,7 @@ class PdfController < ApplicationController
 
   def invoice
     invoice = Invoice.new(params[:invoice])
-    self.print_or_display(invoice, params[:user], params[:ip_address], "Invoice", "Invoice ##{params[:invoice]}")
+    self.print_or_display(invoice, "Invoice ##{params[:invoice]}")
   end
 
   def purchase_order
