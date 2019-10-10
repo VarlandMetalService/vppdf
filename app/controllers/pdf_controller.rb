@@ -32,7 +32,7 @@ protected
   def print_or_display(file, description, options = {})
     user = options.fetch(:user, params[:user])
     ip = options.fetch(:ip, params[:ip_address])
-    type = options.fetch(:type, file.class.demodulize)
+    type = options.fetch(:type, file.class)
     if params[:autoprint]
       self.print_file(file, user, ip, type, description)
       render(status: 200, json: "")
