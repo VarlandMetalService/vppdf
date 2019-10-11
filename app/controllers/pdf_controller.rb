@@ -31,6 +31,10 @@ class PdfController < ApplicationController
     self.send_pdf(Bakesheet.new, 'Bakesheet')
   end
 
+  def index
+    render(layout: false)
+  end
+
 protected
 
   # Prints if autoprint parameter given, otherwise sends to screen.

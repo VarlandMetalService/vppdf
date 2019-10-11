@@ -1,3 +1,17 @@
 // Place all the styles related to the pdf controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+html, body {
+  height: 100vh;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 100;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 100;
+}

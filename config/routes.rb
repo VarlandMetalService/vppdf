@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  # Set root.
+  root 'pdf#index'
   
   # Set up routes for PDFs. Allow GET or POST.
   match "/sample" => "pdf#sample", via: [:post, :get]

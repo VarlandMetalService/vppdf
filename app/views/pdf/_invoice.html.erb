@@ -1,0 +1,23 @@
+<h1>Invoice</h1>
+
+<div class="row">
+  <div class="col-12 col-lg-9">
+    <p class="border shadow-sm rounded-sm bg-light p-3">
+      URL: <code class="font-weight-bold">/invoice?invoice=123456<span title="Optional" class="text-info">&source=XXX</span></code>
+      <br />
+      <small class="text-muted font-italic">For automatic printing, additional query string parameters are required: <code>user</code>, <code>ip_address</code>, and <code>autoprint</code>.</small>
+    </p>
+  </div>
+  <div class="col-12 col-lg-3">
+    <form class="bg-light rounded-sm shadow-sm border p-3" method="get" action="<%= invoice_url %>" target="_blank">
+      <div class="form-group">
+        <label for="invoice">Invoice:</label>
+        <input name="invoice" type="number" class="form-control" id="invoice" required>
+      </div>
+      <div class="d-flex flex-row justify-content-between align-items-center">
+        <button class="btn btn-primary btn-sm" type="Submit">Generate</button>
+        <a class="btn btn-sm btn-secondary" href="<%= invoice_url %>" target="_blank">Sample</a>
+      </div>
+    </form>
+  </div>
+</div>
