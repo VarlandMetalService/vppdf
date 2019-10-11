@@ -1,0 +1,106 @@
+{
+  "quote": 72759,
+  "customer": {
+    "code": "NSK",
+    "name": [
+      "NSK INDUSTRIES, INC."
+    ],
+    "address": "P. O. BOX 1089",
+    "city": "CUYAHOGA FALLS",
+    "state": "OH",
+    "zip": 44223
+  },
+  "parts": [
+    {
+      "customer": "NSK",
+      "process_code": "STZ",
+      "part_id": "T11525-NEW",
+      "sub_id": "",
+      "quantity": "10,000",
+      "quantity_unit": "PCS",
+      "price_per": "E",
+      "total_price": 0.045,
+      "total_setup": 0,
+      "total_minimum": 250,
+      "old_price_per": "",
+      "old_total_price": 0,
+      "old_total_setup": 0,
+      "old_total_minimum": 0,
+      "area": 0.021149,
+      "area_unit": "F",
+      "area_count": "E",
+      "update": true,
+      "weight": 0.018933,
+      "pounds_per_cubic_foot": 146,
+      "part_name": [
+        "TINNERMAN 5\/16-18 SPEED",
+        "NUT T10097-7"
+      ],
+      "part_description": [
+        "SPRING STEEL X TINNERMAN 5\/16-18",
+        "SPEED NUT"
+      ],
+      "remarks": [],
+      "process_specification": [
+        "STRIP BLACK OXIDE, REPLATE",
+        "TIN-ZINC (.0002\" - .0004\")",
+        "CLEAR TRIVALENT CHROMATE & BAKE",
+        "E4265"
+      ]
+    },
+    {
+      "customer": "NSK",
+      "process_code": "STZ",
+      "part_id": "T11525-7",
+      "sub_id": "",
+      "quantity": "10,000",
+      "quantity_unit": "PCS",
+      "price_per": "E",
+      "total_price": 0.045,
+      "total_setup": 0,
+      "total_minimum": 250,
+      "old_price_per": "",
+      "old_total_price": 0,
+      "old_total_setup": 0,
+      "old_total_minimum": 0,
+      "area": 0.021149,
+      "area_unit": "F",
+      "area_count": "E",
+      "update": true,
+      "weight": 0.015753,
+      "pounds_per_cubic_foot": 146,
+      "part_name": [
+        "5\/16-18 TINNERMAN NUT",
+        "RETAINER"
+      ],
+      "part_description": [
+        "STEEL - TINNERMAN NUT RETAINER"
+      ],
+      "remarks": [],
+      "process_specification": [
+        "STRIP PHOSPHATE, REPLATE",
+        "TIN-ZINC (.0002\" - .0004\")",
+        "CLEAR TRIVALENT CHROMATE & BAKE",
+        "E4265"
+      ]
+    }
+  ],
+  "quote_date": "2019-09-12T00:00:00-04:00",
+  "effective_date": null,
+  "requested_by": "THOMAS CHARLES",
+  "request_number": "",
+  "confirming": "",
+  "printed": true,
+  "phone": 2147483647,
+  "fax": 2147483647,
+  "fax_extension": "",
+  "date_comment": "NEW",
+  "quoted_by": "ART MINK",
+  "comment_control": "0",
+  "page_control": "Y",
+  "group_code": "",
+  "text_code": "",
+  "omit_print_after_line": 4,
+  "print_id": "",
+  "copy_number": 437
+}

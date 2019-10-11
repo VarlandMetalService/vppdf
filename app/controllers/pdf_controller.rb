@@ -14,6 +14,11 @@ class PdfController < ApplicationController
     self.print_or_display(shipper, "PS ##{params[:shipper]}", type: "PackingSlip")
   end
 
+  def quote
+    quote = Quote.new(params[:quote])
+    self.print_or_display(quote, "Quote ##{params[:quote]}")
+  end
+
   def invoice
     invoice = Invoice.new(params[:invoice])
     self.print_or_display(invoice, "Invoice ##{params[:invoice]}")
