@@ -1,27 +1,81 @@
 {
-  "timestamp":"2019011611013107",
-  "ip":"192.168.82.70",
-  "initials":"TM",
-  "shipper":"258495",
-  "date":"2019-01-16T00:00:00-05:00",
-  "carrier":"BRYAN TRUCKING",
-  "ship_to":{
-    "name":[
+  "timestamp": "2019011611013107",
+  "ip": "192.168.82.70",
+  "initials": "TM",
+  "shipper": "258495",
+  "date": "2019-01-16T00:00:00-05:00",
+  "carrier": "BRYAN TRUCKING",
+  "ship_to": {
+    "name": [
       "PARKER HANNIFIN CORP.",
       "TUBE FITTINGS DIVISION"
     ],
-    "address":"700 WEST CUMBERLAND ST",
-    "city_state":"LEWISBURG, OH",
-    "zip":45338
+    "address": "700 WEST CUMBERLAND ST",
+    "city_state": "LEWISBURG, OH",
+    "zip": 45338
   },
-  "collect":true,
-  "copies":2,
-  "auto_sign":true,
-  "user":"TERRY",
-  "units":[1,0,0,0,0,0,0,0,0],
-  "hazardous":["","","","","","","","",""],
-  "descriptions":["BIN","PIPE FITTINGS N.O.I. IRON OR STEEL","","","","","","",""],
-  "weights":["625#","","","","","","","",""],
-  "rates":["50","","","","","","","",""],
-  "special_instructions":["","",""]
+  "collect": true,
+  "copies": 2,
+  "auto_sign": true,
+  "user": "TERRY",
+  "units": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "hazardous": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "descriptions": [
+    "BIN",
+    "PIPE FITTINGS N.O.I. IRON OR STEEL",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "weights": [
+    "625#",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "rates": [
+    "50",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "special_instructions": [
+    "",
+    "",
+    ""
+  ]
 }

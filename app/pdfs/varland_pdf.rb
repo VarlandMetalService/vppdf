@@ -59,9 +59,13 @@ class VarlandPdf < Prawn::Document
     # Load default options.
     decimals = options.fetch(:decimals, 0)
     delimiter = options.fetch(:delimiter, ",")
+    strip_insignificant_zeros = options.fetch(:strip_insignificant_zeros, false)
 
     # Return formatted number.
-    return self.helpers.number_with_precision(number, precision: decimals, delimiter: delimiter)
+    return self.helpers.number_with_precision(number,
+                                              precision: decimals,
+                                              delimiter: delimiter,
+                                              strip_insignificant_zeros: strip_insignificant_zeros)
 
   end
 

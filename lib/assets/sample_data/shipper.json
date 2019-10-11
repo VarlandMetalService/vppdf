@@ -1,160 +1,164 @@
 {
-  "shipper":263842,
-  "customer":{
-    "code":"WIN",
-    "name":["WINZELER STAMPING COMPANY"],
-    "address":"129 WABASH AVENUE",
-    "city":"MONTPELIER",
-    "state":"OH",
-    "zip":43543,
-    "vendor_id":""
+  "shipper": 263842,
+  "customer": {
+    "code": "WIN",
+    "name": [
+      "WINZELER STAMPING COMPANY"
+    ],
+    "address": "129 WABASH AVENUE",
+    "city": "MONTPELIER",
+    "state": "OH",
+    "zip": 43543,
+    "vendor_id": ""
   },
-  "how_shipped":{
-    "code":"BRY",
-    "description":"BRYAN TRUCKING"
+  "how_shipped": {
+    "code": "BRY",
+    "description": "BRYAN TRUCKING"
   },
-  "ship_to":{
-    "name":["WINZELER STAMPING COMPANY"],
-    "address":"910 E. MAIN ST - PLANT #2",
-    "city":"MONTPELIER",
-    "state":"OH",
-    "zip":43543
+  "ship_to": {
+    "name": [
+      "WINZELER STAMPING COMPANY"
+    ],
+    "address": "910 E. MAIN ST - PLANT #2",
+    "city": "MONTPELIER",
+    "state": "OH",
+    "zip": 43543
   },
-  "orders":[
+  "orders": [
     {
-      "customer":"WIN",
-      "process_code":"NI",
-      "part_id":"2.13114",
-      "sub_id":"",
-      "shop_order":300162,
-      "pounds":389,
-      "pieces":100500,
-      "is_complete":true,
-      "shipping_remark":"",
-      "containers":1,
-      "container_type":"BIN",
-      "certification":{
-        "code":"01",
-        "print_1st_desc_before":0,
-        "print_2nd_desc_after":3,
-        "omit_print_after":3,
-        "print_part_3_only":false,
-        "part_1":[
+      "customer": "WIN",
+      "process_code": "NI",
+      "part_id": "2.13114",
+      "sub_id": "",
+      "shop_order": 300162,
+      "pounds": 389,
+      "pieces": 100500,
+      "is_complete": true,
+      "shipping_remark": "",
+      "containers": 1,
+      "container_type": "BIN",
+      "certification": {
+        "code": "01",
+        "print_1st_desc_before": 0,
+        "print_2nd_desc_after": 3,
+        "omit_print_after": 3,
+        "print_part_3_only": false,
+        "part_1": [
           "WE CERTIFY THAT THIS LOT OF PARTS",
           "WAS PROCESSED TO THE FOLLOWING",
           "PARAMETERS:"
         ],
-        "part_2":[
+        "part_2": [
           "QUALITY CONTROL DEPARTMENT",
           "VARLAND METAL SERVICE, INC."
         ],
-        "part_3":[]
+        "part_3": []
       },
-      "shop_order_date":"2019-09-27T00:00:00-04:00",
-      "date_entered":"2019-09-27T00:00:00-04:00",
-      "ship_date":"2019-10-04T00:00:00-04:00",
-      "purchase_orders":[
+      "shop_order_date": "2019-09-27T00:00:00-04:00",
+      "date_entered": "2019-09-27T00:00:00-04:00",
+      "ship_date": "2019-10-04T00:00:00-04:00",
+      "purchase_orders": [
         "29481",
         "178715"
       ],
-      "part_name":[
+      "part_name": [
         "7.94MM OR 5\/16\" - INSERT"
       ],
-      "process_specification":[
+      "process_specification": [
         "NICKEL (.0005\" MINIMUM) & BAKE"
       ],
-      "remarks":[
+      "remarks": [
         "LINE 1",
         "LINE 2"
       ]
     },
     {
-      "customer":"WIN",
-      "process_code":"NI",
-      "part_id":"2.13114",
-      "sub_id":"",
-      "shop_order":300164,
-      "pounds":369,
-      "pieces":95678,
-      "is_complete":true,
-      "shipping_remark":"",
-      "containers":1,
-      "container_type":"BIN",
-      "certification":{
-        "code":"01",
-        "print_1st_desc_before":0,
-        "print_2nd_desc_after":3,
-        "omit_print_after":3,
-        "print_part_3_only":false,
-        "part_1":[
+      "customer": "WIN",
+      "process_code": "NI",
+      "part_id": "2.13114",
+      "sub_id": "",
+      "shop_order": 300164,
+      "pounds": 369,
+      "pieces": 95678,
+      "is_complete": true,
+      "shipping_remark": "",
+      "containers": 1,
+      "container_type": "BIN",
+      "certification": {
+        "code": "01",
+        "print_1st_desc_before": 0,
+        "print_2nd_desc_after": 3,
+        "omit_print_after": 3,
+        "print_part_3_only": false,
+        "part_1": [
           "WE CERTIFY THAT THIS LOT OF PARTS",
           "WAS PROCESSED TO THE FOLLOWING",
           "PARAMETERS:"
         ],
-        "part_2":[
+        "part_2": [
           "QUALITY CONTROL DEPARTMENT",
           "VARLAND METAL SERVICE, INC."
         ],
-        "part_3":[]
+        "part_3": []
       },
-      "shop_order_date":"2019-09-27T00:00:00-04:00",
-      "date_entered":"2019-09-27T00:00:00-04:00",
-      "ship_date":"2019-10-04T00:00:00-04:00",
-      "purchase_orders":[
+      "shop_order_date": "2019-09-27T00:00:00-04:00",
+      "date_entered": "2019-09-27T00:00:00-04:00",
+      "ship_date": "2019-10-04T00:00:00-04:00",
+      "purchase_orders": [
         "29481",
         "178715"
       ],
-      "part_name":[
+      "part_name": [
         "7.94MM OR 5\/16\" - INSERT"
       ],
-      "process_specification":[
+      "process_specification": [
         "NICKEL (.0005\" MINIMUM) & BAKE"
       ],
-      "remarks":[]
+      "remarks": []
     },
     {
-      "customer":"WIN",
-      "process_code":"NI",
-      "part_id":"2.13114",
-      "sub_id":"",
-      "shop_order":300165,
-      "pounds":378,
-      "pieces":97589,
-      "is_complete":true,
-      "shipping_remark":"",
-      "containers":1,
-      "container_type":"BIN",
-      "certification":{
-        "code":"S8",
-        "print_1st_desc_before":0,
-        "print_2nd_desc_after":3,
-        "omit_print_after":3,
-        "print_part_3_only":false,
-        "part_1":[
+      "customer": "WIN",
+      "process_code": "NI",
+      "part_id": "2.13114",
+      "sub_id": "",
+      "shop_order": 300165,
+      "pounds": 378,
+      "pieces": 97589,
+      "is_complete": true,
+      "shipping_remark": "",
+      "containers": 1,
+      "container_type": "BIN",
+      "certification": {
+        "code": "S8",
+        "print_1st_desc_before": 0,
+        "print_2nd_desc_after": 3,
+        "omit_print_after": 3,
+        "print_part_3_only": false,
+        "part_1": [
           "WE CERTIFY THAT THIS LOT OF PARTS",
           "WAS PROCESSED TO THE FOLLOWING",
           "PARAMETERS:"
         ],
-        "part_2":[
+        "part_2": [
           "QUALITY CONTROL DEPARTMENT",
           "VARLAND METAL SERVICE, INC."
         ],
-        "part_3":[]
+        "part_3": []
       },
-      "shop_order_date":"2019-09-27T00:00:00-04:00",
-      "date_entered":"2019-09-27T00:00:00-04:00",
-      "ship_date":"2019-10-04T00:00:00-04:00",
-      "purchase_orders":[
+      "shop_order_date": "2019-09-27T00:00:00-04:00",
+      "date_entered": "2019-09-27T00:00:00-04:00",
+      "ship_date": "2019-10-04T00:00:00-04:00",
+      "purchase_orders": [
         "29481",
         "178715"
       ],
-      "part_name":[
+      "part_name": [
         "7.94MM OR 5\/16\" - INSERT"
       ],
-      "process_specification":[
+      "process_specification": [
         "NICKEL (.0005\" MINIMUM) & BAKE"
       ],
-      "remarks":[]
+      "remarks": []
     }
   ]
 }

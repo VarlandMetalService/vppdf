@@ -5,30 +5,35 @@ class Invoice < VarlandPdf
   LETTERHEAD_FORMAT = :portrait
   
   # Constructor.
-  def initialize(invoice = nil)
+  def initialize(invoice = nil, source = nil)
 
     # Call parent constructor.
     super()
 
-    # # Load data.
-    # if invoice.blank?
-    #   self.load_sample_data
-    # else
-    #   @invoice = invoice
-    #   self.load_data
-    # end
+    # Store invoice properties.
+    @widths = [0.85, 0.65, 0.65, 2.25, 1.25, 1.35, 1]
+    @table_height = 6.75
+    @line_height = 0.15
 
-    # Add extra pages.
-    2.times do self.start_new_page end
+    # Load data.
+    if invoice.blank?
+      self.load_sample_data
+    else
+      @invoice = invoice
+      @source = source
+      self.load_data
+    end
 
-    # Store column widths.
-    @widths = [1, 0.75, 0.75, 2, 1.25, 1.25, 1]
+    # Calculate pages needed.
+    #pages = self.calc_invoice_pages
+    @orders = []
+    @data[:orders].each do |order| @orders << InvoiceOrder.new(order) end
+
+    # Format page.
+    self.draw_format
 
     # Print data.
     self.draw_data
-
-    # Format pages.
-    self.draw_format
 
     # Number pages.
     string = "<b>PAGE: <page> OF <total></b>"
@@ -57,61 +62,288 @@ class Invoice < VarlandPdf
   # Prints data.
   def draw_data
 
+    # Format dates.
+    invoice_date = Time.iso8601(@data[:invoice_date]).strftime("%m/%d/%y")
+
+    # Print orders.
+    lines_per_page = (@table_height / @line_height).to_i
+    lines_remaining = lines_per_page
+    y = 7.5
+    grand_total = 0
+    default_options = {size: 8, h_pad: 0.05}
+    special_options = {size: 6, style: :bold, h_pad: 0.05}
+    @orders.each do |order|
+
+      # Accumulate total.
+      grand_total += order.total
+
+      # Move to next page if necessary.
+      if order.lines_required > lines_remaining
+        self.start_new_page
+        self.draw_format
+        lines_remaining = lines_per_page
+        y = 7.5
+      end
+
+      # Print order details.
+      lines_printed = 0
+      if order.shipper
+        lines_printed = 2
+        self.txtb("SHIPPER #:",
+                  0.25,
+                  y,
+                  @widths[0],
+                  @line_height,
+                  special_options)
+        self.txtb(order.shipper,
+                  0.25,
+                  y - @line_height,
+                  @widths[0],
+                  @line_height,
+                  default_options)
+      end
+      if order.shop_order
+        self.txtb("VMS ORDER #:",
+                  0.25,
+                  y - lines_printed * @line_height,
+                  @widths[0],
+                  @line_height,
+                  special_options)
+        self.txtb(order.shop_order,
+                  0.25,
+                  y - (lines_printed + 1) * @line_height,
+                  @widths[0],
+                  @line_height,
+                  default_options)
+        lines_printed += 2
+      end
+      if order.ship_date
+        self.txtb("SHIP DATE:",
+                  0.25,
+                  y - lines_printed * @line_height,
+                  @widths[0],
+                  @line_height,
+                  special_options)
+        self.txtb(order.ship_date,
+                  0.25,
+                  y - (lines_printed + 1) * @line_height,
+                  @widths[0],
+                  @line_height,
+                  default_options)
+      end
+      if order.pounds != 0
+        self.txtb(self.format_number(order.pounds, decimals: 2),
+                  0.25 + @widths[0],
+                  y,
+                  @widths[1],
+                  @line_height,
+                  default_options)
+      end
+      if !order.is_complete && order.pounds_remaining != 0
+        self.rect(0.25 + @widths[0] + 0.05,
+                  y - 1.25 * @line_height,
+                  @widths[1] - 0.1,
+                  2.5 * @line_height,
+                  fill_color: "e3e3e3")
+        self.txtb("BALANCE:",
+                  0.25 + @widths[0],
+                  y - 1.5 * @line_height,
+                  @widths[1],
+                  @line_height,
+                  default_options.except(:h_pad, :size).merge(h_pad: 0.1, size: 6))
+        self.txtb(self.format_number(order.pounds_remaining, decimals: 2),
+                  0.25 + @widths[0],
+                  y - 2.5 * @line_height,
+                  @widths[1],
+                  @line_height,
+                  default_options.except(:h_pad, :size).merge(h_pad: 0.1, size: 6))
+      end
+      if order.pieces != 0
+        self.txtb(self.format_number(order.pieces),
+                  0.25 + @widths[0..1].sum,
+                  y,
+                  @widths[2],
+                  @line_height,
+                  default_options)
+      end
+      if !order.is_complete && order.pieces_remaining != 0
+        self.rect(0.25 + @widths[0..1].sum + 0.05,
+                  y - 1.25 * @line_height,
+                  @widths[2] - 0.1,
+                  2.5 * @line_height,
+                  fill_color: "e3e3e3")
+        self.txtb("BALANCE:",
+                  0.25 + @widths[0..1].sum,
+                  y - 1.5 * @line_height,
+                  @widths[2],
+                  @line_height,
+                  default_options.except(:h_pad, :size).merge(h_pad: 0.1, size: 6))
+        self.txtb(self.format_number(order.pieces_remaining, decimals: 2),
+                  0.25 + @widths[0..1].sum,
+                  y - 2.5 * @line_height,
+                  @widths[2],
+                  @line_height,
+                  default_options.except(:h_pad, :size).merge(h_pad: 0.1, size: 6))
+      end
+      lines_printed = 0
+      unless order.part_id.blank? && order.sub_id.blank? && order.process_code.blank?
+        lines_printed = 1
+        self.txtb("#{order.part_id} #{order.sub_id}",
+                  0.25 + @widths[0..2].sum,
+                  y,
+                  @widths[3],
+                  @line_height,
+                  default_options.merge(h_align: :left))
+        self.txtb(order.process_code,
+                  0.25 + @widths[0..2].sum,
+                  y,
+                  @widths[3],
+                  @line_height,
+                  default_options.merge(h_align: :right))
+      end
+      (order.part_name + order.process_specification).each_with_index do |line, index|
+        self.txtb(line,
+                  0.25 + @widths[0..2].sum,
+                  y - (index + lines_printed) * @line_height,
+                  @widths[3],
+                  @line_height,
+                  default_options.merge(h_align: :left))
+      end
+      lines_printed = 0
+      unless order.miscellaneous_invoice
+        lines_printed = 1
+        self.txtb((order.is_complete ? "COMPLETE ORDER" : "PARTIAL ORDER"),
+                  0.25 + @widths[0..3].sum,
+                  y,
+                  @widths[4],
+                  @line_height,
+                  default_options)
+      end
+      order.purchase_orders.each_with_index do |line, index|
+        self.txtb(line,
+                  0.25 + @widths[0..3].sum,
+                  y - (index + lines_printed) * @line_height,
+                  @widths[4],
+                  @line_height,
+                  default_options)
+      end
+      order.pricing_labels.each_with_index do |label, index|
+        self.txtb(label,
+                  0.25 + @widths[0..4].sum,
+                  y - index * @line_height,
+                  @widths[5],
+                  @line_height,
+                  default_options.merge(h_align: :left))
+        options = (index == order.pricing_labels.length - 1 ? default_options.merge(line: :above) : default_options)
+        self.acctb(order.pricing_amounts[index],
+                   0.25 + @widths[0..5].sum,
+                   y - index * @line_height,
+                   @widths[6],
+                   @line_height,
+                   options)
+      end
+      # unless (order.remarks.length == 0)
+      #   remarks_y = y - (@line_height * (order.lines_required - order.remarks.length))
+      #   label_width = self.calc_width("REMARKS: ", style: :normal, size: 8)
+      #   self.rect(0.3,
+      #             remarks_y + 0.05,
+      #             7.9,
+      #             0.1 + (@line_height * order.remarks.length),
+      #             fill_color: "e3e3e3")
+      #   self.txtb("REMARKS: ",
+      #             0.35,
+      #             remarks_y,
+      #             label_width,
+      #             @line_height,
+      #             size: 8)
+      #   order.remarks.each_with_index do |line, index|
+      #     self.txtb(line,
+      #               0.35 + label_width,
+      #               remarks_y - index * @line_height,
+      #               6.5,
+      #               @line_height,
+      #               size: 8,
+      #               style: :bold,
+      #               h_align: :left)
+      #   end
+      # end
+      y -= @line_height * (order.lines_required + 2)
+
+      # Decrease lines remaining.
+      lines_remaining -= (order.lines_required + 2)
+
+    end
+
+    # Print header information on each page.
     self.repeat(:all) do
 
       # Draw invoice number.
-      self.txtb("INVOICE #: 285406", 0.25, 9.4, 8, 0.25, size: 24, style: :bold)
+      self.txtb("INVOICE #: #{@data[:invoice]}", 0.25, 9.4, 8, 0.25, size: 24, style: :bold)
 
       # Draw sold to, ship to, code and fax.
-      self.txtb("name\nname\naddress\nCity, State Zip", 0.25, 8.75, 4, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
-      self.txtb("name\nname\naddress\nCity, State Zip", 4.25, 8.75, 2.5, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
-      self.txtb("code\nVendor:\nFax", 6.75, 8.75, 1.5, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
+      text = @data[:customer][:our_customer_name].blank? ? "" : "#{@data[:customer][:our_customer_name]}\n"
+      text << "#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:street]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip]}"
+      self.txtb(text, 0.25, 8.75, 4, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
+      unless @data[:shipping_address][:street].blank?
+        self.txtb("#{@data[:shipping_address][:name].join("\n")}\n#{@data[:shipping_address][:street]}\n#{@data[:shipping_address][:city]}, #{@data[:shipping_address][:state]} #{@data[:shipping_address][:zip]}", 4.25, 8.75, 2.75, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
+      end
+      text = @data[:customer][:code]
+      text << (@data[:customer][:vendor_id].blank? ? "\n" : "\nVENDOR: #{@data[:customer][:vendor_id]}")
+      self.txtb(text, 7, 8.75, 1.25, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
 
       # Print shipped via, invoice date, and secondary invoice number.
-      self.txtb("<b>SHIPPED VIA:</b> XXX", 0.25, 8, 4, 0.25, size: 9, h_align: :left)
-      self.txtb("<b>INVOICE DATE:</b> mm/dd/yy", 4.75, 8, 2, 0.25, size: 9, h_align: :left)
-      self.txtb("<b>INVOICE #:</b> 285406", 6, 8, 2.25, 0.25, size: 9, h_align: :right)
+      unless @data[:how_shipped][:code].blank?
+        ship_method = "#{@data[:how_shipped][:description]} #{@data[:shipping_remarks]}"
+        self.txtb("<b>SHIPPED VIA:</b> #{ship_method}", 0.25, 8, 4, 0.25, size: 9, h_align: :left)
+      end
+      self.txtb("<b>INVOICE DATE:</b> #{invoice_date}", 4.75, 8, 2, 0.25, size: 9, h_align: :left)
+      self.txtb("<b>INVOICE #:</b> #{@data[:invoice]}", 6, 8, 2.25, 0.25, size: 9, h_align: :right)
 
-      # Draw data.
-      y = 7.5
-      row_height = 0.1875
-      default_options = {size: 8, h_pad: 0.1}
-      special_options = {size: 6, style: :bold, h_pad: 0.1, v_align: :bottom}
-      self.txtb("SHIPPER #:", 0.25, y, @widths[0], row_height, special_options)
-      self.txtb("0.00", 0.25 + @widths[0], y, @widths[1], row_height, default_options.merge(h_align: :right))
-      self.txtb("123", 0.25 + @widths[0..1].sum, y, @widths[2], row_height, default_options.merge(h_align: :right))
-      self.txtb("PART ID", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
-      self.txtb("SUB", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :right).except(:fill_color))
-      self.txtb("XXX", 0.25 + @widths[0..3].sum, y, @widths[4], row_height, default_options)
-      self.txtb("XXX", 0.25 + @widths[0..4].sum, y, @widths[5], row_height, default_options.merge(h_align: :left))
-      self.acctb("260", 0.25 + @widths[0..5].sum, y, @widths[6], row_height, default_options)
-      y -= row_height
-      self.txtb("123456", 0.25, y, @widths[0], row_height, default_options)
-      self.txtb("XXX", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
-      self.txtb("XXX", 0.25 + @widths[0..3].sum, y, @widths[4], row_height, default_options)
-      self.txtb("XXX", 0.25 + @widths[0..4].sum, y, @widths[5], row_height, default_options.merge(h_align: :left))
-      self.acctb(260, 0.25 + @widths[0..5].sum, y, @widths[6], row_height, default_options.merge(line: :above, style: :bold))
-      y -= row_height
-      self.txtb("VMS ORDER #:", 0.25, y, @widths[0], row_height, special_options)
-      self.txtb("XXX", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
-      self.txtb("XXX", 0.25 + @widths[0..3].sum, y, @widths[4], row_height, default_options)
-      self.txtb("XXX", 0.25 + @widths[0..4].sum, y, @widths[5], row_height, default_options.merge(h_align: :left))
-      y -= row_height
-      self.txtb("123456", 0.25, y, @widths[0], row_height, default_options)
-      self.txtb("XXX", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
-      self.txtb("XXX", 0.25 + @widths[0..3].sum, y, @widths[4], row_height, default_options)
-      self.txtb("XXX", 0.25 + @widths[0..4].sum, y, @widths[5], row_height, default_options.merge(h_align: :left))
-      y -= row_height
-      self.txtb("SHIP DATE:", 0.25, y, @widths[0], row_height, special_options)
-      self.txtb("XXX", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
-      y -= row_height
-      self.txtb("123456", 0.25, y, @widths[0], row_height, default_options)
-      self.txtb("XXX", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
-      y -= row_height
-      self.txtb("XXX", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
-      y -= row_height
-      self.txtb("XXX", 0.25 + @widths[0..2].sum, y, @widths[3], row_height, default_options.merge(h_align: :left))
+    end
 
+    # Print special content on only last page.
+    self.repeat([self.page_count]) do
+      self.txtb(@data[:invoice_terms],
+                0.25,
+                0.75,
+                @widths[0..4].sum,
+                0.25,
+                size: 8,
+                style: :bold,
+                line_color: "000000")
+      self.txtb("INVOICE TOTAL",
+                0.25 + @widths[0..4].sum,
+                0.75,
+                @widths[5],
+                0.25,
+                size: 8,
+                style: :bold,
+                h_align: :left,
+                h_pad: 0.1,
+                line_color: "000000",
+                fill_color: "e3e3e3")
+      self.acctb(grand_total,
+                 0.25 + @widths[0..5].sum,
+                 0.75,
+                 @widths[6],
+                 0.25,
+                 size: 8,
+                 style: :bold,
+                 h_pad: 0.1,
+                 line_color: "000000",
+                 fill_color: "e3e3e3")
+    end
+
+    # Print special content on all pages except the last page.
+    self.repeat(lambda {|pg| pg < self.page_count}) do
+      self.txtb("********** CONTINUED ON NEXT PAGE. PLEASE PAY TOTAL AMOUNT LISTED ON LAST PAGE. **********",
+                0.25,
+                0.75,
+                @widths.sum,
+                0.25,
+                size: 8,
+                style: :bold,
+                line_color: "000000")
     end
 
   end
@@ -119,46 +351,21 @@ class Invoice < VarlandPdf
   # Prints standard graphics.
   def draw_format
 
-    # Print special content on only last page.
-    self.repeat([self.page_count]) do
-      self.rect(0.25 + @widths[0..4].sum, 0.75, @widths[5..6].sum, 0.25, line_color: nil, fill_color: "e3e3e3")
-      self.txtb("TERMS: 1% 10 DAYS NET 30, 1 1/2% INTEREST CHARGE ON PAST DUE BALANCE-18% ANNUAL", 0.25, 0.75, @widths[0..4].sum, 0.25, size: 8, style: :bold)
-      self.txtb("INVOICE TOTAL", 0.25 + @widths[0..4].sum, 0.75, @widths[5], 0.25, size: 8, style: :bold, h_align: :left, h_pad: 0.1)
-      self.vline(0.25 + @widths[0..4].sum, 0.75, 0.25)
-      self.vline(0.25 + @widths[0..5].sum, 0.75, 0.25)
+    # Draw sold to and ship to labels.
+    self.txtb("SOLD TO:", 0.25, 8.9, 4, 0.15, size: 11, style: :bold, h_align: :left)
+    self.txtb("SHIP TO:", 4.25, 8.9, 4, 0.15, size: 11, style: :bold, h_align: :left)
+
+    # Draw table.
+    x = 0.25
+    headings = ["Order", "Pounds", "Pieces", "Part Desc./Process Spec.", "Ref #", "Price/Remarks", "Totals"]
+    headings.each_with_index do |heading, index|
+      self.txtb(heading, x, 7.75, @widths[index], 0.25, size: 8, style: :bold, transform: :uppercase, line_color: "000000", fill_color: "e3e3e3")
+      self.rect(x, 7.5, @widths[index], @table_height)
+      x += @widths[index]
     end
 
-    # Print special content on all pages except the last page.
-    self.repeat(lambda {|pg| pg < self.page_count}) do
-      self.txtb("********** CONTINUED ON NEXT PAGE. PLEASE PAY TOTAL AMOUNT LISTED ON LAST PAGE. **********", 0.25, 0.75, @widths.sum, 0.25, size: 8, style: :bold)
-    end
-
-    # Repeat format on all pages.
-    self.repeat(:all) do
-
-      # Draw sold to and ship to labels.
-      self.txtb("SOLD TO:", 0.25, 8.9, 4, 0.15, size: 11, style: :bold, h_align: :left)
-      self.txtb("SHIP TO:", 4.25, 8.9, 4, 0.15, size: 11, style: :bold, h_align: :left)
-
-      # Draw table.
-      self.rect(0.25, 7.75, 8, 0.25, fill_color: "e3e3e3", line_color: nil)
-      self.rect(0.25, 7.75, 8, 7)
-      self.hline(0.25, 7.5, 8)
-      self.hline(0.25, 0.5, 8)
-      self.vline(0.25, 0.75, 0.25)
-      self.vline(8.25, 0.75, 0.25)
-      x = 0.25
-      headings = ["Order", "Pounds", "Pieces", "Part Desc./Process Spec.", "Ref #", "Price/Remarks", "Totals"]
-      headings.each_with_index do |heading, index|
-        self.txtb(heading, x, 7.75, @widths[index], 0.25, size: 8, style: :bold, transform: :uppercase)
-        self.vline(x, 7.75, 7) if index > 0
-        x += @widths[index]
-      end
-
-      # Compliance line.
-      self.txtb("We Hereby Certify That These Goods Were Produced In Compliance With The Fair Labor Standards Act, As Amended", 0.25, 0.5, 8, 0.25, size: 8, style: :bold)
-
-    end
+    # Compliance line.
+    self.txtb("We Hereby Certify That These Goods Were Produced In Compliance With The Fair Labor Standards Act, As Amended", 0.25, 0.5, 8, 0.25, size: 8, style: :bold)
 
   end
 
