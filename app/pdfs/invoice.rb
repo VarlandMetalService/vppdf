@@ -25,7 +25,6 @@ class Invoice < VarlandPdf
     end
 
     # Calculate pages needed.
-    #pages = self.calc_invoice_pages
     @orders = []
     @data[:orders].each do |order| @orders << InvoiceOrder.new(order) end
 

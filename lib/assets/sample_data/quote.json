@@ -1,106 +1,477 @@
 {
-  "quote": 72759,
-  "customer": {
-    "code": "NSK",
-    "name": [
-      "NSK INDUSTRIES, INC."
-    ],
-    "address": "P. O. BOX 1089",
-    "city": "CUYAHOGA FALLS",
-    "state": "OH",
-    "zip": 44223
-  },
-  "parts": [
+  "quotes": [
     {
-      "customer": "NSK",
-      "process_code": "STZ",
-      "part_id": "T11525-NEW",
-      "sub_id": "",
-      "quantity": "10,000",
-      "quantity_unit": "PCS",
-      "price_per": "E",
-      "total_price": 0.045,
-      "total_setup": 0,
-      "total_minimum": 250,
-      "old_price_per": "",
-      "old_total_price": 0,
-      "old_total_setup": 0,
-      "old_total_minimum": 0,
-      "area": 0.021149,
-      "area_unit": "F",
-      "area_count": "E",
-      "update": true,
-      "weight": 0.018933,
-      "pounds_per_cubic_foot": 146,
-      "part_name": [
-        "TINNERMAN 5\/16-18 SPEED",
-        "NUT T10097-7"
+      "quote": 72373,
+      "customer": {
+        "code": "GLOTEC",
+        "name": [
+          "GLOBE TECHNOLOGIES"
+        ],
+        "address": "1109 W. CEDAR STREET",
+        "city": "STANDISH",
+        "state": "MI",
+        "zip": 48658
+      },
+      "parts": [
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "A FUSIBLE LINK",
+          "sub_id": "",
+          "quantity": "35,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.025,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0,
+          "area_unit": "",
+          "area_count": "",
+          "update": true,
+          "weight": 0,
+          "pounds_per_cubic_foot": 0,
+          "part_name": [],
+          "part_description": [
+            "BRASS 260  .0641\" THICK",
+            "X .851\" X 1.055\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "SEMI BRIGHT NICKEL",
+            "(.0001\"-.0002\" AVG)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302820-P-19",
+          "sub_id": "",
+          "quantity": "35,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.025,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.010376,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.012001,
+          "pounds_per_cubic_foot": 200,
+          "part_name": [
+            "360 DEG. \"A\" KIDDE",
+            "2019 YEAR"
+          ],
+          "part_description": [
+            "BRASS .0641\" THICK X .851\" X",
+            "1.055\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "312360K-P-20",
+          "sub_id": "",
+          "quantity": "35,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.025,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.010376,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.012101,
+          "pounds_per_cubic_foot": 200,
+          "part_name": [
+            "360 DEG. \"A\" KIDDE",
+            "2020 YEAR"
+          ],
+          "part_description": [
+            "BRASS .0641\" THICK X .851\" X",
+            "1.055\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        }
       ],
-      "part_description": [
-        "SPRING STEEL X TINNERMAN 5\/16-18",
-        "SPEED NUT"
-      ],
-      "remarks": [],
-      "process_specification": [
-        "STRIP BLACK OXIDE, REPLATE",
-        "TIN-ZINC (.0002\" - .0004\")",
-        "CLEAR TRIVALENT CHROMATE & BAKE",
-        "E4265"
-      ]
+      "quote_date": "2019-06-25T00:00:00-04:00",
+      "effective_date": null,
+      "requested_by": "RICK M. CARNAHAN",
+      "request_number": "",
+      "confirming": "",
+      "printed": true,
+      "phone": 8103489250,
+      "fax": 9898469697,
+      "fax_extension": "",
+      "date_comment": "NEW",
+      "quoted_by": "KEVIN MARSH",
+      "comment_control": "0",
+      "page_control": "N",
+      "group_code": "",
+      "text_code": "",
+      "omit_print_after_line": 9,
+      "print_id": "",
+      "copy_number": 421,
+      "quote_terms": "TERMS:  1% 10 DAYS, NET 30",
+      "quote_fob": "ABOVE PRICES ARE FOB VARLAND PLANT",
+      "quote_remarks": []
     },
     {
-      "customer": "NSK",
-      "process_code": "STZ",
-      "part_id": "T11525-7",
-      "sub_id": "",
-      "quantity": "10,000",
-      "quantity_unit": "PCS",
-      "price_per": "E",
-      "total_price": 0.045,
-      "total_setup": 0,
-      "total_minimum": 250,
-      "old_price_per": "",
-      "old_total_price": 0,
-      "old_total_setup": 0,
-      "old_total_minimum": 0,
-      "area": 0.021149,
-      "area_unit": "F",
-      "area_count": "E",
-      "update": true,
-      "weight": 0.015753,
-      "pounds_per_cubic_foot": 146,
-      "part_name": [
-        "5\/16-18 TINNERMAN NUT",
-        "RETAINER"
+      "quote": 72374,
+      "customer": {
+        "code": "GLOTEC",
+        "name": [
+          "GLOBE TECHNOLOGIES"
+        ],
+        "address": "1109 W. CEDAR STREET",
+        "city": "STANDISH",
+        "state": "MI",
+        "zip": 48658
+      },
+      "parts": [
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "B FUSIBLE LINK",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0,
+          "area_unit": "",
+          "area_count": "",
+          "update": true,
+          "weight": 0,
+          "pounds_per_cubic_foot": 0,
+          "part_name": [],
+          "part_description": [
+            "BRONZE CDA   .040\" THICK",
+            "X 1.6875\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "SEMI BRIGHT NICKEL",
+            "(.0001\"-.0002\" AVG)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "B LINK",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.01227,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVG.)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302801-P-19",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.012195,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [
+            "165 DEG. \"B\"",
+            "2019 YEAR"
+          ],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302801-P-20",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.01227,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [
+            "165 DEG. \"B\"",
+            "2020 YEAR"
+          ],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302806-P-20",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.01227,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [
+            "212 DEG. \"B\"",
+            "2020 YEAR"
+          ],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302809-P-20",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.01227,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [
+            "280 DEG. \"B\"",
+            "2020 YEAR"
+          ],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302812-P-20",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.01227,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [
+            "360 DEG. \"B\"",
+            "2020 YEAR"
+          ],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302814-P-19",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.01227,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [
+            "135 DEG. \"B\"",
+            "2019 YEAR"
+          ],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        },
+        {
+          "customer": "GLOTEC",
+          "process_code": "NI",
+          "part_id": "302814-P-20",
+          "sub_id": "",
+          "quantity": "220,000 EAU",
+          "quantity_unit": "PCS",
+          "price_per": "E",
+          "total_price": 0.015,
+          "total_setup": 0,
+          "total_minimum": 250,
+          "old_price_per": "",
+          "old_total_price": 0,
+          "old_total_setup": 0,
+          "old_total_minimum": 0,
+          "area": 0.0148,
+          "area_unit": "F",
+          "area_count": "E",
+          "update": true,
+          "weight": 0.01227,
+          "pounds_per_cubic_foot": 131,
+          "part_name": [
+            "135 DEG. \"B\"",
+            "2020 YEAR"
+          ],
+          "part_description": [
+            "BRONZE CDA .040\" THICK X",
+            "1.68\" X .75\""
+          ],
+          "remarks": [],
+          "process_specification": [
+            "NICKEL (.0001\" - .0002\" AVERAGE)"
+          ]
+        }
       ],
-      "part_description": [
-        "STEEL - TINNERMAN NUT RETAINER"
-      ],
-      "remarks": [],
-      "process_specification": [
-        "STRIP PHOSPHATE, REPLATE",
-        "TIN-ZINC (.0002\" - .0004\")",
-        "CLEAR TRIVALENT CHROMATE & BAKE",
-        "E4265"
-      ]
+      "quote_date": "2019-06-25T00:00:00-04:00",
+      "effective_date": null,
+      "requested_by": "RICK M. CARNAHAN",
+      "request_number": "",
+      "confirming": "",
+      "printed": true,
+      "phone": 8103489250,
+      "fax": 9898469697,
+      "fax_extension": "",
+      "date_comment": "NEW",
+      "quoted_by": "KEVIN MARSH",
+      "comment_control": "0",
+      "page_control": "N",
+      "group_code": "",
+      "text_code": "",
+      "omit_print_after_line": 9,
+      "print_id": "",
+      "copy_number": 419,
+      "quote_terms": "TERMS:  1% 10 DAYS, NET 30",
+      "quote_fob": "ABOVE PRICES ARE FOB VARLAND PLANT",
+      "quote_remarks": []
     }
-  ],
-  "quote_date": "2019-09-12T00:00:00-04:00",
-  "effective_date": null,
-  "requested_by": "THOMAS CHARLES",
-  "request_number": "",
-  "confirming": "",
-  "printed": true,
-  "phone": 2147483647,
-  "fax": 2147483647,
-  "fax_extension": "",
-  "date_comment": "NEW",
-  "quoted_by": "ART MINK",
-  "comment_control": "0",
-  "page_control": "Y",
-  "group_code": "",
-  "text_code": "",
-  "omit_print_after_line": 4,
-  "print_id": "",
-  "copy_number": 437
+  ]
 }

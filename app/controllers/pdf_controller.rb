@@ -15,8 +15,10 @@ class PdfController < ApplicationController
   end
 
   def quote
-    quote = Quote.new(params[:quote])
-    self.print_or_display(quote, "Quote ##{params[:quote]}")
+    quote = Quote.new(params[:start_quote], params[:end_quote])
+    desc = "Quote ##{params[:start_quote]}"
+    desc << "-#{params[:end_quote]}" unless params[:end_quote].blank?
+    self.print_or_display(quote, desc)
   end
 
   def invoice
