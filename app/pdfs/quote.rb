@@ -59,9 +59,8 @@ class Quote < VarlandPdf
 
     # If price column requires more lines, store.
     price_lines = 1
-    price_lines += 1 if part[:total_minimum] != 0
-    price_lines += 1 if part[:total_setup] != 0
-    price_lines +=1 if part[:total_minimum] != 0 || part[:total_setup] != 0
+    price_lines += 2 if part[:total_minimum] != 0
+    price_lines += 2 if part[:total_setup] != 0
 
     # Store higher count.
     max = [lines, price_lines].max
@@ -77,8 +76,8 @@ class Quote < VarlandPdf
   end
 
   # Calculates vertical space required for part.
-  def calc_part_height(part)
-    return 1.45 + self.calc_part_lines(part) * @line_height + (part[:remarks].length == 0 ? 0 : 0.1)
+  def calc_part_height(part, has_effective_date, has_confirmation_message, text_remarks_length)
+    return 1.45 + (has_confirmation_message ? 0.25 : 0) + (has_effective_date ? 0.375 : 0) + self.calc_part_lines(part) * @line_height + (part[:remarks].length == 0 ? 0 : 0.25) + text_remarks_length * @line_height + (text_remarks_length == 0 ? 0 : 0.25)
   end
 
   # Formats unit price.
@@ -120,13 +119,14 @@ class Quote < VarlandPdf
     # Print each quote.
     @data[:quotes].each_with_index do |quote, quote_index|
 
+      # Format dates.
+      effective_date = quote[:effective_date].nil? ? nil : Time.iso8601(quote[:effective_date]).strftime("%m/%d/%y")
+
       # Print parts.
       quote[:parts].each_with_index do |part, part_index|
 
-        next if part_index > 0
-
         # Move to next page if necessary.
-        height_required = self.calc_part_height(part).round(5)
+        height_required = self.calc_part_height(part, !effective_date.nil?, quote[:confirming], quote[:text_remarks].length).round(5)
         lines_required = self.calc_part_lines(part)
         if height_required > height_remaining
           self.start_new_page
@@ -136,7 +136,7 @@ class Quote < VarlandPdf
         end
 
         # Draw quote number box.
-        self.txtb("Quote ##{quote[:quote]}", 0.25, y, 8, 0.35, fill_color: "e3e3e3", line_color: "000000", h_align: :left, h_pad: 0.1, style: :bold)
+        self.txtb("Quotation ##{quote[:quote]}", 0.25, y, 8, 0.35, fill_color: "e3e3e3", line_color: "000000", h_align: :left, h_pad: 0.1, style: :bold)
         self.txtb("Your Request #: <b>#{quote[:request_number]}</b>", 1.5, y, 6.75, 0.35, h_align: :left) unless quote[:request_number].blank?
         self.txtb("Please refer to this number on all correspondence and orders", 0.25, y, 8, 0.35, size: 8, style: :italic, h_align: :right, h_pad: 0.1)
 
@@ -176,43 +176,72 @@ class Quote < VarlandPdf
         lines = 2
         self.txtb("#{part[:quantity]} #{part[:quantity_unit]}", 0.25 + @widths[0..2].sum, y - 0.65, @widths[3], @line_height, size: 9)
         self.txtb(self.format_unit_price(part), 0.25 + @widths[0..3].sum, y - 0.65, @widths[4], @line_height, size: 9)
+        unless part[:total_setup] == 0
+          self.txtb("SETUP / LOT", 0.25 + @widths[0..2].sum, y - 0.65 - lines * @line_height, @widths[3], @line_height, size: 9)
+          self.txtb("$#{self.format_number(part[:total_setup], decimals: 2)}", 0.25 + @widths[0..3].sum, y - 0.65 - lines * @line_height, @widths[4], @line_height, size: 9)
+          lines += 2
+        end
         unless part[:total_minimum] == 0
           self.txtb("MINIMUM", 0.25 + @widths[0..2].sum, y - 0.65 - lines * @line_height, @widths[3], @line_height, size: 9)
           self.txtb("$#{self.format_number(part[:total_minimum], decimals: 2)}", 0.25 + @widths[0..3].sum, y - 0.65 - lines * @line_height, @widths[4], @line_height, size: 9)
-          lines += 1
-        end
-        unless part[:total_setup] == 0
-          self.txtb("SETUP", 0.25 + @widths[0..2].sum, y - 0.65 - lines * @line_height, @widths[3], @line_height, size: 9)
-          self.txtb("$#{self.format_number(part[:total_setup], decimals: 2)}", 0.25 + @widths[0..3].sum, y - 0.65 - lines * @line_height, @widths[4], @line_height, size: 9)
         end
 
         # Print remarks.
+        remarks_y = 0
         unless (part[:remarks].length == 0)
           remarks_y = y - (@line_height * (lines_required - part[:remarks].length))
-          self.txtb("Remarks:", 0.25, remarks_y - 0.7, 8, 0.1 + part[:remarks].length * @line_height, fill_color: "ffffff", line_color: "000000", h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05, size: 8, style: :italic)
+          self.txtb("Remarks:", 0.25, remarks_y - 0.7, 8, 0.25 + part[:remarks].length * @line_height, fill_color: "ffffff", line_color: "000000", h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05, size: 8, style: :italic)
           part[:remarks].each_with_index do |line, index|
             self.txtb(line,
                       0.25,
-                      remarks_y - 0.75 - index * @line_height,
+                      remarks_y - 0.9 - index * @line_height,
                       8,
                       @line_height,
                       size: 9,
-                      h_align: :center)
+                      h_align: :left,
+                      h_pad: 0.1)
           end
         end
 
+        # Print text remarks if necessary.
+        unless (quote[:text_remarks].length == 0)
+          remarks_y = remarks_y - (0.25 + part[:remarks].length * @line_height)
+          text = part[:remarks].length == 0 ? "Remarks:" : "Additional Remarks:"
+          self.txtb(text, 0.25, remarks_y - 0.7, 8, 0.25 + quote[:text_remarks].length * @line_height, fill_color: "ffffff", line_color: "000000", h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05, size: 8, style: :italic)
+          quote[:text_remarks].each_with_index do |line, index|
+            self.txtb(line,
+                      0.25,
+                      remarks_y - 0.9 - index * @line_height,
+                      8,
+                      @line_height,
+                      size: 9,
+                      h_align: :left,
+                      h_pad: 0.1)
+          end
+        end
+
+        # Set offset for confirmation message if necessary.
+        confirmation_offset = quote[:confirming] ? 0.25 : 0
+
+        # Draw effective date.
+        unless effective_date.nil?
+          self.txtb("Effective Date:", 0.25, y - height_required + 1.125 + confirmation_offset, 4, 0.375, line_color: '000000', size: 8, style: :italic, h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05)
+          self.txtb("REVISED PRICING EFFECTIVE #{effective_date}", 0.25, y - height_required + 1 + confirmation_offset, 4, 0.25, h_align: :left, h_pad: 0.1, size: 9, style: :bold)
+        end
+
         # Draw terms, FOB, and request number.
-        self.txtb("Terms:", 0.25, y - height_required + 0.75, 4, 0.375, line_color: '000000', size: 8, style: :italic, h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05)
-        self.txtb("FOB:", 0.25, y - height_required + 0.375, 4, 0.375, line_color: '000000', size: 8, style: :italic, h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05)
-        self.txtb(quote[:quote_terms].gsub(/\ATERMS:\s+/, ''), 0.25, y - height_required + 0.625, 4, 0.25, h_align: :left, h_pad: 0.1, size: 9, style: :bold)
-        self.txtb(quote[:quote_fob], 0.25, y - height_required + 0.25, 4, 0.25, h_align: :left, h_pad: 0.1, size: 9, style: :bold)
+        self.txtb("Terms:", 0.25, y - height_required + 0.75 + confirmation_offset, 4, 0.375, line_color: '000000', size: 8, style: :italic, h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05)
+        self.txtb("FOB:", 0.25, y - height_required + 0.375 + confirmation_offset, 4, 0.375, line_color: '000000', size: 8, style: :italic, h_align: :left, v_align: :top, h_pad: 0.05, v_pad: 0.05)
+        self.txtb(quote[:quote_terms].gsub(/\ATERMS:\s+/, ''), 0.25, y - height_required + 0.625 + confirmation_offset, 4, 0.25, h_align: :left, h_pad: 0.1, size: 9, style: :bold)
+        self.txtb(quote[:quote_fob], 0.25, y - height_required + 0.25 + confirmation_offset, 4, 0.25, h_align: :left, h_pad: 0.1, size: 9, style: :bold)
 
         # Draw quoted by name and signature.
+        offset = 0.75 + (effective_date.nil? ? 0 : 0.375)
         self.txtb("Quoted By:",
                   4.25,
-                  y - height_required + 0.75,
+                  y - height_required + offset + confirmation_offset,
                   4,
-                  0.75,
+                  offset,
                   line_color: '000000',
                   size: 8,
                   style: :italic,
@@ -220,9 +249,12 @@ class Quote < VarlandPdf
                   v_align: :top,
                   h_pad: 0.05,
                   v_pad: 0.05)
-        self.hline(4.35, y - height_required + 0.25, 3.8, line_width: 0.001)
-        self.signature(quote[:quoted_by].gsub(/\s/, '_').downcase.to_sym, 4.35, y - height_required + 0.75, 3.8, 0.5, h_align: :left)
-        self.txtb(quote[:quoted_by], 4.35, y - height_required + 0.25, 3.8, 0.25, v_align: :top, v_pad: 0.05, h_align: :left, size: 9, style: :bold)
+        self.hline(4.35, y - height_required + 0.25 + confirmation_offset, 3.8, line_width: 0.001)
+        self.signature(quote[:quoted_by].gsub(/\s/, '_').downcase.to_sym, 4.35, y - height_required + offset + confirmation_offset, 3.8, offset - 0.25, h_align: :left)
+        self.txtb(quote[:quoted_by].namecase, 4.35, y - height_required + 0.25 + confirmation_offset, 3.8, 0.25, v_align: :top, v_pad: 0.05, h_align: :left, size: 9, style: :bold)
+
+        # Draw confirming box if necessary.
+        self.txtb("***** CONFIRMING *****", 0.25, y - height_required + 0.25, 8, 0.25, size: 9, style: :bold, line_color: "000000", fill_color: "e3e3e3", transform: :double_space_between) if quote[:confirming]
 
         # Move down page and decrease space remaining.
         y -= (height_required + 0.25)

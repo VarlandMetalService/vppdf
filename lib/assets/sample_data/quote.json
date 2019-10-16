@@ -118,7 +118,7 @@
       "effective_date": null,
       "requested_by": "RICK M. CARNAHAN",
       "request_number": "",
-      "confirming": "",
+      "confirming": false,
       "printed": true,
       "phone": 8103489250,
       "fax": 9898469697,
@@ -132,6 +132,7 @@
       "omit_print_after_line": 9,
       "print_id": "",
       "copy_number": 421,
+      "text_remarks": [],
       "quote_terms": "TERMS:  1% 10 DAYS, NET 30",
       "quote_fob": "ABOVE PRICES ARE FOB VARLAND PLANT",
       "quote_remarks": []
@@ -455,7 +456,7 @@
       "effective_date": null,
       "requested_by": "RICK M. CARNAHAN",
       "request_number": "",
-      "confirming": "",
+      "confirming": false,
       "printed": true,
       "phone": 8103489250,
       "fax": 9898469697,
@@ -469,6 +470,7 @@
       "omit_print_after_line": 9,
       "print_id": "",
       "copy_number": 419,
+      "text_remarks": [],
       "quote_terms": "TERMS:  1% 10 DAYS, NET 30",
       "quote_fob": "ABOVE PRICES ARE FOB VARLAND PLANT",
       "quote_remarks": []

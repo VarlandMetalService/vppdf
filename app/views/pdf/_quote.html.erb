@@ -1,0 +1,27 @@
+<h1>Quote</h1>
+
+<div class="row">
+  <div class="col-12 col-lg-9">
+    <p class="border shadow-sm rounded-sm bg-light p-3">
+      URL: <code class="font-weight-bold">/quote?start_quote=123456<span title="Optional" class="text-info">&amp;end_quote=123456</span></code>
+      <br />
+      <small class="text-muted font-italic">For automatic printing, additional query string parameters are required: <code>user</code>, <code>ip_address</code>, and <code>autoprint</code>.</small>
+    </p>
+  </div>
+  <div class="col-12 col-lg-3">
+    <form class="bg-light rounded-sm shadow-sm border p-3" method="get" action="<%= quote_url %>" target="_blank">
+      <div class="form-group">
+        <label for="start_quote">Starting Quote #:</label>
+        <input name="start_quote" type="number" class="form-control" id="start_quote" required>
+      </div>
+      <div class="form-group">
+        <label for="end_quote">Ending Quote #:</label>
+        <input name="end_quote" type="number" class="form-control" id="end_quote">
+      </div>
+      <div class="d-flex flex-row justify-content-between align-items-center">
+        <button class="btn btn-primary btn-sm" type="Submit">Generate</button>
+        <a class="btn btn-sm btn-secondary" href="<%= quote_url %>" target="_blank">Sample</a>
+      </div>
+    </form>
+  </div>
+</div>

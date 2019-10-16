@@ -485,6 +485,10 @@ class VarlandPdf < Prawn::Document
       text = text.titleize
     when :capitalize
       text.capitalize!
+    when :space_between
+      text.gsub!(/(.{1})/, '\1 ')
+    when :double_space_between
+      text.gsub!(/(.{1})/, '\1  ').strip!
     end
 
     # Draw text box.
@@ -701,16 +705,17 @@ class VarlandPdf < Prawn::Document
 
   # Gets name for signature symbol.
   def get_signature_name(person)
-    case person
-    when :john_mcguire
-      return "John McGuire"
-    when :ted_mckeehan
-      return "Ted McKeehan"
-    when :casey_mckeehan
-      return "Casey McKeehan"
-    else
-      return person.to_s.gsub('_', ' ').titleize
-    end
+    return person.to_s.gsub('_', ' ').namecase
+    # case person
+    # when :john_mcguire
+    #   return "John McGuire"
+    # when :ted_mckeehan
+    #   return "Ted McKeehan"
+    # when :casey_mckeehan
+    #   return "Casey McKeehan"
+    # else
+    #   return person.to_s.gsub('_', ' ').titleize
+    # end
   end
 
   # Gets default size multiplier for signature font.
