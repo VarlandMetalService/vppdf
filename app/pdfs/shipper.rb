@@ -132,8 +132,8 @@ class Shipper < VarlandPdf
         ship_date = Time.iso8601(@data[:orders][0][:ship_date]).strftime("%m/%d/%y")
     
         # Print sold to and ship to.
-        self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip]}", 0.5, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
-        self.txtb("#{@data[:ship_to][:name].join("\n")}\n#{@data[:ship_to][:address]}\n#{@data[:ship_to][:city]}, #{@data[:ship_to][:state]} #{@data[:ship_to][:zip]}", 5.75, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
+        self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.5, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
+        self.txtb("#{@data[:ship_to][:name].join("\n")}\n#{@data[:ship_to][:address]}\n#{@data[:ship_to][:city]}, #{@data[:ship_to][:state]} #{@data[:ship_to][:zip].to_s.rjust(5, '0')}", 5.75, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
     
         # Print shipper number.
         self.txtb(@data[:shipper], 9.75, 6.5, 1, 0.25, style: :bold, size: 16)
@@ -209,8 +209,8 @@ class Shipper < VarlandPdf
       entry_date = @order[:date_entered].blank? ? nil : Time.iso8601(@order[:date_entered]).strftime("%m/%d/%y")
   
       # Print sold to and ship to.
-      self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip]}", 0.5, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
-      self.txtb("#{@data[:ship_to][:name].join("\n")}\n#{@data[:ship_to][:address]}\n#{@data[:ship_to][:city]}, #{@data[:ship_to][:state]} #{@data[:ship_to][:zip]}", 5.75, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
+      self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.5, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
+      self.txtb("#{@data[:ship_to][:name].join("\n")}\n#{@data[:ship_to][:address]}\n#{@data[:ship_to][:city]}, #{@data[:ship_to][:state]} #{@data[:ship_to][:zip].to_s.rjust(5, '0')}", 5.75, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
   
       # Print shipper number.
       self.txtb(@data[:shipper], 9.75, 6.5, 1, 0.25, style: :bold, size: 16)

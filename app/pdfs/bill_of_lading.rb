@@ -75,7 +75,7 @@ class BillOfLading < VarlandPdf
       end
       self.txtb(@data[:ship_to][:address], 1.006, 8 + 10.pt, 4, 10.pt, size: 10, style: :bold, h_align: :left, font: font, color: color)
       self.txtb(@data[:ship_to][:city_state], 1.006, 7.825 + 10.pt, 4, 10.pt, size: 10, style: :bold, h_align: :left, font: font, color: color)
-      self.txtb(@data[:ship_to][:zip], 3.65, 7.825 + 10.pt, 4, 10.pt, size: 10, style: :bold, h_align: :left, font: font, color: color)
+      self.txtb(@data[:ship_to][:zip].to_s.rjust(5, '0'), 3.65, 7.825 + 10.pt, 4, 10.pt, size: 10, style: :bold, h_align: :left, font: font, color: color)
 
       # Ship from.
       self.txtb(@data[:initials], 7.65, 7.825 + 10.pt, 4, 10.pt, size: 10, style: :bold, h_align: :left, font: font, color: color)

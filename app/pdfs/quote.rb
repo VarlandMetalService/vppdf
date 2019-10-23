@@ -270,7 +270,7 @@ class Quote < VarlandPdf
       # Draw address.
       y = 9
       text = @first_quote[:requested_by].blank? ? "<b>" : "Attn: <b>#{@first_quote[:requested_by]}\n"
-      text << "#{@first_quote[:customer][:name].join("\n")}\n#{@first_quote[:customer][:address]}\n#{@first_quote[:customer][:city]}, #{@first_quote[:customer][:state]} #{@first_quote[:customer][:zip]}</b>"
+      text << "#{@first_quote[:customer][:name].join("\n")}\n#{@first_quote[:customer][:address]}\n#{@first_quote[:customer][:city]}, #{@first_quote[:customer][:state]} #{@first_quote[:customer][:zip].to_s.rjust(5, '0')}</b>"
       self.txtb(text,
                 0.25,
                 y,

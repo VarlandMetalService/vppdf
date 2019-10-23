@@ -281,10 +281,10 @@ class Invoice < VarlandPdf
 
       # Draw sold to, ship to, code and fax.
       text = @data[:customer][:our_customer_name].blank? ? "" : "#{@data[:customer][:our_customer_name]}\n"
-      text << "#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:street]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip]}"
+      text << "#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:street]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}"
       self.txtb(text, 0.25, 8.75, 4, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
       unless @data[:shipping_address][:street].blank?
-        self.txtb("#{@data[:shipping_address][:name].join("\n")}\n#{@data[:shipping_address][:street]}\n#{@data[:shipping_address][:city]}, #{@data[:shipping_address][:state]} #{@data[:shipping_address][:zip]}", 4.25, 8.75, 2.75, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
+        self.txtb("#{@data[:shipping_address][:name].join("\n")}\n#{@data[:shipping_address][:street]}\n#{@data[:shipping_address][:city]}, #{@data[:shipping_address][:state]} #{@data[:shipping_address][:zip].to_s.rjust(5, '0')}", 4.25, 8.75, 2.75, 0.75, size: 9, h_align: :left, transform: :uppercase, v_align: :top, v_pad: 0.05)
       end
       text = @data[:customer][:code]
       text << (@data[:customer][:vendor_id].blank? ? "\n" : "\nVENDOR: #{@data[:customer][:vendor_id]}")
