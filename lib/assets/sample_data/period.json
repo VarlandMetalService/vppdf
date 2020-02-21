@@ -1,0 +1,201 @@
+{
+    "period_ending_date": "2020-02-22",
+    "employees": [
+        {
+            "employee_number": 40,
+            "name": "Terry Willis",
+            "error": false,
+            "total_hours": 8.0,
+            "first_shift_regular": 8.0,
+            "first_shift_overtime": 0,
+            "other_shift_regular": 0,
+            "other_shift_overtime": 0,
+            "shifts": [
+                {
+                    "total_hours": 8.0,
+                    "first_shift_hours": 8.0,
+                    "other_shift_hours": 0,
+                    "punches": [
+                        {
+                            "type": "start_work",
+                            "timestamp": "2020-02-20T07:00:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T18:07:12.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        },
+                        {
+                            "type": "end_work",
+                            "timestamp": "2020-02-20T15:00:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T18:07:30.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "employee_number": 73,
+            "name": "Bill Christopher",
+            "error": true,
+            "error_msg": "Employee not clocked out @ end of period."
+        },
+        {
+            "employee_number": 937,
+            "name": "Toby Varland",
+            "error": false,
+            "total_hours": 46.5,
+            "first_shift_regular": 33.0,
+            "first_shift_overtime": 3.0,
+            "other_shift_regular": 7.0,
+            "other_shift_overtime": 3.5,
+            "shifts": [
+                {
+                    "total_hours": 0,
+                    "first_shift_hours": 0,
+                    "other_shift_hours": 0,
+                    "punches": [
+                        {
+                            "type": "notes",
+                            "timestamp": "2020-02-16T06:00:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T18:15:51.000-05:00",
+                            "reason": "Add Notes",
+                            "notes": "Toby worked on Sunday with IBM consultant. Will be credited with a day of vacation time."
+                        }
+                    ]
+                },
+                {
+                    "total_hours": 6.75,
+                    "first_shift_hours": 6.75,
+                    "other_shift_hours": 0,
+                    "punches": [
+                        {
+                            "type": "start_work",
+                            "timestamp": "2020-02-16T07:45:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:51:55.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        },
+                        {
+                            "type": "end_work",
+                            "timestamp": "2020-02-16T14:30:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:52:25.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        }
+                    ]
+                },
+                {
+                    "total_hours": 13.0,
+                    "first_shift_hours": 8.0,
+                    "other_shift_hours": 5.0,
+                    "punches": [
+                        {
+                            "type": "start_work",
+                            "timestamp": "2020-02-17T05:40:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:53:13.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        },
+                        {
+                            "type": "end_work",
+                            "timestamp": "2020-02-17T18:52:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:53:30.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        }
+                    ]
+                },
+                {
+                    "total_hours": 9.5,
+                    "first_shift_hours": 8.0,
+                    "other_shift_hours": 1.5,
+                    "punches": [
+                        {
+                            "type": "start_work",
+                            "timestamp": "2020-02-18T06:45:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:53:53.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        },
+                        {
+                            "type": "end_work",
+                            "timestamp": "2020-02-18T16:15:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:54:05.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        }
+                    ]
+                },
+                {
+                    "total_hours": 6.75,
+                    "first_shift_hours": 6.25,
+                    "other_shift_hours": 0.5,
+                    "punches": [
+                        {
+                            "type": "start_work",
+                            "timestamp": "2020-02-19T08:35:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:54:25.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        },
+                        {
+                            "type": "end_work",
+                            "timestamp": "2020-02-19T15:35:00.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:54:38.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        }
+                    ]
+                },
+                {
+                    "total_hours": 10.5,
+                    "first_shift_hours": 7.0,
+                    "other_shift_hours": 3.5,
+                    "punches": [
+                        {
+                            "type": "start_work",
+                            "timestamp": "2020-02-20T07:50:58.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:55:09.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        },
+                        {
+                            "type": "end_work",
+                            "timestamp": "2020-02-20T18:33:44.000-05:00",
+                            "edited": true,
+                            "edited_by": "Toby Varland",
+                            "edited_at": "2020-02-20T16:57:05.000-05:00",
+                            "reason": "Time Clock Not Working",
+                            "notes": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

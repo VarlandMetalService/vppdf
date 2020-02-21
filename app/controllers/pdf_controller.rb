@@ -38,6 +38,10 @@ class PdfController < ApplicationController
     self.send_pdf(Bakesheet.new, 'Bakesheet')
   end
 
+  def timecards
+    self.send_pdf(Timecards.new(params[:period]), 'Timecards')
+  end
+
   def index
     render(layout: false)
   end
