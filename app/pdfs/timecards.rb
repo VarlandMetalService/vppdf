@@ -2,7 +2,7 @@
 class Timecards < VarlandPdf
   
   # Constructor.
-  def initialize(period = nil)
+  def initialize(period = nil, easter = false)
 
     # Call parent constructor.
     super()
@@ -12,6 +12,7 @@ class Timecards < VarlandPdf
       self.load_sample_data
     else
       @period = period
+      @easter = easter
       self.load_data
     end
     
@@ -38,6 +39,10 @@ class Timecards < VarlandPdf
 
     # Draw time card for each employee.
     @data[:employees].each do |e|
+
+      # Skip or show based on Easter Seals flag.
+      next if e[:employee_number] >= 1000 && !@easter
+      next if e[:employee_number] < 1000 && @easter
 
       # Start new page if necessary.
       if col == 3

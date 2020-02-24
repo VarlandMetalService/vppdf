@@ -39,7 +39,7 @@ class PdfController < ApplicationController
   end
 
   def timecards
-    self.send_pdf(Timecards.new(params[:period]), 'Timecards')
+    self.send_pdf(Timecards.new(params[:period], params[:easter]), 'Timecards')
   end
 
   def index
