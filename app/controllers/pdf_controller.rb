@@ -1,3 +1,5 @@
+require 'net/ftp'
+
 class PdfController < ApplicationController
 
   def signature_sampler
@@ -15,9 +17,9 @@ class PdfController < ApplicationController
   end
 
   def quote
-    quote = Quote.new(params[:start_quote], params[:end_quote])
-    desc = "Quote ##{params[:start_quote]}"
-    desc << "-#{params[:end_quote]}" unless params[:end_quote].blank?
+    quote = Quote.new(params[:quote])
+    desc = "Quote ##{params[:quote]}"
+    self.save_to_ftp(quote, params[:quote].to_s, "192.168.82.5", "admin", "Vms.1946!", "/PCDATA/Sales/QuotePDFs/")
     self.print_or_display(quote, desc)
   end
 
@@ -47,6 +49,15 @@ class PdfController < ApplicationController
   end
 
 protected
+
+  # Saves file to FTP server.
+  def save_to_ftp(file, name, server, user, pass, path)
+    Net::FTP.open(server, user, pass) do |ftp|
+      ftp.passive = true
+      ftp.chdir(path)
+      ftp.storbinary("STOR #{name}.pdf", StringIO.new(file.render), Net::FTP::DEFAULT_BLOCKSIZE)
+    end
+  end
 
   # Prints if autoprint parameter given, otherwise sends to screen.
   def print_or_display(file, description, options = {})

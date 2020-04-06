@@ -5,7 +5,7 @@ class Quote < VarlandPdf
   LETTERHEAD_FORMAT = :portrait
   
   # Constructor.
-  def initialize(start_quote = nil, end_quote = nil)
+  def initialize(quote_number = nil)
 
     # Call parent constructor.
     super()
@@ -16,16 +16,22 @@ class Quote < VarlandPdf
     @line_height = 0.14375
 
     # Load data.
-    if start_quote.blank?
+    if quote_number.blank?
       self.load_sample_data
     else
-      @start_quote = start_quote
-      @end_quote = (end_quote.blank? ? @start_quote : end_quote)
+      @quote_number = quote_number
       self.load_data
     end
 
+    # Initialize page numbers.
+    @first_page_number = 1
+    @current_page_number = 1
+
     # Reference first quote.
     @first_quote = @data[:quotes][0]
+    @current_customer = @first_quote[:customer][:code]
+    @current_number = @first_quote[:quote]
+    @printed_header = false
 
     # Draw format.
     self.draw_format
@@ -42,7 +48,7 @@ class Quote < VarlandPdf
 
   # Loads json data.
   def load_data
-    @data = self.load_json("http://as400railsapi.varland.com/v1/quote?start_quote=#{@start_quote}&end_quote=#{@end_quote}")
+    @data = self.load_json("http://as400railsapi.varland.com/v1/quote?quote=#{@quote_number}")
   end
 
   # Calculates lines required for part.
@@ -106,11 +112,67 @@ class Quote < VarlandPdf
 
   end
 
-  # Draws data.
-  def draw_data
+  # Draws header.
+  def draw_header
+
+    # Stop if already drew header.
+    return if @printed_header
+
+    # Set printed header flag.
+    @printed_header = true
 
     # Format dates.
     quote_date = Time.iso8601(@first_quote[:quote_date]).strftime("%m/%d/%y")
+
+    # Print header information on each page.
+    self.repeat([@first_page_number, @current_page_number]) do
+
+      # Draw address.
+      y = 9
+      text = @first_quote[:requested_by].blank? ? "<b>" : "Attn: <b>#{@first_quote[:requested_by]}\n"
+      text << "#{@first_quote[:customer][:name].join("\n")}\n#{@first_quote[:customer][:address]}\n#{@first_quote[:customer][:city]}, #{@first_quote[:customer][:state]} #{@first_quote[:customer][:zip].to_s.rjust(5, '0')}</b>"
+      self.txtb(text,
+                0.25,
+                y,
+                4,
+                0.75,
+                size: 9,
+                h_align: :left,
+                v_align: :top,
+                v_pad: 0.05)
+      text = "<b>#{@first_quote[:customer][:code]}</b>"
+      unless @first_quote[:phone] == 0 && @first_quote[:fax] == 0
+        text << "\n\n"
+        text << "Phone: <b>#{self.helpers.number_to_phone(@first_quote[:phone], area_code: true)}</b>\n" unless @first_quote[:phone] == 0
+        text << "Fax: <b>#{self.helpers.number_to_phone(@first_quote[:fax], area_code: true)}</b>" unless @first_quote[:fax] == 0
+      end
+      self.txtb(text,
+                4,
+                y,
+                3.25,
+                0.75,
+                size: 9,
+                h_align: :left,
+                v_align: :top,
+                v_pad: 0.05)
+
+      # Draw date.
+      self.txtb("Date: <b>#{quote_date}</b>",
+                6,
+                y,
+                2.25,
+                0.75,
+                size: 9,
+                h_align: :right,
+                v_align: :top,
+                v_pad: 0.05)
+
+    end
+
+  end
+
+  # Draws data.
+  def draw_data
 
     # Initialize printing.
     y = 8
@@ -118,6 +180,21 @@ class Quote < VarlandPdf
 
     # Print each quote.
     @data[:quotes].each_with_index do |quote, quote_index|
+
+      # If quote is for a new customer, move to new page and print headers in previous section.
+      if quote[:customer][:code] != @current_customer || (quote[:quote] != @current_number && quote[:page_control] == 'Y')
+        self.draw_header
+        self.start_new_page
+        @current_page_number += 1
+        self.draw_format
+        y = 8
+        height_remaining = y - 1.75
+        @first_page_number = @current_page_number
+        @first_quote = quote
+        @printed_header = false
+        @current_customer = quote[:customer][:code]
+        @current_number = quote[:quote]
+      end
 
       # Format dates.
       effective_date = quote[:effective_date].nil? ? nil : Time.iso8601(quote[:effective_date]).strftime("%m/%d/%y")
@@ -130,6 +207,7 @@ class Quote < VarlandPdf
         lines_required = self.calc_part_lines(part)
         if height_required > height_remaining
           self.start_new_page
+          @current_page_number += 1
           self.draw_format
           y = 8
           height_remaining = y - 1.75
@@ -137,7 +215,7 @@ class Quote < VarlandPdf
 
         # Draw quote number box.
         self.txtb("Quotation ##{quote[:quote]}", 0.25, y, 8, 0.35, fill_color: "e3e3e3", line_color: "000000", h_align: :left, h_pad: 0.1, style: :bold)
-        self.txtb("Your Request #: <b>#{quote[:request_number]}</b>", 1.5, y, 6.75, 0.35, h_align: :left) unless quote[:request_number].blank?
+        self.txtb("Your Request #: <b>#{quote[:request_number]}</b>", 1.75, y, 6.75, 0.35, h_align: :left) unless quote[:request_number].blank?
         self.txtb("Please refer to this number on all correspondence and orders", 0.25, y, 8, 0.35, size: 8, style: :italic, h_align: :right, h_pad: 0.1)
 
         # Draw table headers.
@@ -250,7 +328,13 @@ class Quote < VarlandPdf
                   h_pad: 0.05,
                   v_pad: 0.05)
         self.hline(4.35, y - height_required + 0.25 + confirmation_offset, 3.8, line_width: 0.001)
-        self.signature(quote[:quoted_by].gsub(/\s/, '_').downcase.to_sym, 4.35, y - height_required + offset + confirmation_offset, 3.8, offset - 0.25, h_align: :left)
+        sig_y = y - height_required + offset + confirmation_offset
+        sig_height = offset - 0.25
+        if sig_height > 0.5
+          sig_y -= (sig_height - 0.5)
+          sig_height = 0.5
+        end
+        self.signature(quote[:quoted_by].gsub(/\s/, '_').downcase.to_sym, 4.35, sig_y, 3.8, sig_height, h_align: :left)
         self.txtb(quote[:quoted_by].namecase, 4.35, y - height_required + 0.25 + confirmation_offset, 3.8, 0.25, v_align: :top, v_pad: 0.05, h_align: :left, size: 9, style: :bold)
 
         # Draw confirming box if necessary.
@@ -264,50 +348,8 @@ class Quote < VarlandPdf
 
     end
 
-    # Print header information on each page.
-    self.repeat(:all) do
-
-      # Draw address.
-      y = 9
-      text = @first_quote[:requested_by].blank? ? "<b>" : "Attn: <b>#{@first_quote[:requested_by]}\n"
-      text << "#{@first_quote[:customer][:name].join("\n")}\n#{@first_quote[:customer][:address]}\n#{@first_quote[:customer][:city]}, #{@first_quote[:customer][:state]} #{@first_quote[:customer][:zip].to_s.rjust(5, '0')}</b>"
-      self.txtb(text,
-                0.25,
-                y,
-                4,
-                0.75,
-                size: 9,
-                h_align: :left,
-                v_align: :top,
-                v_pad: 0.05)
-      text = "<b>#{@first_quote[:customer][:code]}</b>"
-      unless @first_quote[:phone] == 0 && @first_quote[:fax] == 0
-        text << "\n\n"
-        text << "Phone: <b>#{self.helpers.number_to_phone(@first_quote[:phone], area_code: true)}</b>\n" unless @first_quote[:phone] == 0
-        text << "Fax: <b>#{self.helpers.number_to_phone(@first_quote[:fax], area_code: true)}</b>" unless @first_quote[:fax] == 0
-      end
-      self.txtb(text,
-                4,
-                y,
-                3.25,
-                0.75,
-                size: 9,
-                h_align: :left,
-                v_align: :top,
-                v_pad: 0.05)
-
-      # Draw date.
-      self.txtb("Date: <b>#{quote_date}</b>",
-                6,
-                y,
-                2.25,
-                0.75,
-                size: 9,
-                h_align: :right,
-                v_align: :top,
-                v_pad: 0.05)
-
-    end
+    # Draw header.
+    self.draw_header
 
   end
 
@@ -315,7 +357,7 @@ class Quote < VarlandPdf
   def draw_format
 
     # Draw quote number.
-    self.txtb("QUOTATION",
+    self.txtb("QUOTATION ##{@first_quote[:quote]}",
               0.25,
               9.4,
               8,
