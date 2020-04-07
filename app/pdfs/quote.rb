@@ -125,7 +125,7 @@ class Quote < VarlandPdf
     quote_date = Time.iso8601(@first_quote[:quote_date]).strftime("%m/%d/%y")
 
     # Print header information on each page.
-    self.repeat([@first_page_number, @current_page_number]) do
+    self.repeat(@first_page_number..@current_page_number) do
 
       # Draw address.
       y = 9
@@ -176,7 +176,8 @@ class Quote < VarlandPdf
 
     # Initialize printing.
     y = 8
-    height_remaining = y - 1.75
+    footer_height = 1.5
+    height_remaining = y - footer_height
 
     # Print each quote.
     @data[:quotes].each_with_index do |quote, quote_index|
@@ -188,7 +189,7 @@ class Quote < VarlandPdf
         @current_page_number += 1
         self.draw_format
         y = 8
-        height_remaining = y - 1.75
+        height_remaining = y - footer_height
         @first_page_number = @current_page_number
         @first_quote = quote
         @printed_header = false
@@ -210,7 +211,7 @@ class Quote < VarlandPdf
           @current_page_number += 1
           self.draw_format
           y = 8
-          height_remaining = y - 1.75
+          height_remaining = y - footer_height
         end
 
         # Draw quote number box.
@@ -365,12 +366,23 @@ class Quote < VarlandPdf
               size: 24,
               style: :bold)
 
-    # Draw compliance policy.
-    self.txtb("CORPORATE COMPLIANCE POLICY: Varland Metal Service, Inc. certifies that its pollution abatement system is operated\nin compliance with U.S. EPA, state, and local regulations applicable to waste water discharge and sludge disposal.",
+    # Draw quote features.
+    self.txtb("All quotations from Varland Plating include plating certifications, PPAP documentation, and annual\nsalt spray validation when applicable. Our typical lead time is 5 business days in-house.",
               0.25,
-              0.75,
+              1.25,
               8,
               0.5,
+              size: 10,
+              style: :bold,
+              line_color: "000000",
+              fill_color: "e3e3e3")
+
+    # Draw compliance policy.
+    self.txtb("CORPORATE COMPLIANCE POLICY: Varland Plating Company certifies that its pollution abatement system is operated\nin compliance with U.S. EPA, state, and local regulations applicable to waste water discharge and sludge disposal.",
+              0.25,
+              0.5,
+              8,
+              0.25,
               size: 8)
 
   end
