@@ -23,13 +23,14 @@ class PdfController < ApplicationController
     self.print_or_display(quote, desc)
   end
 
+  def po
+    po = PurchaseOrder.new(params[:po])
+    self.print_or_display(po, "PO ##{params[:po]}")
+  end
+
   def invoice
     invoice = Invoice.new(params[:invoice])
     self.print_or_display(invoice, "Invoice ##{params[:invoice]}")
-  end
-
-  def purchase_order
-    self.send_pdf(PurchaseOrder.new, 'PurchaseOrder')
   end
 
   def sample

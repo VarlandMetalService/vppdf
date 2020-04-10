@@ -58,14 +58,32 @@ class VarlandPdf < Prawn::Document
 
     # Load default options.
     decimals = options.fetch(:decimals, 0)
+    min_decimals = options.fetch(:min_decimals, nil)
     delimiter = options.fetch(:delimiter, ",")
     strip_insignificant_zeros = options.fetch(:strip_insignificant_zeros, false)
 
     # Return formatted number.
-    return self.helpers.number_with_precision(number,
-                                              precision: decimals,
-                                              delimiter: delimiter,
-                                              strip_insignificant_zeros: strip_insignificant_zeros)
+    if decimals == :auto
+      return self.helpers.number_with_delimiter(number,
+                                                delimiter: delimiter)
+    else
+      if strip_insignificant_zeros && min_decimals
+        auto = self.helpers.number_with_precision(number,
+                                                  precision: decimals,
+                                                  delimiter: delimiter,
+                                                  strip_insignificant_zeros: true)
+        min = self.helpers.number_with_precision(number,
+                                                 precision: min_decimals,
+                                                 delimiter: delimiter,
+                                                 strip_insignificant_zeros: false)
+        return (min.length > auto.length ? min : auto)
+      else
+        return self.helpers.number_with_precision(number,
+                                                  precision: decimals,
+                                                  delimiter: delimiter,
+                                                  strip_insignificant_zeros: strip_insignificant_zeros)
+      end
+    end
 
   end
 
@@ -489,6 +507,8 @@ class VarlandPdf < Prawn::Document
       text.gsub!(/(.{1})/, '\1 ')
     when :double_space_between
       text.gsub!(/(.{1})/, '\1  ').strip!
+    when :nbsp
+      text.gsub!(" ", " ") # Substitutes non-breaking space for regular space
     end
 
     # Draw text box.
@@ -663,7 +683,6 @@ class VarlandPdf < Prawn::Document
     name << "_inverse" if invert_colors
     name << "_mono" if mono
     path = Rails.root.join('lib', 'assets', 'logos', "#{name}.png")
-    puts path
 
     # Calculate ratio.
     logo_ratio = image_height.to_f / image_width.to_f
