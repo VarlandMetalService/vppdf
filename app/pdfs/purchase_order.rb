@@ -69,15 +69,15 @@ class PurchaseOrder < VarlandPdf
       # Print item.
       remarks_y = y
       self.txtb(item[:account], 0.25, y, 0.75, line_height, font: "SF Mono", size: 9)
-      self.txtb("#{self.format_number(item[:quantity], decimals: 2, strip_insignificant_zeros: true)} #{item[:unit]}", 5, y, 1, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
-      self.txtb("$#{self.format_number(item[:price], decimals: 4, strip_insignificant_zeros: true, min_decimals: 2)}/#{item[:unit]}", 6, y, 1.25, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
-      self.txtb("$", 7.25, y, 1, line_height, h_align: :left, h_pad: 0.1, font: "SF Mono", size: 9)
-      self.txtb(self.format_number(item[:total], decimals: 2), 7.25, y, 1, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
+      self.txtb("#{self.format_number(item[:quantity], decimals: 2, strip_insignificant_zeros: true)} #{item[:unit]}", 5, y, 1, line_height, h_align: :right, h_pad: 0.05, font: "SF Mono", size: 9)
+      self.txtb("$#{self.format_number(item[:price], decimals: 4, strip_insignificant_zeros: true, min_decimals: 2)}/#{item[:unit]}", 6, y, 1.25, line_height, h_align: :right, h_pad: 0.05, font: "SF Mono", size: 9)
+      self.txtb("$", 7.25, y, 1, line_height, h_align: :left, h_pad: 0.05, font: "SF Mono", size: 9)
+      self.txtb(self.format_number(item[:total], decimals: 2), 7.25, y, 1, line_height, h_align: :right, h_pad: 0.05, font: "SF Mono", size: 9)
       y -= line_height
 
       # Print description.
       item[:remarks].each do |r|
-        self.txtb(r, 1, remarks_y, 4, line_height, h_align: :left, h_pad: 0.1, font: "SF Mono", size: 9, transform: :nbsp)
+        self.txtb(r, 1, remarks_y, 4, line_height, h_align: :left, h_pad: 0.05, font: "SF Mono", size: 9, transform: :nbsp)
         remarks_y -= line_height
       end
 
@@ -120,12 +120,12 @@ class PurchaseOrder < VarlandPdf
       
       # Draw grand total.
       self.txtb("Grand Total", 6, 0.5, 1.25, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
-      self.txtb("$", 7.25, 0.5, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold, h_align: :left, h_pad: 0.1)
-      self.txtb(self.format_number(@data[:grand_total], decimals: 2), 7.25, 0.5, 1, 0.25, size: 10, style: :bold, h_align: :right, h_pad: 0.1)
+      self.txtb("$", 7.25, 0.5, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold, h_align: :left, h_pad: 0.05)
+      self.txtb(self.format_number(@data[:grand_total], decimals: 2), 7.25, 0.5, 1, 0.25, size: 10, style: :bold, h_align: :right, h_pad: 0.05)
       
       # Draw table.
       self.txtb("Account #", 0.25, 10, 0.75, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
-      self.txtb("Description", 1, 10, 4, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold, h_align: :left, h_pad: 0.1)
+      self.txtb("Description", 1, 10, 4, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold, h_align: :left, h_pad: 0.05)
       self.txtb("Quantity", 5, 10, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
       self.txtb("Unit Price", 6, 10, 1.25, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
       self.txtb("Total", 7.25, 10, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
