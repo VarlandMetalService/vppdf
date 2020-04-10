@@ -1,11 +1,11 @@
 # Class for printing purchase order from System i.
-class PurchaseOrder < VarlandPdf
+class PurchaseOrderPortrait < VarlandPdf
 
   # Landscape orientation.
   PAGE_ORIENTATION = :portrait
 
   # Use letterhead.
-  # LETTERHEAD_FORMAT = :portrait_mono
+  LETTERHEAD_FORMAT = :portrait_mono
   
   # Constructor.
   def initialize(po_number)
@@ -23,10 +23,10 @@ class PurchaseOrder < VarlandPdf
     # Number pages.
     if self.page_count > 1
       string = "Page <page> of <total>"
-      options = {at: [0.25.in, 0.5.in],
+      options = {at: [5.75.in, 8.in],
                 width: 2.5.in,
                 height: 0.25.in,
-                align: :left,
+                align: :right,
                 size: 8,
                 start_count_at: 1,
                 valign: :center,
@@ -52,8 +52,8 @@ class PurchaseOrder < VarlandPdf
     line_height = 0.2
 
     # Set vertical position.
-    y = 9.75
-    lines_remaining = 9.25 / line_height
+    y = 7.5
+    lines_remaining = 7 / line_height
 
     # Print each item.
     @data[:items].each do |item|
@@ -62,8 +62,8 @@ class PurchaseOrder < VarlandPdf
       lines = self.calc_item_lines(item)
       if lines > lines_remaining
         self.start_new_page
-        y = 9.75
-        lines_remaining = 9.25 / line_height
+        y = 7.5
+        lines_remaining = 7 / line_height
       end
 
       # Print item.
@@ -95,28 +95,52 @@ class PurchaseOrder < VarlandPdf
     # Print header and footer on all pages.
     self.repeat(:all) do
 
-      # Draw logo.
-      self.logo(0.25, 10.75, 0.5, 0.5, variant: :mark, mono: true)
-
-      # Draw purchase order number.
-      self.txtb("PO ##{@data[:purchase_order]} <font size=\"16\">#{@data[:vendor][:code]}</font>",
-                0.8,
-                10.75,
-                7.25,
-                0.5,
+      # Draw quote number.
+      self.txtb("PO ##{@data[:purchase_order]}",
+                0.25,
+                9.4,
+                8,
+                0.25,
                 size: 24,
-                style: :bold,
-                h_align: :left)
-      
-      # Draw header information.
-      self.txtb("By", 4.25, 10.75, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("FOB", 5.25, 10.75, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("Ordered", 6.25, 10.75, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("Delivery", 7.25, 10.75, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb(@data[:approved_by], 4.25, 10.5, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
-      self.txtb(@data[:fob], 5.25, 10.5, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
-      self.txtb(Time.iso8601(@data[:order_date]).strftime("%m/%d/%y"), 6.25, 10.5, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
-      self.txtb(Time.iso8601(@data[:due_date]).strftime("%m/%d/%y"), 7.25, 10.5, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
+                style: :bold)
+
+      # Draw vendor information.
+      self.txtb("Purchased From:\n<b>#{@data[:vendor][:code]}\n#{@data[:vendor][:name].join("\n")}\n#{@data[:vendor][:address]}\n#{@data[:vendor][:city]}, #{@data[:vendor][:state]} #{@data[:vendor][:zip]}</b>",
+                0.25,
+                9,
+                3,
+                1,
+                size: 10,
+                h_align: :left,
+                v_align: :top,
+                v_pad: 0.05)
+
+      # Draw approval information.
+      self.txtb("Purchased/Approved By:\n<b>#{@data[:approved_by]}</b>",
+                3.25,
+                9,
+                3,
+                1,
+                size: 10,
+                h_align: :left,
+                v_align: :top,
+                v_pad: 0.05)
+
+      # Draw order and delivery information.
+      self.txtb("Order Date: <b>#{Time.iso8601(@data[:order_date]).strftime("%m/%d/%y")}</b>\nDelivery Date: <b>#{Time.iso8601(@data[:due_date]).strftime("%m/%d/%y")}</b>\n\nFOB: <b>#{@data[:fob]}</b>",
+                6.25,
+                9,
+                2,
+                1,
+                size: 10,
+                h_align: :left,
+                v_align: :top,
+                v_pad: 0.05)
+
+      # Draw confirmation box if necessary.
+      if @data[:confirming]
+        self.txtb("CONFIRMATION – DO NOT DUPLICATE", 0.25, 0.5, 5.75, 0.25, line_color: "000000", fill_color: "000000", color: "ffffff", size: 10, style: :bold)
+      end
       
       # Draw grand total.
       self.txtb("Grand Total", 6, 0.5, 1.25, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
@@ -124,16 +148,16 @@ class PurchaseOrder < VarlandPdf
       self.txtb(self.format_number(@data[:grand_total], decimals: 2), 7.25, 0.5, 1, 0.25, size: 10, style: :bold, h_align: :right, h_pad: 0.1)
       
       # Draw table.
-      self.txtb("Account #", 0.25, 10, 0.75, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
-      self.txtb("Description", 1, 10, 4, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold, h_align: :left, h_pad: 0.1)
-      self.txtb("Quantity", 5, 10, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
-      self.txtb("Unit Price", 6, 10, 1.25, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
-      self.txtb("Total", 7.25, 10, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
-      self.rect(0.25, 9.75, 0.75, 9.25)
-      self.rect(1, 9.75, 4, 9.25)
-      self.rect(5, 9.75, 1, 9.25)
-      self.rect(6, 9.75, 1.25, 9.25)
-      self.rect(7.25, 9.75, 1, 9.25)
+      self.txtb("Account #", 0.25, 7.75, 0.75, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
+      self.txtb("Description", 1, 7.75, 4, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold, h_align: :left, h_pad: 0.1)
+      self.txtb("Quantity", 5, 7.75, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
+      self.txtb("Unit Price", 6, 7.75, 1.25, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
+      self.txtb("Total", 7.25, 7.75, 1, 0.25, line_color: "000000", fill_color: "e3e3e3", size: 10, style: :bold)
+      self.rect(0.25, 7.5, 0.75, 7)
+      self.rect(1, 7.5, 4, 7)
+      self.rect(5, 7.5, 1, 7)
+      self.rect(6, 7.5, 1.25, 7)
+      self.rect(7.25, 7.5, 1, 7)
 
     end
 
