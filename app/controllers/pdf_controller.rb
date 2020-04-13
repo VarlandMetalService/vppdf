@@ -28,6 +28,26 @@ class PdfController < ApplicationController
     self.print_or_display(po, "PO ##{params[:po]}")
   end
 
+  def inventory_worksheet
+    pdf = InventoryWorksheet.new(params[:account])
+    self.print_or_display(pdf, "Inventory Worksheet")
+  end
+
+  def inventory_edit_report
+    pdf = InventoryEditReport.new(params[:account])
+    self.print_or_display(pdf, "Inventory Edit Report")
+  end
+
+  def inventory_single_cost_center_variation_report
+    pdf = InventorySingleCostCenterVariationReport.new(params[:account])
+    self.print_or_display(pdf, "Inventory Single Cost Center Variation Report")
+  end
+
+  def inventory_multiple_cost_center_variation_report
+    pdf = InventoryMultipleCostCenterVariationReport.new(params[:account])
+    self.print_or_display(pdf, "Inventory Multiple Cost Center Variation Report")
+  end
+
   def invoice
     invoice = Invoice.new(params[:invoice])
     self.print_or_display(invoice, "Invoice ##{params[:invoice]}")

@@ -37,7 +37,8 @@ class DataTable
                 :rows_h_align,
                 :rows_v_align,
                 :rows_format,
-                :row_bg_colors
+                :row_bg_colors,
+                :last_row_as_footer
 
   # Constructor. Initializes object.
   def initialize(options = {})
@@ -80,6 +81,7 @@ class DataTable
     @rows_v_align = options.fetch(:rows_v_align, nil)
     @rows_format = options.fetch(:rows_format, nil)
     @row_bg_colors = options.fetch(:row_bg_colors, nil)
+    @last_row_as_footer = options.fetch(:last_row_as_footer, false)
 
   end
 
@@ -110,7 +112,8 @@ class DataTable
       end
 
       # Draw row.
-      self.draw_row(pdf, row, row_y, row_index)
+      footer = @last_row_as_footer && (index == @rows.length - 1)
+      self.draw_row(pdf, row, row_y, row_index, footer)
       
       # Adjust y position for next row.
       row_y -= @row_height
@@ -160,51 +163,66 @@ class DataTable
   protected
 
     # Draws single data row.
-    def draw_row(pdf, row, y, index)
+    def draw_row(pdf, row, y, index, footer)
 
       # Shade background if necessary.
-      unless @row_bg_colors.blank?
-        bg_index = index % @row_bg_colors.length
+      if footer
         pdf.rect(@x,
                  y,
                  @column_widths.sum,
                  @row_height,
-                 fill_color: @row_bg_colors[bg_index],
+                 fill_color: @header_bg_color,
                  line_color: nil)
+      else
+        unless @row_bg_colors.blank?
+          bg_index = index % @row_bg_colors.length
+          pdf.rect(@x,
+                   y,
+                   @column_widths.sum,
+                   @row_height,
+                   fill_color: @row_bg_colors[bg_index],
+                   line_color: nil)
+        end
       end
       
       # Draw lines.
-      unless @data_line_width.blank? || @data_line_width == 0
+      line_width = @data_line_width
+      hline_color = @data_hline_color
+      vline_color = @data_vline_color
+      line_width = @header_line_width if footer
+      hline_color = @header_hline_color if footer
+      vline_color = @header_vline_color if footer
+      unless line_width.blank? || line_width == 0
 
         # Draw horizontal lines above & below header.
-        unless @data_hline_color.blank?
+        unless hline_color.blank?
           pdf.hline(@x,
                     y,
                     @column_widths.sum,
-                    line_color: @data_hline_color,
-                    line_width: @data_line_width)
+                    line_color: hline_color,
+                    line_width: line_width)
           pdf.hline(@x,
                     y - @row_height,
                     @column_widths.sum,
-                    line_color: @data_hline_color,
-                    line_width: @data_line_width)
+                    line_color: hline_color,
+                    line_width: line_width)
         end
 
         # Draw vertical lines.
-        unless @data_vline_color.blank?
+        unless vline_color.blank?
           pdf.vline(@x,
                     y,
                     @row_height,
-                    line_color: @data_vline_color,
-                    line_width: @data_line_width)
+                    line_color: vline_color,
+                    line_width: line_width)
           column_x = @x
           @column_widths.each do |w|
             column_x += w
             pdf.vline(column_x,
                       y,
                       @row_height,
-                      line_color: @data_vline_color,
-                      line_width: @data_line_width)
+                      line_color: vline_color,
+                      line_width: line_width)
           end
         end
 
@@ -223,9 +241,9 @@ class DataTable
                  @column_widths[index] - 2 * @cell_h_buffer,
                  @row_height - 2 * @cell_v_buffer,
                  font: @data_font,
-                 style: @data_font_style,
+                 style: footer ? @header_font_style : @data_font_style,
                  size: @data_font_size,
-                 color: @data_font_color,
+                 color: footer ? @header_font_color : @data_font_color,
                  h_align: h_align,
                  v_align: v_align)
         column_x += @column_widths[index]

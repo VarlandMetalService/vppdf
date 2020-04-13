@@ -61,11 +61,12 @@ class VarlandPdf < Prawn::Document
     min_decimals = options.fetch(:min_decimals, nil)
     delimiter = options.fetch(:delimiter, ",")
     strip_insignificant_zeros = options.fetch(:strip_insignificant_zeros, false)
+    negative_color = options.fetch(:negative_color, nil)
 
     # Return formatted number.
     if decimals == :auto
-      return self.helpers.number_with_delimiter(number,
-                                                delimiter: delimiter)
+      value = self.helpers.number_with_delimiter(number,
+                                                 delimiter: delimiter)
     else
       if strip_insignificant_zeros && min_decimals
         auto = self.helpers.number_with_precision(number,
@@ -76,13 +77,20 @@ class VarlandPdf < Prawn::Document
                                                  precision: min_decimals,
                                                  delimiter: delimiter,
                                                  strip_insignificant_zeros: false)
-        return (min.length > auto.length ? min : auto)
+        value = (min.length > auto.length ? min : auto)
       else
-        return self.helpers.number_with_precision(number,
-                                                  precision: decimals,
-                                                  delimiter: delimiter,
-                                                  strip_insignificant_zeros: strip_insignificant_zeros)
+        value = self.helpers.number_with_precision(number,
+                                                   precision: decimals,
+                                                   delimiter: delimiter,
+                                                   strip_insignificant_zeros: strip_insignificant_zeros)
       end
+    end
+
+    # If formatting negative number as color, add formatting.
+    if negative_color && number < 0
+      return "<color rgb=\"#{negative_color}\">#{value}</color>"
+    else
+      return value
     end
 
   end

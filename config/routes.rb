@@ -13,5 +13,9 @@ Rails.application.routes.draw do
   match "/quote" => "pdf#quote", via: [:post, :get]
   match "/po" => "pdf#po", via: [:post, :get]
   match "/timecards" => "pdf#timecards", via: [:post, :get]
+  match "/inventory_worksheet" => "pdf#inventory_worksheet", via: [:post, :get]
+  match "/inventory_edit_report" => "pdf#inventory_edit_report", via: [:post, :get]
+  match "/inventory_single_cost_center_variation_report" => "pdf#inventory_single_cost_center_variation_report", via: [:post, :get]
+  match "/inventory_multiple_cost_center_variation_report" => "pdf#inventory_multiple_cost_center_variation_report", via: [:post, :get]
 
 end
