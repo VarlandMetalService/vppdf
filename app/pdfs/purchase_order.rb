@@ -39,7 +39,7 @@ class PurchaseOrder < VarlandPdf
   end
 
   def calc_item_lines(item)
-    return [1, item[:remarks].length].max
+    return [2, item[:remarks].length].max
   end
 
   # Draw data.
@@ -76,6 +76,8 @@ class PurchaseOrder < VarlandPdf
       self.txtb("$", 7.25, y, 1, line_height, h_align: :left, h_pad: 0.1, font: "SF Mono", size: 9)
       self.txtb(self.format_number(item[:total], decimals: 2), 7.25, y, 1, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
       y -= line_height
+      self.txtb(item[:account_tax_exempt] ? "TAX EXEMPT" : "TAXABLE", 0.25, y, 0.75, line_height, font: "SF Mono", size: 8, h_pad: 0.05)
+      y -= line_height
 
       # Print description.
       item[:remarks].each do |r|
@@ -101,28 +103,40 @@ class PurchaseOrder < VarlandPdf
       self.logo(0.25, 10.75, 4, 1.25, variant: :stacked, mono: true, h_align: :left)
 
       # Draw PO number.
-      self.txtb("PO ##{@data[:purchase_order]}",
+      self.txtb("PURCHASE ORDER",
+                4.25,
+                10.75,
+                4,
+                0.5,
+                size: 20,
+                style: :bold,
+                fill_color: '000000',
+                color: 'ffffff',
+                line_color: '000000',
+                h_pad: 0.05,
+                h_align: :left)
+      self.txtb(@data[:purchase_order],
                 4.25,
                 10.75,
                 4,
                 0.5,
                 size: 24,
                 style: :bold,
-                fill_color: '000000',
                 color: 'ffffff',
-                line_color: '000000')
+                h_pad: 0.05,
+                h_align: :right)
 
       # Draw PO details.
       self.txtb("Vendor", 4.25, 10.25, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("By", 4.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("FOB", 5.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("Ordered", 6.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("Delivery", 7.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("#{@data[:vendor][:code]} – #{@data[:vendor][:name][0]}", 5.25, 10.25, 3, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase, h_pad: 0.1)
-      self.txtb(@data[:approved_by], 4.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase, h_pad: 0.1)
-      self.txtb(@data[:fob], 5.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
-      self.txtb(Time.iso8601(@data[:order_date]).strftime("%m/%d/%y"), 6.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
-      self.txtb(Time.iso8601(@data[:due_date]).strftime("%m/%d/%y"), 7.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
+      self.txtb("Ordered By\nApproved By", 7.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase, v_pad: 0.025)
+      self.txtb("FOB", 6.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase, v_pad: 0.025)
+      self.txtb("Order\nDate", 4.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase, v_pad: 0.025)
+      self.txtb("Delivery\nDate", 5.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase, v_pad: 0.025)
+      self.txtb("<b>#{@data[:vendor][:code]}</b> <font size=\"8\">#{@data[:vendor][:name][0]}</font>", 5.25, 10.25, 3, 0.25, line_color: "000000", size: 10, h_pad: 0.05, h_align: :left)
+      self.txtb(@data[:approved_by], 7.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, h_pad: 0.05)
+      self.txtb(@data[:fob], 6.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold)
+      self.txtb(Time.iso8601(@data[:order_date]).strftime("%m/%d/%y"), 4.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold)
+      self.txtb(Time.iso8601(@data[:due_date]).strftime("%m/%d/%y"), 5.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold)
 
       # Draw confirmation box if necessary.
       # if @data[:confirming]
