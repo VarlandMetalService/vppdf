@@ -132,7 +132,7 @@ class PurchaseOrder < VarlandPdf
       self.txtb("FOB", 6.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase, v_pad: 0.025)
       self.txtb("Order\nDate", 4.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase, v_pad: 0.025)
       self.txtb("Delivery\nDate", 5.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase, v_pad: 0.025)
-      self.txtb("<b>#{@data[:vendor][:code]}</b> <font size=\"8\">#{@data[:vendor][:name][0]}</font>", 5.25, 10.25, 3, 0.25, line_color: "000000", size: 10, h_pad: 0.05, h_align: :left)
+      self.txtb("<b>#{@data[:vendor][:code]}</b>   <font size=\"8\">#{@data[:vendor][:name][0]}</font>", 5.25, 10.25, 3, 0.25, line_color: "000000", size: 10, h_pad: 0.05, h_align: :left)
       self.txtb(@data[:approved_by], 7.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, h_pad: 0.05)
       self.txtb(@data[:fob], 6.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold)
       self.txtb(Time.iso8601(@data[:order_date]).strftime("%m/%d/%y"), 4.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold)
