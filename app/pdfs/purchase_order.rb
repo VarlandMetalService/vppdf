@@ -66,8 +66,13 @@ class PurchaseOrder < VarlandPdf
       # Print item.
       remarks_y = y
       self.txtb(item[:account], 0.25, y, 0.75, line_height, font: "SF Mono", size: 9)
-      self.txtb("#{self.format_number(item[:quantity], decimals: 2, strip_insignificant_zeros: true)} #{item[:unit]}", 5, y, 1, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
-      self.txtb("$#{self.format_number(item[:price], decimals: 4, strip_insignificant_zeros: true, min_decimals: 2)}/#{item[:unit]}", 6, y, 1.25, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
+      if item[:unit].blank?
+        self.txtb(self.format_number(item[:quantity], decimals: 2, strip_insignificant_zeros: true), 5, y, 1, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
+        self.txtb("$#{self.format_number(item[:price], decimals: 4, strip_insignificant_zeros: true, min_decimals: 2)}", 6, y, 1.25, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
+      else
+        self.txtb("#{self.format_number(item[:quantity], decimals: 2, strip_insignificant_zeros: true)} #{item[:unit]}", 5, y, 1, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
+        self.txtb("$#{self.format_number(item[:price], decimals: 4, strip_insignificant_zeros: true, min_decimals: 2)}/#{item[:unit]}", 6, y, 1.25, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
+      end
       self.txtb("$", 7.25, y, 1, line_height, h_align: :left, h_pad: 0.1, font: "SF Mono", size: 9)
       self.txtb(self.format_number(item[:total], decimals: 2), 7.25, y, 1, line_height, h_align: :right, h_pad: 0.1, font: "SF Mono", size: 9)
       y -= line_height
@@ -113,8 +118,8 @@ class PurchaseOrder < VarlandPdf
       self.txtb("FOB", 5.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
       self.txtb("Ordered", 6.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
       self.txtb("Delivery", 7.25, 10, 1, 0.25, fill_color: "e3e3e3", line_color: "000000", size: 8, style: :bold, transform: :uppercase)
-      self.txtb("#{@data[:vendor][:code]} – #{@data[:vendor][:name][0]}", 5.25, 10.25, 3, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
-      self.txtb(@data[:approved_by], 4.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
+      self.txtb("#{@data[:vendor][:code]} – #{@data[:vendor][:name][0]}", 5.25, 10.25, 3, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase, h_pad: 0.1)
+      self.txtb(@data[:approved_by], 4.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase, h_pad: 0.1)
       self.txtb(@data[:fob], 5.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
       self.txtb(Time.iso8601(@data[:order_date]).strftime("%m/%d/%y"), 6.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
       self.txtb(Time.iso8601(@data[:due_date]).strftime("%m/%d/%y"), 7.25, 9.75, 1, 0.25, line_color: "000000", size: 10, style: :bold, transform: :uppercase)
