@@ -176,7 +176,7 @@ class Quote < VarlandPdf
 
     # Initialize printing.
     y = 8
-    footer_height = 1.5
+    footer_height = 1.75
     height_remaining = y - footer_height
 
     # Print each quote.
@@ -369,20 +369,24 @@ class Quote < VarlandPdf
     # Draw quote features.
     self.txtb("All quotations from Varland Plating include plating certifications, PPAP documentation, and annual\nsalt spray validation when applicable. Our typical lead time is 5 business days in-house.",
               0.25,
-              1.25,
+              1.5,
               8,
               0.5,
               size: 10,
               style: :bold,
               line_color: "000000",
               fill_color: "e3e3e3")
+    
+    # Draw graphic.
+    self.standard_graphic('iso', 0.25, 0.75, 0.89, 0.5, h_align: :left)
+    self.standard_graphic('itar', 1.39, 0.75, 1.57, 0.5, h_align: :left)
 
     # Draw compliance policy.
-    self.txtb("CORPORATE COMPLIANCE POLICY: Varland Plating Company certifies that its pollution abatement system is operated\nin compliance with U.S. EPA, state, and local regulations applicable to waste water discharge and sludge disposal.",
-              0.25,
+    self.txtb("<b>CORPORATE COMPLIANCE POLICY</b>\nVarland Plating Company certifies that its pollution abatement system is operated in compliance\nwith U.S. EPA, state, and local regulations applicable to waste water discharge and sludge disposal.",
+              3.21,
+              0.75,
+              5.04,
               0.5,
-              8,
-              0.25,
               size: 8)
 
   end
