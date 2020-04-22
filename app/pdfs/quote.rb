@@ -65,8 +65,8 @@ class Quote < VarlandPdf
 
     # If price column requires more lines, store.
     price_lines = 1
-    price_lines += 2 if part[:total_minimum] != 0
-    price_lines += 2 if part[:total_setup] != 0
+    price_lines += 3 if part[:total_minimum] != 0
+    price_lines += 3 if part[:total_setup] != 0
 
     # Store higher count.
     max = [lines, price_lines].max
@@ -256,12 +256,14 @@ class Quote < VarlandPdf
         self.txtb("#{part[:quantity]} #{part[:quantity_unit]}", 0.25 + @widths[0..2].sum, y - 0.65, @widths[3], @line_height, size: 9)
         self.txtb(self.format_unit_price(part), 0.25 + @widths[0..3].sum, y - 0.65, @widths[4], @line_height, size: 9)
         unless part[:total_setup] == 0
-          self.txtb("SETUP / LOT", 0.25 + @widths[0..2].sum, y - 0.65 - lines * @line_height, @widths[3], @line_height, size: 9)
+          self.txtb("SETUP / LOT", 0.25 + @widths[0..3].sum, y - 0.65 - lines * @line_height, @widths[4], @line_height, size: 9)
+          lines += 1
           self.txtb("$#{self.format_number(part[:total_setup], decimals: 2)}", 0.25 + @widths[0..3].sum, y - 0.65 - lines * @line_height, @widths[4], @line_height, size: 9)
           lines += 2
         end
         unless part[:total_minimum] == 0
-          self.txtb("MINIMUM", 0.25 + @widths[0..2].sum, y - 0.65 - lines * @line_height, @widths[3], @line_height, size: 9)
+          self.txtb("MINIMUM", 0.25 + @widths[0..3].sum, y - 0.65 - lines * @line_height, @widths[4], @line_height, size: 9)
+          lines += 1
           self.txtb("$#{self.format_number(part[:total_minimum], decimals: 2)}", 0.25 + @widths[0..3].sum, y - 0.65 - lines * @line_height, @widths[4], @line_height, size: 9)
         end
 
