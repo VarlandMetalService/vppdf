@@ -28,7 +28,7 @@ class Timecards < VarlandPdf
 
   # Loads json data.
   def load_data
-    @data = self.load_json("http://timeclock.varland.com/periods/#{@period}.json")
+    @data = self.load_json("http://localhost:3000/periods/#{@period}.json")
   end
 
   # Prints data.
@@ -142,6 +142,13 @@ class Timecards < VarlandPdf
       y -= 0.25
       self.txtb("Occup. Injury", x, y, 1.05, 0.25, line_color: "000000", size: 8, style: :normal, h_align: :left, h_pad: 0.05)
       self.rect(x + 1.05, y, 0.5, 0.25)
+      self.txtb("Remote", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :center, h_pad: 0.05, fill_color: (e[:remote] > 0 ? "ffff00" : nil))
+      self.rect(x + 2.25, y, 0.5, 0.25, fill_color: (e[:remote] > 0 ? "ffff00" : nil))
+      self.rect(x + 2.75, y, 0.5, 0.25, fill_color: (e[:remote] > 0 ? "ffff00" : nil))
+      self.txtb(self.format_number(e[:remote], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: ((e[:remote]) > 0 ? "ff0000" : "000000"), fill_color: (e[:remote] > 0 ? "ffff00" : nil))
+      y-= 0.25
+      self.rect(x, y, 1.05, 0.25)
+      self.rect(x + 1.05, y, 0.5, 0.25)
       self.txtb("Total Paid Non-Work Hours", x + 1.7, y, 1.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :left, h_pad: 0.05)
       self.rect(x + 3.25, y, 0.5, 0.25)
       y -= 0.25
@@ -167,15 +174,15 @@ class Timecards < VarlandPdf
         notes = []
         e[:shifts].each do |s|
           shift_height = s[:punches].length * 0.25
-          self.rect(x, y, 2.25, shift_height)
+          self.rect(x, y, 2.25, shift_height, fill_color: (s[:remote_hours] > 0 ? "ffff00" : nil))
           if s[:punches].length == 1
             self.rect(x + 2.25, y, 0.5, shift_height)
             self.rect(x + 2.75, y, 0.5, shift_height)
             self.rect(x + 3.25, y, 0.5, shift_height)
           else
-            self.txtb(s[:first_shift_hours] == 0 ? "–" : self.format_number(s[:first_shift_hours], decimals: 2), x + 2.25, y, 0.5, shift_height, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, v_align: :center)
-            self.txtb(s[:other_shift_hours] == 0 ? "–" : self.format_number(s[:other_shift_hours], decimals: 2), x + 2.75, y, 0.5, shift_height, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, v_align: :center)
-            self.txtb(s[:total_hours] == 0 ? "–" : self.format_number(s[:total_hours], decimals: 2), x + 3.25, y, 0.5, shift_height, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, v_align: :center)
+            self.txtb(s[:first_shift_hours] == 0 ? "–" : self.format_number(s[:first_shift_hours], decimals: 2), x + 2.25, y, 0.5, shift_height, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, v_align: :center, fill_color: (s[:remote_hours] > 0 ? "ffff00" : nil))
+            self.txtb(s[:other_shift_hours] == 0 ? "–" : self.format_number(s[:other_shift_hours], decimals: 2), x + 2.75, y, 0.5, shift_height, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, v_align: :center, fill_color: (s[:remote_hours] > 0 ? "ffff00" : nil))
+            self.txtb(s[:total_hours] == 0 ? "–" : self.format_number(s[:total_hours], decimals: 2), x + 3.25, y, 0.5, shift_height, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, v_align: :center, fill_color: (s[:remote_hours] > 0 ? "ffff00" : nil))
           end
           s[:punches].each do |p|
             if p[:edited]
