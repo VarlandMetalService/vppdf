@@ -28,7 +28,7 @@ class Timecards < VarlandPdf
 
   # Loads json data.
   def load_data
-    @data = self.load_json("http://localhost:3000/periods/#{@period}.json")
+    @data = self.load_json("http://timeclock.varland.com/periods/#{@period}.json")
   end
 
   # Prints data.
