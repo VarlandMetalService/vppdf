@@ -145,7 +145,7 @@ class Timecards < VarlandPdf
       self.txtb("Remote", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :center, h_pad: 0.05, fill_color: ((e[:remote].present? && e[:remote] > 0) ? "ffff00" : nil))
       self.rect(x + 2.25, y, 0.5, 0.25, fill_color: ((e[:remote].present? && e[:remote] > 0) ? "ffff00" : nil))
       self.rect(x + 2.75, y, 0.5, 0.25, fill_color: ((e[:remote].present? && e[:remote] > 0) ? "ffff00" : nil))
-      self.txtb(self.format_number(e[:remote], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: ((e[:remote]) > 0 ? "ff0000" : "000000"), fill_color: ((e[:remote].present? && e[:remote] > 0) ? "ffff00" : nil))
+      self.txtb((e[:remote].present? ? self.format_number(e[:remote], decimals: 2) : ""), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: ((e[:remote]) > 0 ? "ff0000" : "000000"), fill_color: ((e[:remote].present? && e[:remote] > 0) ? "ffff00" : nil))
       y-= 0.25
       self.rect(x, y, 1.05, 0.25)
       self.rect(x + 1.05, y, 0.5, 0.25)
