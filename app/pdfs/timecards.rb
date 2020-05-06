@@ -116,7 +116,7 @@ class Timecards < VarlandPdf
       y -= 0.25
       self.txtb("L.T. Sick", x, y, 1.05, 0.25, line_color: "000000", size: 8, style: :normal, h_align: :left, h_pad: 0.05)
       self.rect(x + 1.05, y, 0.5, 0.25)
-      self.txtb("Reg", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :center, h_pad: 0.05)
+      self.txtb("Reg", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :left, h_pad: 0.05)
       if e[:error]
         self.rect(x + 2.25, y, 0.5, 0.25)
         self.rect(x + 2.75, y, 0.5, 0.25)
@@ -129,7 +129,7 @@ class Timecards < VarlandPdf
       y -= 0.25
       self.txtb("Funeral", x, y, 1.05, 0.25, line_color: "000000", size: 8, style: :normal, h_align: :left, h_pad: 0.05)
       self.rect(x + 1.05, y, 0.5, 0.25)
-      self.txtb("OT", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :center, h_pad: 0.05)
+      self.txtb("OT", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :left, h_pad: 0.05)
       if e[:error]
         self.rect(x + 2.25, y, 0.5, 0.25)
         self.rect(x + 2.75, y, 0.5, 0.25)
@@ -142,16 +142,12 @@ class Timecards < VarlandPdf
       y -= 0.25
       self.txtb("Occup. Injury", x, y, 1.05, 0.25, line_color: "000000", size: 8, style: :normal, h_align: :left, h_pad: 0.05)
       self.rect(x + 1.05, y, 0.5, 0.25)
-      if e[:remote].present? && e[:remote] > 0
-        self.txtb("Remote", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :center, h_pad: 0.05, fill_color: "ffff00")
-        self.rect(x + 2.25, y, 0.5, 0.25, fill_color: "ffff00")
-        self.rect(x + 2.75, y, 0.5, 0.25, fill_color: "ffff00")
-        self.txtb(self.format_number(e[:remote], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: "ff0000", fill_color: "ffff00")
-      else
-        self.txtb("Remote", x + 1.7, y, 0.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :center, h_pad: 0.05)
-        self.rect(x + 2.25, y, 0.5, 0.25)
-        self.rect(x + 2.75, y, 0.5, 0.25)
+      if e[:remote].blank? || e[:remote] == 0 || e[:error]
+        self.txtb("Remote", x + 1.7, y, 1.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :left, h_pad: 0.05)
         self.rect(x + 3.25, y, 0.5, 0.25)
+      else
+        self.txtb("Remote", x + 1.7, y, 1.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :left, h_pad: 0.05, fill_color: "ffff00")
+        self.txtb(self.format_number(e[:remote], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: "ff0000", fill_color: "ffff00")
       end
       y-= 0.25
       self.rect(x, y, 1.05, 0.25)
