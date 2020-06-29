@@ -45,7 +45,7 @@ class Timecards < VarlandPdf
       next if e[:employee_number] < 1000 && @easter
 
       # Start new page if necessary.
-      if col == 3
+      if col == 2
         self.start_new_page
         col = 1
       end
@@ -169,14 +169,15 @@ class Timecards < VarlandPdf
       y -= 0.25
 
       # Print employee shifts.
+      line_height = 0.2
       if e[:error]
-        y -= 0.25
-        notes_box_height = y - 0.25
+        y -= line_height
+        notes_box_height = y - line_height
         self.txtb(e[:error_msg], x, y, 3.75, notes_box_height, h_align: :left, v_align: :top, size: 8, style: :bold, color: "ff0000")
       else
         notes = []
         e[:shifts].each do |s|
-          shift_height = s[:punches].length * 0.25
+          shift_height = s[:punches].length * line_height
           self.rect(x, y, 2.25, shift_height, fill_color: (s[:remote_hours] > 0 ? "ffff00" : nil))
           if s[:punches].length == 1
             self.rect(x + 2.25, y, 0.5, shift_height)
@@ -189,19 +190,30 @@ class Timecards < VarlandPdf
           end
           s[:punches].each do |p|
             if p[:edited]
-              note = "<sup><strong><color rgb=\"ff0000\">#{notes.length + 1}</color></strong></sup> <strong>#{p[:edited_by]}: #{p[:reason]}</strong>"
+              notes << "<u><strong><color rgb=\"ff0000\"><font size=\"10\">NOTES</font></color></strong></u>" if notes.length == 0
+              note = "<sup><strong><color rgb=\"ff0000\">#{notes.length}</color></strong></sup> <strong>#{p[:edited_by]}: #{p[:reason]}</strong>"
               note += "<br>#{p[:notes]}" unless p[:notes].blank?
               notes << note
-              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize} <sup><strong><color rgb=\"ff0000\">#{notes.length}</color></strong></sup>", x, y, 2.25, 0.25, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
+              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize} <sup><strong><color rgb=\"ff0000\">#{notes.length - 1}</color></strong></sup>", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
             else
-              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize}", x, y, 2.25, 0.25, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
+              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize}", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
             end
-            y -= 0.25
+            y -= line_height
           end
         end
-        y -= 0.25
+
+        # Set x and y coordinates for notes box.
+        x = ((col) * 4.25) + 0.25
+        y = 10.75
+
+        # Draw notes.
+        if notes.length == 0
+          notes << "<u><strong><font size=\"10\">NOTES</font></strong></u>"
+          notes << "<color rgb=\"555555\"><i>No notes entered.</i></color>"
+        end
         notes_box_height = y - 0.25
         self.txtb(notes.join('<br><br>'), x, y, 3.75, notes_box_height, h_align: :left, v_align: :top, size: 8)
+
       end
 
       # Move to next column for next employee.
