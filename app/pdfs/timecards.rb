@@ -135,9 +135,9 @@ class Timecards < VarlandPdf
         self.rect(x + 2.75, y, 0.5, 0.25)
         self.rect(x + 3.25, y, 0.5, 0.25)
       else
-        self.txtb(self.format_number(e[:first_shift_overtime], decimals: 2), x + 2.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: (e[:first_shift_overtime] > 0 ? "ff0000" : "000000"))
-        self.txtb(self.format_number(e[:other_shift_overtime], decimals: 2), x + 2.75, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: (e[:other_shift_overtime] > 0 ? "ff0000" : "000000"))
-        self.txtb(self.format_number(e[:first_shift_overtime] + e[:other_shift_overtime], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: ((e[:first_shift_overtime] + e[:other_shift_overtime]) > 0 ? "ff0000" : "000000"))
+        self.txtb(self.format_number(e[:first_shift_overtime], decimals: 2), x + 2.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: (e[:first_shift_overtime] > 0 ? "000000" : "000000"))
+        self.txtb(self.format_number(e[:other_shift_overtime], decimals: 2), x + 2.75, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: (e[:other_shift_overtime] > 0 ? "000000" : "000000"))
+        self.txtb(self.format_number(e[:first_shift_overtime] + e[:other_shift_overtime], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: ((e[:first_shift_overtime] + e[:other_shift_overtime]) > 0 ? "000000" : "000000"))
       end
       y -= 0.25
       self.txtb("Occup. Injury", x, y, 1.05, 0.25, line_color: "000000", size: 8, style: :normal, h_align: :left, h_pad: 0.05)
@@ -147,7 +147,7 @@ class Timecards < VarlandPdf
         self.rect(x + 3.25, y, 0.5, 0.25)
       else
         self.txtb("Remote", x + 1.7, y, 1.55, 0.25, line_color: "000000", size: 8, style: :bold, h_align: :left, h_pad: 0.05, fill_color: "ffff00")
-        self.txtb(self.format_number(e[:remote], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: "ff0000", fill_color: "ffff00")
+        self.txtb(self.format_number(e[:remote], decimals: 2), x + 3.25, y, 0.5, 0.25, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, color: "000000", fill_color: "ffff00")
       end
       y-= 0.25
       self.rect(x, y, 1.05, 0.25)
@@ -173,7 +173,7 @@ class Timecards < VarlandPdf
       if e[:error]
         y -= line_height
         notes_box_height = y - line_height
-        self.txtb(e[:error_msg], x, y, 3.75, notes_box_height, h_align: :left, v_align: :top, size: 8, style: :bold, color: "ff0000")
+        self.txtb(e[:error_msg], x, y, 3.75, notes_box_height, h_align: :left, v_align: :top, size: 8, style: :bold, color: "000000")
       else
         notes = []
         e[:shifts].each do |s|
@@ -190,11 +190,11 @@ class Timecards < VarlandPdf
           end
           s[:punches].each do |p|
             if p[:edited]
-              notes << "<u><strong><color rgb=\"ff0000\"><font size=\"10\">NOTES</font></color></strong></u>" if notes.length == 0
-              note = "<sup><strong><color rgb=\"ff0000\">#{notes.length}</color></strong></sup> <strong>#{p[:edited_by]}: #{p[:reason]}</strong>"
+              notes << "<u><strong><color rgb=\"000000\"><font size=\"10\">NOTES</font></color></strong></u>" if notes.length == 0
+              note = "<sup><strong><color rgb=\"000000\">#{notes.length}</color></strong></sup> <strong>#{p[:edited_by]}: #{p[:reason]}</strong>"
               note += "<br>#{p[:notes]}" unless p[:notes].blank?
               notes << note
-              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize} <sup><strong><color rgb=\"ff0000\">#{notes.length - 1}</color></strong></sup>", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
+              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize} <sup><strong><color rgb=\"000000\">#{notes.length - 1}</color></strong></sup>", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
             else
               self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize}", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
             end
