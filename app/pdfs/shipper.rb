@@ -19,6 +19,10 @@ class Shipper < VarlandPdf
         self.load_data
       end
 
+      # If missing any thickness data for cert, print.
+      result = self.validate_thickness
+      return unless result
+
       # Calculate pages needed.
       pages = self.calc_shipper_pages
 
@@ -52,6 +56,27 @@ class Shipper < VarlandPdf
         self.draw_certification_data
       end
   
+    end
+
+    # Validates thickness information for certifications.
+    def validate_thickness
+
+      # Check requirements for each order.
+      missing_thickness = []
+      @data[:orders].each do |order|
+        if order[:certification][:thickness_format] != "N"
+          missing_thickness << order[:shop_order] unless order[:thickness_data][:found]
+        end
+      end
+
+      # If found missing info, print error message on page.
+      if missing_thickness.size > 0
+        self.txtb("Missing thickness data for certification for orders: #{missing_thickness.join(", ")}", 0.25, 6, 10.5, 3.5, style: :bold, size: 30, color: "ff0000", transform: :uppercase)
+      end
+
+      # Return failure.
+      return missing_thickness.size == 0
+
     end
 
     # Calculates number of pages for shipper.
@@ -358,7 +383,7 @@ class Shipper < VarlandPdf
       # Print second part of specification.
       data = false
       case @certification[:code]
-      when "01", "02", "04"
+      when "01", "02", "04", "TI"
         y -= 2 * height
         sig_y = y
         y-= height * 0.5
@@ -396,6 +421,57 @@ class Shipper < VarlandPdf
         next if line.blank?
         self.txtb(line, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
+      end
+
+      # Print thickness information if necessary.
+      return if @certification[:thickness_format] == "N"
+
+      # Count readings.
+      reading_count = @order[:thickness_data][:readings].size
+
+      # Determine if block has alloy readings.
+      has_alloy = !@order[:thickness_data][:mean_alloy].blank?
+  
+      # Draw headers.
+      line_height = 0.2
+      header_options = { line_color: '000000', fill_color: 'e3e3e3', size: 8 }
+      y = 1.25 + reading_count * line_height
+      self.rect(7.35, y, 2.6, y - 0.75, fill_color: "ffffcc")
+      self.txtb("PLATING THICKNESS DATA", 7.35, y, 2.6, 0.25, header_options)
+      header_options[:size] = 6
+      y -= 0.25
+      self.txtb("CHECK #", 7.35, y, 0.6, 0.25, header_options)
+      if has_alloy
+        self.txtb("THICKNESS", 7.95, y, 1, 0.25, header_options)
+        self.txtb("ALLOY %", 8.95, y, 1, 0.25, header_options)
+      else
+        self.txtb("THICKNESS", 7.95, y, 2, 0.25, header_options)
+      end
+      y -= 0.25
+      check_number_options = { line_color: '000000', fill_color: 'ffffff', size: 9, style: :bold }
+      thickness_options = { line_color: '000000', fill_color: 'ffffff', size: 9, style: :bold, h_align: :right, h_pad: 0.1 }
+      @order[:thickness_data][:readings].each_with_index do |reading, index|
+        self.txtb(index + 1, 7.35, y, 0.6, line_height, check_number_options)
+        thickness_suffix =
+          if @certification[:thickness_format] == "I"
+            "\""
+          else
+            "µm"
+          end
+        thickness =
+          if @certification[:thickness_format] == "I"
+            self.format_number(reading[:thickness] / 1000, decimals: 6)
+          else
+            self.format_number(reading[:thickness] * 25.4, decimals: 3)
+          end
+        alloy = self.format_number(reading[:alloy], decimals: 3)
+        if has_alloy
+          self.txtb("#{thickness}#{thickness_suffix}", 7.95, y, 1, line_height, thickness_options)
+          self.txtb("#{alloy}%", 8.95, y, 1, line_height, thickness_options)
+        else
+          self.txtb("#{thickness}\"", 7.95, y, 2, line_height, thickness_options)
+        end
+        y -= line_height
       end
   
     end
