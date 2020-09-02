@@ -425,7 +425,7 @@ class Shipper < VarlandPdf
       end
 
       # Print thickness information if necessary.
-      return if @certification[:thickness_format] == "N"
+      return if @certification[:thickness_format] == "N" || @certification[:thickness_format].blank?
 
       # Count readings.
       reading_count = @order[:thickness_data][:readings].size
