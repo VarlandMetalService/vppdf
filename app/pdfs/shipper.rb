@@ -64,7 +64,8 @@ class Shipper < VarlandPdf
       # Check requirements for each order.
       missing_thickness = []
       @data[:orders].each do |order|
-        if order[:certification][:thickness_format] != "N"
+        next if order[:certification][:thickness_format].blank?
+        if order[:certification][:thickness_format] == "I" || order[:certification][:thickness_format] == "M"
           missing_thickness << order[:shop_order] unless order[:thickness_data][:found]
         end
       end
