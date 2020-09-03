@@ -3,7 +3,7 @@ class Shipper < VarlandPdf
 
     # Landscape orientation and special letterhead format for shippers.
     PAGE_ORIENTATION = :landscape
-    LETTERHEAD_FORMAT = :packing_list
+    # LETTERHEAD_FORMAT = :packing_list
   
     # Constructor.
     def initialize(shipper = nil)
@@ -51,7 +51,7 @@ class Shipper < VarlandPdf
         @order = order
         @certification = @order[:certification]
         next if @certification[:code].blank?
-        self.start_new_page
+        self.start_new_page(layout: :portrait)
         self.draw_certification_format
         self.draw_certification_data
       end
@@ -233,37 +233,86 @@ class Shipper < VarlandPdf
       ship_date = Time.iso8601(@order[:ship_date]).strftime("%m/%d/%y")
       so_date = @order[:shop_order_date].blank? ? nil : Time.iso8601(@order[:shop_order_date]).strftime("%m/%d/%y")
       entry_date = @order[:date_entered].blank? ? nil : Time.iso8601(@order[:date_entered]).strftime("%m/%d/%y")
-  
-      # Print sold to and ship to.
-      self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.5, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
-      self.txtb("#{@data[:ship_to][:name].join("\n")}\n#{@data[:ship_to][:address]}\n#{@data[:ship_to][:city]}, #{@data[:ship_to][:state]} #{@data[:ship_to][:zip].to_s.rjust(5, '0')}", 5.75, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
-  
-      # Print shipper number.
-      self.txtb(@data[:shipper], 9.75, 6.5, 1, 0.25, style: :bold, size: 16)
-  
-      # Print customer code.
-      self.txtb(@data[:customer][:code], 9.75, 6.25, 1, 0.25, style: :bold, size: 9)
-  
-      # Print certification date, ship via, and vendor code.
-      ship_via = @data[:how_shipped][:code] == "F" ? @data[:orders][0][:shipping_remark] : @data[:how_shipped][:description]
-      self.txtb("CERTIFICATION DATE: <b>#{ship_date}</b>", 0.25, 5.77, 5.25, 0.25, v_align: :bottom, h_align: :left, size: 9)
-      self.txtb("SHIP VIA: <b>#{ship_via}</b>", 5.5, 5.77, 3, 0.25, v_align: :bottom, h_align: :left, size: 9)
-      unless @data[:customer][:vendor_id].blank?
-        self.txtb("VENDOR: <b>#{@data[:customer][:vendor_id]}</b>", 9.75, 5.77, 1, 0.25, v_align: :bottom, h_align: :right, size: 9)
+
+      # Determine if thickness included.
+      includes_thickness = !(@certification[:thickness_format] == "N" || @certification[:thickness_format].blank?)
+      has_alloy = !@order[:thickness_data][:mean_alloy].blank?
+
+      # Print certification date.
+      self.txtb("CERTIFICATION DATE: <b>#{ship_date}</b>", 0.25, 8.875, 8, 0.2, size: 12)
+
+      # Print order information.
+      data_options = {line_color: "000000", fill_color: 'ffffff', size: 9, style: :bold}
+      self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.25, 8.175, 2.5, 0.75, v_align: :top, h_align: :left, style: :bold, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
+      self.txtb("<b>#{@order[:shop_order]}</b>\n<font size=\"8\">#{entry_date.blank? ? so_date : entry_date}</font>", 2.75, 8.175, 0.75, 0.75, v_align: :top, h_align: :center, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
+      self.txtb(@order[:purchase_orders].join("\n"), 3.5, 8.175, 1.5, 0.75, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
+      self.txtb("#{@order[:part_id]}\n#{@order[:part_name].join("\n")}", 5, 8.175, 1.85, 0.75, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
+      self.txtb(@order[:sub_id], 5, 8.175, 1.85, 0.75, v_align: :top, h_align: :right, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
+      self.txtb("<font size=\"8\">Pounds:</font> <b>#{self.format_number(@order[:pounds], decimals: 2, strip_insignificant_zeros: true)}</b>\n<font size=\"8\">Pieces:</font> <b>#{self.format_number(@order[:pieces])}</b>\n\n<b>#{self.format_number(@order[:containers])} #{@order[:container_type]}</b>", 6.85, 8.175, 1.4, 0.75, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
+
+      # Draw boxes for process specification and thickness table.
+      process_x = 0.25 #4.375
+      process_y = 7.175
+      thickness_x = 4.375 #0.25
+      thickness_y = 7.175
+      process_width = 3.875
+      thickness_width = process_width
+      check_number_width = 1
+      thickness_value_width = 1.4375
+      header_options = { line_color: '000000', fill_color: 'e3e3e3', size: 8 }
+      small_header_options = { line_color: '000000', fill_color: 'e3e3e3', size: 7 }
+      if includes_thickness
+        self.txtb("PLATING THICKNESS DATA", thickness_x, thickness_y, 3.875, 0.25, header_options)
+        thickness_y -= 0.25
+        self.txtb("CHECK #", thickness_x, thickness_y, 1, 0.25, small_header_options)
+        if has_alloy
+          self.txtb("THICKNESS", thickness_x + check_number_width, thickness_y, thickness_value_width, 0.25, small_header_options)
+          self.txtb("ALLOY %", thickness_x + check_number_width + thickness_value_width, thickness_y, thickness_value_width, 0.25, small_header_options)
+        else
+          thickness_value_width *= 2
+          self.txtb("THICKNESS", thickness_x + check_number_width, thickness_y, thickness_value_width, 0.25, small_header_options)
+        end
+        thickness_y -= 0.25
+        self.txtb("PROCESS SPECIFICATION", process_x, process_y, process_width, 0.25, header_options)
+        process_y -= 0.25
+      else
+        # process_x = 2.3125
+        self.txtb("PROCESS SPECIFICATION", process_x, process_y, process_width, 0.25, header_options)
+        process_y -= 0.25
       end
+
+      # return
   
-      # Print data.
-      y = 4.73
-      height = 0.14
-      self.txtb(@order[:shop_order], 0.25, y, 0.6, height, size: 9, style: :bold)
-      self.txtb(entry_date.blank? ? so_date : entry_date, 0.85, y, 0.75, height, size: 9, style: :bold)
-      self.txtb(self.format_number(@order[:pounds], decimals: 2), 1.6, y, 0.75, height, size: 9, style: :bold, h_align: :right, h_pad: 0.05)
-      self.txtb(self.format_number(@order[:pieces]), 2.35, y, 0.75, height, size: 9, style: :bold, h_align: :right, h_pad: 0.05)
-      self.txtb("#{self.format_number(@order[:containers])} #{@order[:container_type]}", 3.1, y, 1, height, size: 9, style: :bold)
-      self.txtb(@order[:purchase_orders].join("\n"), 4.1, y, 1.4, height * @order[:purchase_orders].length, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
-      self.txtb("#{@order[:part_id]}\n#{@order[:part_name].join("\n")}", 5.5, y, 1.85, height * (@order[:part_name].length + 1), size: 9, style: :bold, h_align: :left, h_pad: 0.05)
-      self.txtb(@order[:sub_id], 5.5, y, 1.85, height, size: 9, style: :bold, h_align: :right, h_pad: 0.05)
-      self.txtb(@order[:is_complete] ? "COMPLETE" : "PARTIAL", 9.95, y, 0.8, height, size: 9, style: :bold)
+      # # Print sold to and ship to.
+      # self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.5, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
+      # self.txtb("#{@data[:ship_to][:name].join("\n")}\n#{@data[:ship_to][:address]}\n#{@data[:ship_to][:city]}, #{@data[:ship_to][:state]} #{@data[:ship_to][:zip].to_s.rjust(5, '0')}", 5.75, 6.75, 3, 1, v_align: :top, h_align: :left, style: :bold)
+  
+      # # Print shipper number.
+      # self.txtb(@data[:shipper], 9.75, 6.5, 1, 0.25, style: :bold, size: 16)
+  
+      # # Print customer code.
+      # self.txtb(@data[:customer][:code], 9.75, 6.25, 1, 0.25, style: :bold, size: 9)
+  
+      # # Print certification date, ship via, and vendor code.
+      # ship_via = @data[:how_shipped][:code] == "F" ? @data[:orders][0][:shipping_remark] : @data[:how_shipped][:description]
+      # self.txtb("CERTIFICATION DATE: <b>#{ship_date}</b>", 0.25, 5.77, 5.25, 0.25, v_align: :bottom, h_align: :left, size: 9)
+      # self.txtb("SHIP VIA: <b>#{ship_via}</b>", 5.5, 5.77, 3, 0.25, v_align: :bottom, h_align: :left, size: 9)
+      # unless @data[:customer][:vendor_id].blank?
+      #   self.txtb("VENDOR: <b>#{@data[:customer][:vendor_id]}</b>", 9.75, 5.77, 1, 0.25, v_align: :bottom, h_align: :right, size: 9)
+      # end
+  
+      # # Print data.
+      # y = 4.73
+      # height = 0.14
+      # self.txtb(@order[:shop_order], 0.25, y, 0.6, height, size: 9, style: :bold)
+      # self.txtb(entry_date.blank? ? so_date : entry_date, 0.85, y, 0.75, height, size: 9, style: :bold)
+      # self.txtb(self.format_number(@order[:pounds], decimals: 2), 1.6, y, 0.75, height, size: 9, style: :bold, h_align: :right, h_pad: 0.05)
+      # self.txtb(self.format_number(@order[:pieces]), 2.35, y, 0.75, height, size: 9, style: :bold, h_align: :right, h_pad: 0.05)
+      # self.txtb("#{self.format_number(@order[:containers])} #{@order[:container_type]}", 3.1, y, 1, height, size: 9, style: :bold)
+      # self.txtb(@order[:purchase_orders].join("\n"), 4.1, y, 1.4, height * @order[:purchase_orders].length, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+      # self.txtb("#{@order[:part_id]}\n#{@order[:part_name].join("\n")}", 5.5, y, 1.85, height * (@order[:part_name].length + 1), size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+      # self.txtb(@order[:sub_id], 5.5, y, 1.85, height, size: 9, style: :bold, h_align: :right, h_pad: 0.05)
+      # self.txtb(@order[:is_complete] ? "COMPLETE" : "PARTIAL", 9.95, y, 0.8, height, size: 9, style: :bold)
   
       # Format process specification.
       case @certification[:code]
@@ -338,6 +387,10 @@ class Shipper < VarlandPdf
           "AND BASE METAL"
         ]
       end
+
+      # Initialize position and line height.
+      y = process_y
+      height = 0.18
   
       # Initialize group indices for specification.
       group_1_start = 0
@@ -351,7 +404,7 @@ class Shipper < VarlandPdf
       data = false
       @order[:process_specification].each_with_index do |line, index|
         next if line.blank? || index < group_1_start || index > group_1_end
-        self.txtb(line, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb(line, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         data = true
       end
@@ -361,7 +414,7 @@ class Shipper < VarlandPdf
       data = false
       @certification[:part_1].each do |line|
         next if line.blank?
-        self.txtb(line, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb(line, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         data = true
       end
@@ -370,12 +423,12 @@ class Shipper < VarlandPdf
       # Print part of process specification between first and second part of certification.
       data = false
       @order[:process_specification].each_with_index do |line, index|
-        if line.blank? && ["S8", "S3", "Sf"].include?(@certification[:code])
+        if line.blank? && ["S8", "S3", "SF"].include?(@certification[:code])
           y -= height * 0.5
           next
         end
         next if line.blank? || index < group_2_start || index > group_2_end
-        self.txtb(line, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb(line, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         data = true
       end
@@ -388,19 +441,19 @@ class Shipper < VarlandPdf
         y -= 2 * height
         sig_y = y
         y-= height * 0.5
-        self.txtb("GREG TURNER", 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb("GREG TURNER", process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
-        self.txtb("QUALITY CONTROL MANAGER", 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb("QUALITY CONTROL MANAGER", process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
-        self.txtb(ship_date, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb(ship_date, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
-        self.signature(:greg_turner, 7.45, sig_y + 0.5, 2.4, 0.5, h_align: :left)
-        self.hline(7.4, sig_y, 2.5)
+        self.signature(:greg_turner, process_x + 0.1, sig_y + 0.5, process_width - 0.2, 0.5, h_align: :left)
+        self.hline(process_x + 0.05, sig_y, process_width - 0.1)
         data = true
       else
         @certification[:part_2].each do |line|
           next if line.blank?
-          self.txtb(line, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+          self.txtb(line, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
           y -= height
           data = true
         end
@@ -411,7 +464,7 @@ class Shipper < VarlandPdf
       data = false
       @order[:process_specification].each_with_index do |line, index|
         next if line.blank? || index < group_3_start || index > group_3_end
-        self.txtb(line, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb(line, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         data = true
       end
@@ -420,39 +473,35 @@ class Shipper < VarlandPdf
       # Print third part of specification.
       @certification[:part_3].each do |line|
         next if line.blank?
-        self.txtb(line, 7.35, y, 2.6, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb(line, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
       end
 
+      self.rect(process_x, process_y, process_width, process_y - y - height)
+
+      return unless includes_thickness
+
+      #return
+
       # Print thickness information if necessary.
-      return if @certification[:thickness_format] == "N" || @certification[:thickness_format].blank?
+      #return if @certification[:thickness_format] == "N" || @certification[:thickness_format].blank?
 
       # Count readings.
       reading_count = @order[:thickness_data][:readings].size
-
-      # Determine if block has alloy readings.
-      has_alloy = !@order[:thickness_data][:mean_alloy].blank?
-  
-      # Draw headers.
-      line_height = 0.2
-      header_options = { line_color: '000000', fill_color: 'e3e3e3', size: 8 }
-      y = 1.25 + reading_count * line_height
-      self.rect(7.35, y, 2.6, y - 0.75, fill_color: "ffffcc")
-      self.txtb("PLATING THICKNESS DATA", 7.35, y, 2.6, 0.25, header_options)
-      header_options[:size] = 6
-      y -= 0.25
-      self.txtb("CHECK #", 7.35, y, 0.6, 0.25, header_options)
-      if has_alloy
-        self.txtb("THICKNESS", 7.95, y, 1, 0.25, header_options)
-        self.txtb("ALLOY %", 8.95, y, 1, 0.25, header_options)
-      else
-        self.txtb("THICKNESS", 7.95, y, 2, 0.25, header_options)
-      end
-      y -= 0.25
-      check_number_options = { line_color: '000000', fill_color: 'ffffff', size: 9, style: :bold }
-      thickness_options = { line_color: '000000', fill_color: 'ffffff', size: 9, style: :bold, h_align: :right, h_pad: 0.1 }
+      
+      # Draw boxes.
+      #self.rect(thickness_x, thickness_y, check_number_width, height * reading_count)
+      #self.rect(thickness_x + check_number_width, thickness_y, thickness_value_width, height * reading_count)
+      #if has_alloy
+      #  self.rect(thickness_x + check_number_width + thickness_value_width, thickness_y, thickness_value_width, height * reading_count)
+      #end
+      
+      # Draw readings.
+      y = thickness_y
+      check_number_options = { size: 9, style: :bold, line_color: "000000" }
+      thickness_options = { size: 9, style: :bold, h_align: :right, h_pad: 0.1, line_color: "000000" }
       @order[:thickness_data][:readings].each_with_index do |reading, index|
-        self.txtb(index + 1, 7.35, y, 0.6, line_height, check_number_options)
+        self.txtb(index + 1, thickness_x, y, check_number_width, height, check_number_options)
         thickness_suffix =
           if @certification[:thickness_format] == "I"
             "\""
@@ -467,18 +516,41 @@ class Shipper < VarlandPdf
           end
         alloy = self.format_number(reading[:alloy], decimals: 3)
         if has_alloy
-          self.txtb("#{thickness}#{thickness_suffix}", 7.95, y, 1, line_height, thickness_options)
-          self.txtb("#{alloy}%", 8.95, y, 1, line_height, thickness_options)
+          self.txtb("#{thickness}#{thickness_suffix}", thickness_x + check_number_width, y, thickness_value_width, height, thickness_options)
+          self.txtb("#{alloy}%", thickness_x + check_number_width + thickness_value_width, y, thickness_value_width, line_height, thickness_options)
         else
-          self.txtb("#{thickness}\"", 7.95, y, 2, line_height, thickness_options)
+          self.txtb("#{thickness}#{thickness_suffix}", thickness_x + check_number_width, y, thickness_value_width, height, thickness_options)
         end
-        y -= line_height
+        y -= height
       end
   
     end
   
     # Draws certification format.
     def draw_certification_format
+
+      # Draw letterhead graphics.
+      path = Rails.root.join('lib', 'assets', 'letterhead', "portrait.png")
+      self.image(path, at: [0.25.in, 10.75.in], width: 8.in, height: 1.25.in)
+    
+      # Draw footer graphics.
+      self.standard_graphic('iso', 2.57, 0.75, 0.89, 0.5, h_align: :left)
+      self.standard_graphic('itar', 3.71, 0.75, 1.57, 0.5, h_align: :left)
+      self.qr_code("http://www.varland.com", 5.53, 0.75, 0.4, 0.4)
+      self.txtb("varland.com", 5.53, 0.35, 0.4, 0.1, size: 4.75, style: :bold)
+
+      # Draw title.
+      self.txtb("PLATING CERTIFICATION", 0.25, 9.25, 8, 0.375, size: 33, style: :bold, font: "Gotham Condensed")
+
+      # Draw boxes for part information.
+      header_options = {line_color: '000000', fill_color: 'e3e3e3', size: 8}
+      self.txtb("CUSTOMER", 0.25, 8.425, 2.5, 0.25, header_options)
+      self.txtb("S.O. #", 2.75, 8.425, 0.75, 0.25, header_options)
+      self.txtb("CUSTOMER PO #", 3.5, 8.425, 1.5, 0.25, header_options)
+      self.txtb("PART DESCRIPTION", 5, 8.425, 1.85, 0.25, header_options)
+      self.txtb("ORDER INFORMATION", 6.85, 8.425, 1.4, 0.25, header_options)
+
+      return
 
       # Draw website QR code.
       self.qr_code("http://www.varland.com", 5.5, 7.925, 0.5, 0.5)
@@ -534,6 +606,10 @@ class Shipper < VarlandPdf
 
       # Print remaining format on all pages.
       self.repeat(@vms_pages + @packing_list_pages) do
+
+        # Draw letterhead graphics.
+        path = Rails.root.join('lib', 'assets', 'letterhead', "packing_list.png")
+        self.image(path, at: [0.25.in, 8.25.in], width: 10.5.in, height: 1.25.in)
 
         # Draw website QR code.
         self.qr_code("http://www.varland.com", 5.5, 7.925, 0.5, 0.5)

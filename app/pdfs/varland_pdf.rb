@@ -195,6 +195,7 @@ class VarlandPdf < Prawn::Document
     self.load_single_font('Whitney Index Rounded')
     self.load_single_font('Whitney Index Squared')
     self.load_single_font('Xtreem')
+    self.load_single_font('Gotham Condensed')
 
   end
 
