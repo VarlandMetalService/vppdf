@@ -19,7 +19,7 @@ class PdfController < ApplicationController
   def quote
     quote = Quote.new(params[:quote])
     desc = "Quote ##{params[:quote]}"
-    self.save_to_ftp(quote, params[:quote].to_s, "192.168.82.5", "admin", "Vms.1946!", "/PCDATA/Sales/QuotePDFs/")
+    self.save_to_ftp(quote, params[:quote].to_s, "synology.varland.com", "varland", "Vms.1946!", "/PCDATA/Sales/QuotePDFs/")
     self.print_or_display(quote, desc)
   end
 
