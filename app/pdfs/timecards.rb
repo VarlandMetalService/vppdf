@@ -177,6 +177,8 @@ class Timecards < VarlandPdf
       else
         notes = []
         e[:shifts].each do |s|
+          break_warning = s[:break_length] >= 46 || (s[:total_hours] < 11 && s[:break_length] >= 31)
+          #puts "***Extended break***" if break_warning
           shift_height = s[:punches].length * line_height
           self.rect(x, y, 2.25, shift_height, fill_color: (s[:remote_hours] > 0 ? "ffff00" : nil))
           if s[:punches].length == 1
@@ -189,15 +191,26 @@ class Timecards < VarlandPdf
             self.txtb(s[:total_hours] == 0 ? "–" : self.format_number(s[:total_hours], decimals: 2), x + 3.25, y, 0.5, shift_height, line_color: "000000", size: 8, h_align: :right, h_pad: 0.05, v_align: :center, fill_color: (s[:remote_hours] > 0 ? "ffff00" : nil))
           end
           s[:punches].each do |p|
+            text = "#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize}"
+            if break_warning && p[:type] == "end_break"
+              notes << "<u><strong><color rgb=\"000000\"><font size=\"10\">NOTES</font></color></strong></u>" if notes.length == 0
+              note = "<sup><strong><color rgb=\"000000\">#{notes.length}</color></strong></sup> <strong>System: Break Exceeds #{s[:total_hours] >= 11 ? "45" : "30"} Minutes</strong>"
+              note += "<br>#{s[:break_length].to_i} minutes"
+              notes << note
+              text += " <sup><strong><color rgb=\"000000\">#{notes.length - 1}</color></strong></sup>"
+              break_warning = false
+            end
             if p[:edited]
               notes << "<u><strong><color rgb=\"000000\"><font size=\"10\">NOTES</font></color></strong></u>" if notes.length == 0
               note = "<sup><strong><color rgb=\"000000\">#{notes.length}</color></strong></sup> <strong>#{p[:edited_by]}: #{p[:reason]}</strong>"
               note += "<br>#{p[:notes]}" unless p[:notes].blank?
               notes << note
-              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize} <sup><strong><color rgb=\"000000\">#{notes.length - 1}</color></strong></sup>", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
-            else
-              self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize}", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
+              text += " <sup><strong><color rgb=\"000000\">#{notes.length - 1}</color></strong></sup>"
+              # self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize} <sup><strong><color rgb=\"000000\">#{notes.length - 1}</color></strong></sup>", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
+            #else
+              #self.txtb("#{Time.parse(p[:timestamp]).strftime("%a %m/%d %I:%M %P")} – #{p[:type].titleize}", x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
             end
+            self.txtb(text, x, y, 2.25, line_height, size: 7.5, h_align: :left, h_pad: 0.05, v_align: :center)
             y -= line_height
           end
         end
