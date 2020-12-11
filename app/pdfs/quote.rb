@@ -369,7 +369,7 @@ class Quote < VarlandPdf
               style: :bold)
 
     # Draw quote features.
-    self.txtb("All quotations from Varland Plating include plating certifications, PPAP documentation, and annual\nsalt spray validation when applicable. Our typical lead time is 5 business days in-house.",
+    self.txtb("All quotations from Varland Plating are for bulk barrel plating and include plating certifications, PPAP\ndocumentation, and annual salt spray validation when applicable. Our typical lead time is 5 business days in-house.",
               0.25,
               1.5,
               8,
