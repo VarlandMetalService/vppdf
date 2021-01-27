@@ -316,6 +316,32 @@ class Shipper < VarlandPdf
   
       # Format process specification.
       case @certification[:code]
+      when "P8"
+        @certification[:print_2nd_desc_after] = 99
+        @certification[:omit_print_after] = 99
+        @order[:process_specification] = [
+          "PLATING: ELECTROLESS NICKEL",
+          "PER ASTM B733 TYPE IV",
+          "SERVICE CONDITION SC2 MODIFIED,",
+          "CLASS 2 TYPE IV",
+          "",
+          "PLATING THICKNESS: 0.01 - 0.02 mm",
+          "",
+          "* STACK FOR PRESS BAKE *"
+          "",
+          "BAKE AFTER PLATING AT 385º +/- 15º C",
+          "FOR 1 HOUR MINIMUM AT HEAT",
+          "IN AN INERT ATMOSPHERE",
+          "",
+          "PLATING HARDNESS AFTER BAKE:",
+          "HK<sub>100</sub> 806-935",
+          "",
+          "SURFACE HARDNESS OF FINISHED",
+          "WASHER: HR30N 68-73",
+          "HARDNESS TO BE CHECKED BY",
+          "PENETRATING BOTH THE PLATING",
+          "AND BASE METAL"
+        ]
       when "S8"
         @certification[:print_2nd_desc_after] = 99
         @certification[:omit_print_after] = 99
