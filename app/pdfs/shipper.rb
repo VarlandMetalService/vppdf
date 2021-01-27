@@ -327,7 +327,7 @@ class Shipper < VarlandPdf
           "",
           "PLATING THICKNESS: 0.01 - 0.02 mm",
           "",
-          "* STACK FOR PRESS BAKE *"
+          "* STACK FOR PRESS BAKE *",
           "",
           "BAKE AFTER PLATING AT 385º +/- 15º C",
           "FOR 1 HOUR MINIMUM AT HEAT",
