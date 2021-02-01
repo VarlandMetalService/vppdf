@@ -54,7 +54,7 @@ class PdfController < ApplicationController
   end
 
   def statement
-    # request.format = "xlsx"
+    request.format = "xlsx"
     uri = URI("http://json400.varland.com/statement?customer=#{params[:customer]}")
     response = Net::HTTP.get(uri)
     @data = JSON.parse(response, symbolize_names: true)
