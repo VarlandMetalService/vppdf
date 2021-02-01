@@ -53,6 +53,11 @@ class PdfController < ApplicationController
     self.print_or_display(invoice, "Invoice ##{params[:invoice]}")
   end
 
+  def statement
+    statement = Statement.new(params[:customer])
+    self.print_or_display(statement, "#{params[:customer]} Statement")
+  end
+
   def sample
     self.send_pdf(Sample.new, 'Sample')
   end
