@@ -56,14 +56,16 @@ class PdfController < ApplicationController
   def statement
     request.format = "xlsx"
     uri = URI("http://json400.varland.com/statement?customer=#{params[:customer]}")
-    response = Net::HTTP.get(uri)
-    @data = JSON.parse(response, symbolize_names: true)
+    http_response = Net::HTTP.get(uri)
+    @data = JSON.parse(http_response, symbolize_names: true)
     respond_to do |format|
       format.html {
         statement = Statement.new(params[:customer])
         self.print_or_display(statement, "#{params[:customer]} Statement")
       }
-      format.xlsx
+      format.xlsx {
+        response.headers['Content-Disposition'] = "attachment; filename=\"#{params[:customer]} Statement (#{Date.current.strftime("%m.%d.%y")}).xlsx\""
+      }
     end
   end
 
