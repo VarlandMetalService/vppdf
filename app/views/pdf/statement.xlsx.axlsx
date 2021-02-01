@@ -1,0 +1,89 @@
+wb = xlsx_package.workbook
+
+margins = {
+  left: 0.5,
+  right: 0.5,
+  top: 0.5,
+  bottom: 0.5,
+  header: 0.25,
+  footer: 0.25
+}
+
+setup = {
+  fit_to_width: 1,
+  fit_to_height: 999,
+  orientation: :landscape
+}
+
+options = {
+  horizontal_centered: true
+}
+
+s = wb.styles
+left_bold = s.add_style b: true, alignment: { horizontal: :left, vertical: :center, wrap_text: true }
+right_bold = s.add_style b: true, alignment: { horizontal: :right, vertical: :center }
+left_header = s.add_style b: true, border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :left, vertical: :center }, bg_color: 'EEEEEE'
+center_header = s.add_style b: true, border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center, wrap_text: true }, bg_color: 'EEEEEE'
+invoice_number = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center }
+invoice_date = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center }
+order_number = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center }
+part_number = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :left, vertical: :center }
+purchase_order = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :left, vertical: :center, wrap_text: true }
+price = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center, wrap_text: true }
+total = s.add_style format_code: '[$$-en-US]#,##0.00_);([$$-en-US]#,##0.00)', border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :right, vertical: :center }
+grand_total = s.add_style b: true, bg_color: 'FFFFCC', format_code: '[$$-en-US]#,##0.00_);([$$-en-US]#,##0.00)', border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :right, vertical: :center }
+
+wb.add_worksheet(name: "Varland Plating Statement", page_margins: margins, page_setup: setup, print_options: options) do |sheet|
+
+  wb.add_defined_name("'Varland Plating Statement'!$1:$8", local_sheet_id: sheet.index, name: '_xlnm.Print_Titles')
+
+  sheet.sheet_protection do |protection|
+    protection.password = 'VarlandStatementProtectionPassword'
+  end
+
+  sheet.merge_cells "A1:G1"
+  sheet.merge_cells "A3:D6"
+  sheet.merge_cells "E3:G4"
+  sheet.merge_cells "E5:G6"
+
+  sheet.add_row [""], height: 120
+  sheet.add_image image_src: Rails.root.join('lib', 'assets', 'letterhead', "landscape.png").to_s, start_at: 'A1', end_at: 'H2', noRot: true, noSelect: true, noChangeAspect: true, noMove: true, noResize: true
+
+  sheet.add_row [""], height: 21
+
+  @data[:customer][:name].delete ""
+  sheet.add_row ["#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip]}", "", "", "", "#{@data[:summary][:count]} Open Invoice#{@data[:summary][:count] == 1 ? '' : 's'}"], height: 21, style: [left_bold, left_bold, left_bold, left_bold, right_bold]
+  sheet.add_row [""], height: 21, style: [left_bold]
+  sheet.add_row ["", "", "", "", "Balance: #{number_to_currency(@data[:summary][:total])}"], height: 21, style: [left_bold, left_bold, left_bold, left_bold, right_bold]
+  sheet.add_row [""], height: 21, style: [left_bold]
+
+  sheet.add_row [""], height: 21
+
+  sheet.add_row ["Invoice #", "Date", "Varland\nOrder #", "Part", "Purchase Order #", "Price", "Total"], height: 35, style: [center_header, center_header, center_header, left_header, left_header, center_header, center_header]
+  @data[:invoices].each do |invoice|
+    invoice[:purchase_orders].delete ""
+    lines_required = [invoice[:purchase_orders].length, invoice[:setup_charge] > 0 ? 2 : 1].max
+    row_height = 21 + ((lines_required - 1) * 12)
+    setup_charge = ""
+    if invoice[:setup_charge] > 0
+      setup_charge = "\nSetup: #{number_to_currency(invoice[:setup_charge])}"
+    end
+    sheet.add_row [invoice[:number],
+                   Time.iso8601(invoice[:date]).strftime("%m/%d/%y"),
+                   invoice[:shop_order],
+                   "#{invoice[:process_code]}   #{invoice[:part_id]}   #{invoice[:sub_id]}",
+                   invoice[:purchase_orders].join("\n"),
+                   "$#{number_with_precision(invoice[:unit_price], precision: 4, strip_insignificant_zeros: true)}/#{invoice[:price_per]}#{setup_charge}",
+                   invoice[:invoice_total]], height: row_height, style: [invoice_number, invoice_date, order_number, part_number, purchase_order, price, total]
+  end
+  sheet.add_row ["",
+                 "",
+                 "",
+                 "",
+                 "",
+                 "",
+                 @data[:summary][:total]], height: 21, style: [nil, nil, nil, nil, nil, nil, grand_total]
+
+  sheet.column_widths 15, 15, 15, 42.5, 42.5, 18.75, 18.75
+
+end

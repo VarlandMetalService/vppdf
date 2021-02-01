@@ -54,8 +54,16 @@ class PdfController < ApplicationController
   end
 
   def statement
-    statement = Statement.new(params[:customer])
-    self.print_or_display(statement, "#{params[:customer]} Statement")
+    uri = URI("http://json400.varland.com/statement?customer=#{params[:customer]}")
+    response = Net::HTTP.get(uri)
+    @data = JSON.parse(response, symbolize_names: true)
+    respond_to do |format|
+      format.html {
+        statement = Statement.new(params[:customer])
+        self.print_or_display(statement, "#{params[:customer]} Statement")
+      }
+      format.xlsx
+    end
   end
 
   def sample
