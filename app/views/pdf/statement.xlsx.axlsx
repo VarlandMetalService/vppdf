@@ -1,10 +1,10 @@
 wb = xlsx_package.workbook
 
 margins = {
-  left: 0.5,
-  right: 0.5,
-  top: 0.5,
-  bottom: 0.5,
+  left: 0.25,
+  right: 0.25,
+  top: 0.25,
+  bottom: 0.25,
   header: 0.25,
   footer: 0.25
 }
@@ -65,8 +65,11 @@ wb.add_worksheet(name: "Varland Plating Statement", page_margins: margins, page_
 
   sheet.add_row [""], height: 21
 
+  total_rows = 11
+
   sheet.add_row ["Invoice #", "Date", "Varland\nOrder #", "Part", "Purchase Order #", "Price", "Total"], height: 35, style: [center_header, center_header, center_header, left_header, left_header, center_header, center_header]
   @data[:invoices].each do |invoice|
+    total_rows += 1
     invoice[:purchase_orders].delete ""
     lines_required = [invoice[:purchase_orders].length, invoice[:setup_charge] > 0 ? 2 : 1].max
     row_height = 21 + ((lines_required - 1) * 12)
@@ -90,6 +93,7 @@ wb.add_worksheet(name: "Varland Plating Statement", page_margins: margins, page_
                  "",
                  @data[:summary][:total].round(2)], height: 35, style: [nil, nil, nil, nil, nil, nil, grand_total]
 
+  sheet.add_row [""], height: 1
   sheet.column_widths 15, 15, 15, 42.5, 42.5, 18.75, 18.75, 0.25
 
 end
