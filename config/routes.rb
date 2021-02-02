@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   match "/invoice" => "pdf#invoice", via: [:post, :get]
   match "/quote" => "pdf#quote", via: [:post, :get]
   match "/statement" => "pdf#statement", via: [:post, :get]
+  match "/statement/:customer" => "pdf#statement", via: [:post, :get]
   match "/po" => "pdf#po", via: [:post, :get]
   match "/timecards" => "pdf#timecards", via: [:post, :get]
   match "/inventory_worksheet" => "pdf#inventory_worksheet", via: [:post, :get]
