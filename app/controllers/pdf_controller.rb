@@ -53,6 +53,11 @@ class PdfController < ApplicationController
     self.print_or_display(invoice, "Invoice ##{params[:invoice]}")
   end
 
+  def ap_checks
+    checks = AccountsPayableCheck.new(params[:start], params[:end])
+    self.print_or_display(checks, "AP Checks")
+  end
+
   def statement
     request.format = "xlsx"
     uri = URI("http://json400.varland.com/statement?customer=#{params[:customer]}")

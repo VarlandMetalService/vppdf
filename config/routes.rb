@@ -20,4 +20,6 @@ Rails.application.routes.draw do
   match "/inventory_single_cost_center_variation_report" => "pdf#inventory_single_cost_center_variation_report", via: [:post, :get]
   match "/inventory_multiple_cost_center_variation_report" => "pdf#inventory_multiple_cost_center_variation_report", via: [:post, :get]
 
+  match "/ap_checks/:start/:end" => "pdf#ap_checks", via: [:post, :get]
+
 end
