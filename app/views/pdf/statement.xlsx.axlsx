@@ -27,7 +27,7 @@ left_header = s.add_style b: true, border: Axlsx::STYLE_THIN_BORDER, alignment: 
 center_header = s.add_style b: true, border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center, wrap_text: true }, bg_color: 'EEEEEE'
 invoice_number = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center }
 invoice_date = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center }
-order_number = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center }
+order_number = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center, wrap_text: true }
 part_number = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :left, vertical: :center }
 purchase_order = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :left, vertical: :center, wrap_text: true }
 price = s.add_style border: Axlsx::STYLE_THIN_BORDER, alignment: { horizontal: :center, vertical: :center, wrap_text: true }
@@ -67,11 +67,11 @@ wb.add_worksheet(name: "Varland Plating Statement", page_margins: margins, page_
 
   total_rows = 11
 
-  sheet.add_row ["Invoice #", "Date", "Varland\nOrder #", "Part", "Purchase Order #", "Price", "Total"], height: 35, style: [center_header, center_header, center_header, left_header, left_header, center_header, center_header]
+  sheet.add_row ["Invoice #", "Date", "Varland\nOrder/Shipper #", "Part", "Purchase Order #", "Price", "Total"], height: 35, style: [center_header, center_header, center_header, left_header, left_header, center_header, center_header]
   @data[:invoices].each do |invoice|
     total_rows += 1
     invoice[:purchase_orders].delete ""
-    lines_required = [invoice[:purchase_orders].length, invoice[:setup_charge] > 0 ? 2 : 1].max
+    lines_required = [invoice[:purchase_orders].length, 2].max
     row_height = 21 + ((lines_required - 1) * 12)
     setup_charge = ""
     if invoice[:setup_charge] > 0
@@ -79,7 +79,7 @@ wb.add_worksheet(name: "Varland Plating Statement", page_margins: margins, page_
     end
     sheet.add_row [invoice[:number],
                    Time.iso8601(invoice[:date]).strftime("%m/%d/%y"),
-                   invoice[:shop_order],
+                   "#{invoice[:shop_order]}\n#{invoice[:delivery_ticket]}",
                    "#{invoice[:process_code]}   #{invoice[:part_id]}   #{invoice[:sub_id]}",
                    invoice[:purchase_orders].join("\n"),
                    "$#{number_with_precision(invoice[:unit_price], precision: 4, strip_insignificant_zeros: true)}/#{invoice[:price_per]}#{setup_charge}",
