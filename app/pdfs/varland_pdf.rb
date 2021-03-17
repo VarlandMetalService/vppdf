@@ -841,6 +841,7 @@ class VarlandPdf < Prawn::Document
 
     # Build hash.
     people = {
+      chris_terry: "Arty Signature",
       toby_varland: "Gallatone",
       tim_hudson: "Hello Santtiny",
       greg_turner: "Hello Santtiny",
