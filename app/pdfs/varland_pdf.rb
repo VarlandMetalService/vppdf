@@ -470,7 +470,7 @@ class VarlandPdf < Prawn::Document
   def txtb(text, x, y, width, height, options = {})
 
     # Exit if no text passed.
-    return if text.blank?
+    return if text.blank? && !options.fetch(:print_blank, false)
 
     # Convert passed text to string.
     text = text.to_s

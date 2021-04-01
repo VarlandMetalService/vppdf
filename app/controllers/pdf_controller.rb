@@ -58,6 +58,11 @@ class PdfController < ApplicationController
     self.print_or_display(checks, "AP Checks")
   end
 
+  def en_report
+    report = EnReport.new(params[:year], params[:month], params[:day])
+    self.print_or_display(report, report.title)
+  end
+
   def statement
     request.format = "xlsx"
     uri = URI("http://json400.varland.com/statement?customer=#{params[:customer]}")
