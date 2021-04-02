@@ -191,8 +191,8 @@ class EnReport < VarlandPdf
         y -= 0.25
       end
       x = 7.5
-      add_width = (10.75 - 7.5) / en_totals.length.to_f
-      en_totals.each do |total|
+      add_width = (10.75 - 7.5) / hp_totals.length.to_f
+      hp_totals.each do |total|
         self.txtb(self.format_number(total, decimals: 2), x, y, add_width, 0.25, fill_color: "eeeeee", style: :bold, h_align: :right, h_pad: 0.05, line_color: "000000")
         x += add_width
       end
