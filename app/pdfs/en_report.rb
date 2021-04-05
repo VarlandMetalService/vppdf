@@ -14,11 +14,11 @@ class EnReport < VarlandPdf
     @year = year
     @month = month
     @day = day
-    unless @year && @month && @day
-      @year = Date.yesterday.year
-      @month = Date.yesterday.month
-      @day = Date.yesterday.day
-    end
+    # unless @year && @month && @day
+    #   @year = Date.yesterday.year
+    #   @month = Date.yesterday.month
+    #   @day = Date.yesterday.day
+    # end
     self.load_data
 
     # Print data.
