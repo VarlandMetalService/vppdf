@@ -543,7 +543,7 @@ class Shipper < VarlandPdf
         alloy = self.format_number(reading[:alloy], decimals: 3)
         if has_alloy
           self.txtb("#{thickness}#{thickness_suffix}", thickness_x + check_number_width, y, thickness_value_width, height, thickness_options)
-          self.txtb("#{alloy}%", thickness_x + check_number_width + thickness_value_width, y, thickness_value_width, line_height, thickness_options)
+          self.txtb("#{alloy}%", thickness_x + check_number_width + thickness_value_width, y, thickness_value_width, height, thickness_options)
         else
           self.txtb("#{thickness}#{thickness_suffix}", thickness_x + check_number_width, y, thickness_value_width, height, thickness_options)
         end
