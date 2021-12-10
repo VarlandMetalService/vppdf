@@ -475,7 +475,7 @@ class Shipper < VarlandPdf
       # Print part of process specification between first and second part of certification.
       data = false
       @order[:process_specification].each_with_index do |line, index|
-        if line.blank? && ["S8", "S3", "SF", "P8"].include?(@certification[:code])
+        if line.blank? && ["S8", "S3", "SF", "P8", "S4"].include?(@certification[:code])
           y -= height * 0.5
           next
         end
