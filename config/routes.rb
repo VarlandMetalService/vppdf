@@ -2,9 +2,10 @@ Rails.application.routes.draw do
 
   # Set root.
   root 'pdf#index'
-  
+
   # Set up routes for PDFs. Allow GET or POST.
   match "/sample" => "pdf#sample", via: [:post, :get]
+  match "/w2" => "pdf#w2", via: [:post, :get]
   match "/signature_sampler" => "pdf#signature_sampler", via: [:post, :get]
   match "/bakesheet" => "pdf#bakesheet", via: [:post, :get]
   match "/shipper" => "pdf#shipper", via: [:post, :get]
@@ -21,7 +22,7 @@ Rails.application.routes.draw do
   match "/inventory_multiple_cost_center_variation_report" => "pdf#inventory_multiple_cost_center_variation_report", via: [:post, :get]
 
   match "/ap_checks/:start/:end" => "pdf#ap_checks", via: [:post, :get]
-  
+
   match "/en_report/:year/:month/:day" => "pdf#en_report", via: [:post, :get]
   match "/en_report" => "pdf#en_report", via: [:post, :get]
 
