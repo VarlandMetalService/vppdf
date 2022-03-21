@@ -243,6 +243,9 @@ class Shipper < VarlandPdf
 
       # Print order information.
       order_info_height = 0.75
+      if @order[:purchase_orders].length > 3
+        order_info_height = 1.25
+      end
       data_options = {line_color: "000000", fill_color: 'ffffff', size: 9, style: :bold}
       self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.25, 8.175, 2.5, 0.75, v_align: :top, h_align: :left, style: :bold, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
       self.txtb("<b>#{@order[:shop_order]}</b>\n<font size=\"8\">#{entry_date.blank? ? so_date : entry_date}</font>", 2.75, 8.175, 0.75, 0.75, v_align: :top, h_align: :center, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
