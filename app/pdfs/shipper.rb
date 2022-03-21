@@ -247,12 +247,12 @@ class Shipper < VarlandPdf
         order_info_height = 1.25
       end
       data_options = {line_color: "000000", fill_color: 'ffffff', size: 9, style: :bold}
-      self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.25, 8.175, 2.5, 0.75, v_align: :top, h_align: :left, style: :bold, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
-      self.txtb("<b>#{@order[:shop_order]}</b>\n<font size=\"8\">#{entry_date.blank? ? so_date : entry_date}</font>", 2.75, 8.175, 0.75, 0.75, v_align: :top, h_align: :center, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
-      self.txtb(@order[:purchase_orders].join("\n"), 3.5, 8.175, 1.5, 0.75, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
-      self.txtb("#{@order[:part_id]}\n#{@order[:part_name].join("\n")}", 5, 8.175, 1.85, 0.75, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
-      self.txtb(@order[:sub_id], 5, 8.175, 1.85, 0.75, v_align: :top, h_align: :right, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
-      self.txtb("<font size=\"8\">Pounds:</font> <b>#{self.format_number(@order[:pounds], decimals: 2, strip_insignificant_zeros: true)}</b>\n<font size=\"8\">Pieces:</font> <b>#{self.format_number(@order[:pieces])}</b>\n\n<b>#{self.format_number(@order[:containers])} #{@order[:container_type]}</b>", 6.85, 8.175, 1.4, 0.75, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
+      self.txtb("#{@data[:customer][:name].join("\n")}\n#{@data[:customer][:address]}\n#{@data[:customer][:city]}, #{@data[:customer][:state]} #{@data[:customer][:zip].to_s.rjust(5, '0')}", 0.25, 8.175, 2.5, order_info_height, v_align: :top, h_align: :left, style: :bold, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
+      self.txtb("<b>#{@order[:shop_order]}</b>\n<font size=\"8\">#{entry_date.blank? ? so_date : entry_date}</font>", 2.75, 8.175, 0.75, order_info_height, v_align: :top, h_align: :center, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
+      self.txtb(@order[:purchase_orders].join("\n"), 3.5, 8.175, 1.5, order_info_height, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
+      self.txtb("#{@order[:part_id]}\n#{@order[:part_name].join("\n")}", 5, 8.175, 1.85, order_info_height, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
+      self.txtb(@order[:sub_id], 5, 8.175, 1.85, order_info_height, v_align: :top, h_align: :right, line_color: "000000", h_pad: 0.05, v_pad: 0.05, style: :bold)
+      self.txtb("<font size=\"8\">Pounds:</font> <b>#{self.format_number(@order[:pounds], decimals: 2, strip_insignificant_zeros: true)}</b>\n<font size=\"8\">Pieces:</font> <b>#{self.format_number(@order[:pieces])}</b>\n\n<b>#{self.format_number(@order[:containers])} #{@order[:container_type]}</b>", 6.85, 8.175, 1.4, order_info_height, v_align: :top, h_align: :left, line_color: "000000", h_pad: 0.05, v_pad: 0.05)
 
       # Draw boxes for process specification and thickness table.
       process_x = 0.25 #4.375
