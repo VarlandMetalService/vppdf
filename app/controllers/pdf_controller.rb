@@ -87,6 +87,10 @@ class PdfController < ApplicationController
     self.send_pdf(Bakesheet.new, 'Bakesheet')
   end
 
+  def w2
+    self.send_pdf(W2.new, 'W2')
+  end
+
   def timecards
     self.send_pdf(Timecards.new(params[:period], params[:easter]), 'Timecards')
   end
