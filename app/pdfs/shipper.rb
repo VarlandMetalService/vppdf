@@ -403,7 +403,7 @@ class Shipper < VarlandPdf
           "SERVICE CONDITION SC2 MODIFIED,",
           "CLASS 2 TYPE IV",
           "",
-          "PLATING THICKNESS: 0.0004\" - 0.0006\"",
+          "PLATING THICKNESS: 0.01mm - 0.015mm",
           "",
           "*** CLAMP & TEMPER ***",
           "",
