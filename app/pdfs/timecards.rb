@@ -1,6 +1,6 @@
 # Class for printing time card report.
 class Timecards < VarlandPdf
-  
+
   # Constructor.
   def initialize(period = nil, easter = false)
 
@@ -15,12 +15,12 @@ class Timecards < VarlandPdf
       @easter = easter
       self.load_data
     end
-    
+
     # Draw data.
     self.draw_data
 
   end
-  
+
   # Loads sample data.
   def load_sample_data
     @data = self.load_sample("period")
@@ -41,8 +41,13 @@ class Timecards < VarlandPdf
     @data[:employees].each do |e|
 
       # Skip or show based on Easter Seals flag.
-      next if e[:employee_number] >= 1000 && !@easter
-      next if e[:employee_number] < 1000 && @easter
+      if (e[:employee_number] >= 1000 && e[:employee_number] < 1100)
+        next unless @easter
+      else
+        next if @easter
+      end
+      #next if e[:employee_number] >= 1000 && e[:employee_number] < 1100 && !@easter
+      #next if (e[:employee_number] < 1000 || e[:employee_number] >= 1100) && @easter
 
       # Start new page if necessary.
       if col == 2
