@@ -8,7 +8,7 @@ class BillOfLading < VarlandPdf
   attr_reader :shipper,
               :user,
               :ip
-  
+
   # Constructor.
   def initialize(timestamp = nil, ip = nil)
 
@@ -37,7 +37,7 @@ class BillOfLading < VarlandPdf
     self.draw_data
 
   end
-  
+
   # Loads sample data.
   def load_sample_data
     @data = self.load_sample("bill_of_lading")
@@ -54,7 +54,7 @@ class BillOfLading < VarlandPdf
     # Set font.
     font = "SF Mono"
     color = '000000'
-  
+
     # Format dates.
     ship_date = Time.iso8601(@data[:date]).strftime("%m/%d/%y")
 
@@ -121,6 +121,8 @@ class BillOfLading < VarlandPdf
           person = :gerald_cappelletti
         when "ROBERT"
           person = :robert_beatty
+        when "DALLAS"
+          person = :dallas_roll
         end
         unless person.blank?
           self.signature(person, 4.35, 2.425, 2.05, 0.5)
