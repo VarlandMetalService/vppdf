@@ -262,7 +262,7 @@ class W2 < VarlandPdf
     self.txtb("<b>Form<b>", 0.5, y, 7.5, 0.4, label_options.merge(v_align: :center, h_pad: 0))
     self.txtb("<b>W-2<b>", 0.75, y, 7.5, 0.4, label_options.merge(v_align: :center, h_pad: 0, size: 20))
     self.txtb("<b>Wage and Tax Statement<b>", 1.5, y, 7.5, 0.4, label_options.merge(v_align: :center, h_pad: 0, size: 10))
-    self.txtb("<b>2021<b>", 4, y, 1.1, 0.4, label_options.merge(v_align: :center, h_align: :center, h_pad: 0, size: 18, font: "SF Mono"))
+    self.txtb("<b>2022<b>", 4, y, 1.1, 0.4, label_options.merge(v_align: :center, h_align: :center, h_pad: 0, size: 18, font: "SF Mono"))
     self.txtb("Department of the Treasury — Internal Revenue Service", 0.5, y, 7.5, @box_height, label_options.merge(h_align: :right, h_pad: 0))
 
     # Draw special information for different formats.
