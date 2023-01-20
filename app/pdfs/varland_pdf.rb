@@ -39,6 +39,9 @@ class VarlandPdf < Prawn::Document
   # Default header fill color. May be overridden in child classes.
   DEFAULT_HEADER_FILL_COLOR = 'cccccc'
 
+  # Default page size.
+  PAGE_SIZE = [8.5.in, 11.in]
+
   # Retrieves JSON using GET request and returns result.
   def load_json(url)
     uri = URI(url)
@@ -106,8 +109,9 @@ class VarlandPdf < Prawn::Document
           bottom_margin: self.class::PAGE_MARGIN,
           left_margin: self.class::PAGE_MARGIN,
           right_margin: self.class::PAGE_MARGIN,
-          page_layout: self.class::PAGE_ORIENTATION)
-    
+          page_layout: self.class::PAGE_ORIENTATION,
+          page_size: self.class::PAGE_SIZE)
+
     # Load fonts.
     self.load_fonts
 
@@ -201,7 +205,7 @@ class VarlandPdf < Prawn::Document
 
   # Loads single font using Prawn's font_families.update method.
   def load_single_font(name)
-    
+
     # Determine path to font file.
     font_file_name = name.gsub(/\s+/, "")
     path = Rails.root.join('lib', 'assets', 'fonts', "#{font_file_name}.ttf")
@@ -284,7 +288,7 @@ class VarlandPdf < Prawn::Document
       self.txtb("Graphic Error: #{graphic.to_s}", x, y, width, height, fill_color: 'ff0000', color: 'ffffff', style: :bold)
       return
     end
-    
+
     # Shade area.
     self.rect(x, y, width, height, fill_color: fill_color, line_color: nil)
 
@@ -783,7 +787,7 @@ class VarlandPdf < Prawn::Document
       tomatoes: 0.35,
       wanted_signature: 0.7,
       white_angelica: 0.4,
-      xtreem: 0.7      
+      xtreem: 0.7
     }
 
     # Return factor.
@@ -793,7 +797,7 @@ class VarlandPdf < Prawn::Document
 
   # Gets default baseline shift for signature font.
   def default_signature_shift(font, size)
-    
+
     # Build font hash.
     factors = {
       across_the_road: -0.2,
@@ -828,7 +832,7 @@ class VarlandPdf < Prawn::Document
       tomatoes: -0.75,
       wanted_signature: -0.4,
       white_angelica: -0.3,
-      xtreem: -0.45      
+      xtreem: -0.45
     }
 
     # Return shift.
@@ -885,7 +889,7 @@ class VarlandPdf < Prawn::Document
 
   # Protected methods.
   protected
-  
+
     # Reference Rails helpers.
     def helpers
       ApplicationController.helpers

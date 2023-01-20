@@ -95,6 +95,10 @@ class PdfController < ApplicationController
     self.send_pdf(Timecards.new(params[:period], params[:easter]), 'Timecards')
   end
 
+  def employee_envelopes
+    self.send_pdf(EmployeeEnvelopes.new, 'Envelopes')
+  end
+
   def index
     render(layout: false)
   end
