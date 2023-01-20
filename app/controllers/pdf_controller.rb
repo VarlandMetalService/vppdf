@@ -99,6 +99,14 @@ class PdfController < ApplicationController
     self.send_pdf(EmployeeEnvelopes.new, 'Envelopes')
   end
 
+  def employee_envelopes_small
+    self.send_pdf(EmployeeEnvelopesSmall.new, 'Envelopes')
+  end
+
+  def employee_labels
+    self.send_pdf(EmployeeLabels.new, 'Labels')
+  end
+
   def index
     render(layout: false)
   end
