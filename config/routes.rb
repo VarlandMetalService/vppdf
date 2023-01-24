@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   # Set up routes for PDFs. Allow GET or POST.
   match "/emp9x12" => "pdf#employee_envelopes", via: [:post, :get]
   match "/emp4x9" => "pdf#employee_envelopes_small", via: [:post, :get]
+  match "/vend9x12" => "pdf#vend_envelope", via: [:post, :get]
+  match "/vend4x9" => "pdf#vend_envelope_small", via: [:post, :get]
   match "/emplabels" => "pdf#employee_labels", via: [:post, :get]
   match "/sample" => "pdf#sample", via: [:post, :get]
   match "/w2" => "pdf#w2", via: [:post, :get]

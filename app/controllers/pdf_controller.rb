@@ -103,6 +103,14 @@ class PdfController < ApplicationController
     self.send_pdf(EmployeeEnvelopesSmall.new, 'Envelopes')
   end
 
+  def vend_envelope
+    self.send_pdf(VendEnvelope.new(params[:vendor]), 'Envelopes')
+  end
+
+  def vend_envelope_small
+    self.send_pdf(VendEnvelopeSmall.new(params[:vendor]), 'Envelopes')
+  end
+
   def employee_labels
     self.send_pdf(EmployeeLabels.new, 'Labels')
   end
