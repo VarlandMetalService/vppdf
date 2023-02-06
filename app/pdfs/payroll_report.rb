@@ -179,6 +179,7 @@ class PayrollReport < VarlandPdf
 
   def load_data
     local_file = '/home/deploy/payroll/export.json'
+    File.delete(local_file) if File.exist?(local_file)
     ftp = Net::FTP.new('ibmi.varland.com')
     ftp.login("qsecofr", "secret")
     ftp.gettextfile("/payroll/export.json", local_file)
