@@ -693,7 +693,7 @@ class PayrollReport < VarlandPdf
     self.rect(0.25, y, GL_COLUMN_WIDTHS.sum, HEADER_HEIGHT, fill_color: "cccccc", line_color: nil)
 
     data_options = {
-      size: 8,
+      size: 7.99,
       style: :bold,
       h_align: :left,
       h_pad: 0.1
@@ -709,7 +709,7 @@ class PayrollReport < VarlandPdf
                y,
                GL_COLUMN_WIDTHS[1],
                HEADER_HEIGHT,
-               data_options.merge({ debug: :false }))
+               data_options)
     self.txtb("TOTAL CREDITS",
               0.25 + GL_COLUMN_WIDTHS[0..1].sum,
               y,
