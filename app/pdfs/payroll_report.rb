@@ -178,7 +178,7 @@ class PayrollReport < VarlandPdf
   end
 
   def load_data
-    local_file = Rails.root.join('lib', 'payroll', 'export.json')
+    local_file = '/home/deploy/payroll/export.json'
     ftp = Net::FTP.new('ibmi.varland.com')
     ftp.login("qsecofr", "secret")
     ftp.gettextfile("/payroll/export.json", local_file)
