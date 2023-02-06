@@ -6,17 +6,11 @@ class PayrollReport < VarlandPdf
   HEADER_HEIGHT = 0.25
 
   ACCOUNT_SUMMARY_COLUMN_WIDTHS = [1, 3.75, 3.75, 1, 1].freeze
-  ACCOUNT_SUMMARY_ADDITIONAL_PAGES_Y = 7.5.freeze
-
   EMPLOYEE_SUMMARY_COLUMN_WIDTHS = [0.75, 3, 3.75, 1, 1, 1].freeze
-  EMPLOYEE_SUMMARY_ADDITIONAL_PAGES_Y = 7.5.freeze
-
   GL_COLUMN_WIDTHS = [4, 1.25, 4, 1.25].freeze
-  GL_ADDITIONAL_PAGES_Y = 10.freeze
+  PAYABLES_COLUMN_WIDTHS = [0.75, 2.25, 0.5, 3.8, 1, 1, 1.2].freeze
 
-  PAYABLES_COLUMN_WIDTHS = [1, 2.5, 0.7, 3.8, 1.25, 1.25].freeze
-  PAYABLES_ADDITIONAL_PAGES_Y = 7.5.freeze
-
+  TABLE_ROLLOVER_Y = 7.5.freeze
   TABLE_BOTTOM = 0.75.freeze
 
   TOTAL_CELL_WIDTH = (10.5 / 8.0).freeze
@@ -30,7 +24,6 @@ class PayrollReport < VarlandPdf
     self.draw_payroll_journal(6.5)
     self.start_new_page
     self.draw_disbursement_journal(7.5)
-    #self.start_new_page
     self.draw_payables(7.25 - 3 * HEADER_HEIGHT - LINE_HEIGHT)
     self.start_new_page
     self.draw_employees(7.5)
@@ -54,7 +47,7 @@ class PayrollReport < VarlandPdf
   def draw_header
     self.repeat(:all) do
       self.logo(0.25, 8.25, 1, 0.5, variant: :mark, h_align: :left)
-      self.txtb("<b>PAYROLL IMPORT REPORT</b>\n<font size='10'>PERIOD ENDING JANUARY 28, 2023</font>", 0.85, 8.25, 8, 0.5, h_align: :left, size: 14)
+      self.txtb("<b>PAYROLL IMPORT REPORT</b>\n<font size='10'>PERIOD ENDING #{Time.iso8601(@data[:period_end]).strftime("%^B %-d, %Y").upcase}</font>", 0.85, 8.25, 8, 0.5, h_align: :left, size: 14)
     end
   end
 
@@ -112,16 +105,16 @@ class PayrollReport < VarlandPdf
         [0.25, 0.25 + PAYABLES_COLUMN_WIDTHS.sum].each do |x|
           self.vline(x, top_y, top_y - y)
         end
-        [0, 1, 2, 4].each do |i|
+        [0, 1, 2, 4, 5].each do |i|
           self.vline(PAYABLES_COLUMN_WIDTHS[0..i].sum + 0.25,
                      top_y - HEADER_HEIGHT,
                      top_y - y - HEADER_HEIGHT)
         end
         self.txtb("(continued)", 0.25, y, PAYABLES_COLUMN_WIDTHS.sum, LINE_HEIGHT, size: 7, style: :italic)
         self.start_new_page
-        self.draw_payables_title(PAYABLES_ADDITIONAL_PAGES_Y, true)
-        top_y = PAYABLES_ADDITIONAL_PAGES_Y
-        y = PAYABLES_ADDITIONAL_PAGES_Y - 2 * HEADER_HEIGHT
+        self.draw_payables_title(TABLE_ROLLOVER_Y, true)
+        top_y = TABLE_ROLLOVER_Y
+        y = TABLE_ROLLOVER_Y - 2 * HEADER_HEIGHT
         alt = true
       end
       self.draw_payable(y, record, alt)
@@ -133,7 +126,7 @@ class PayrollReport < VarlandPdf
     [0.25, 0.25 + PAYABLES_COLUMN_WIDTHS.sum].each do |x|
       self.vline(x, top_y, top_y - y)
     end
-    [0, 1, 2, 4].each do |i|
+    [0, 1, 2, 4, 5].each do |i|
       self.vline(PAYABLES_COLUMN_WIDTHS[0..i].sum + 0.25,
                  top_y - HEADER_HEIGHT,
                  top_y - y - HEADER_HEIGHT)
@@ -163,9 +156,9 @@ class PayrollReport < VarlandPdf
         end
         self.txtb("(continued)", 0.25, y, EMPLOYEE_SUMMARY_COLUMN_WIDTHS.sum, LINE_HEIGHT, size: 7, style: :italic)
         self.start_new_page
-        self.draw_employees_title(EMPLOYEE_SUMMARY_ADDITIONAL_PAGES_Y, true)
-        top_y = EMPLOYEE_SUMMARY_ADDITIONAL_PAGES_Y
-        y = EMPLOYEE_SUMMARY_ADDITIONAL_PAGES_Y - 2 * HEADER_HEIGHT
+        self.draw_employees_title(TABLE_ROLLOVER_Y, true)
+        top_y = TABLE_ROLLOVER_Y
+        y = TABLE_ROLLOVER_Y - 2 * HEADER_HEIGHT
         alt = true
       end
       self.draw_employee(y, record, alt)
@@ -217,9 +210,9 @@ class PayrollReport < VarlandPdf
         end
         self.txtb("(continued)", 0.25, y, ACCOUNT_SUMMARY_COLUMN_WIDTHS.sum, LINE_HEIGHT, size: 7, style: :italic)
         self.start_new_page
-        self.draw_accounts_title(ACCOUNT_SUMMARY_ADDITIONAL_PAGES_Y, true)
-        top_y = ACCOUNT_SUMMARY_ADDITIONAL_PAGES_Y
-        y = ACCOUNT_SUMMARY_ADDITIONAL_PAGES_Y - 2 * HEADER_HEIGHT
+        self.draw_accounts_title(TABLE_ROLLOVER_Y, true)
+        top_y = TABLE_ROLLOVER_Y
+        y = TABLE_ROLLOVER_Y - 2 * HEADER_HEIGHT
         alt = true
       end
       self.draw_account(y, record, alt)
@@ -468,7 +461,7 @@ class PayrollReport < VarlandPdf
               PAYABLES_COLUMN_WIDTHS[1],
               HEADER_HEIGHT,
               header_options)
-    self.txtb("ACH?",
+    self.txtb("ACH",
               0.25 + PAYABLES_COLUMN_WIDTHS[0..1].sum,
               y,
               PAYABLES_COLUMN_WIDTHS[2],
@@ -484,6 +477,12 @@ class PayrollReport < VarlandPdf
               0.25 + PAYABLES_COLUMN_WIDTHS[0..4].sum,
               y,
               PAYABLES_COLUMN_WIDTHS[5],
+              HEADER_HEIGHT,
+              header_options.merge(h_align: :center))
+    self.txtb("DUE DATE",
+              0.25 + PAYABLES_COLUMN_WIDTHS[0..5].sum,
+              y,
+              PAYABLES_COLUMN_WIDTHS[6],
               HEADER_HEIGHT,
               header_options.merge(h_align: :center))
   end
@@ -535,6 +534,12 @@ class PayrollReport < VarlandPdf
                PAYABLES_COLUMN_WIDTHS[5],
                LINE_HEIGHT,
                data_options)
+    self.txtb(Time.iso8601(payable[:due_date]).strftime("%m/%d/%y"),
+              0.25 + PAYABLES_COLUMN_WIDTHS[0..5].sum,
+              y,
+              PAYABLES_COLUMN_WIDTHS[6],
+              LINE_HEIGHT,
+              data_options.merge({ h_align: :center }))
     payable[:line_items].each do |record|
       self.txtb("#{record[:account]} - #{record[:description]}",
                 0.25 + PAYABLES_COLUMN_WIDTHS[0..2].sum,
@@ -625,9 +630,9 @@ class PayrollReport < VarlandPdf
         end
         self.txtb("(continued)", 0.25, y, GL_COLUMN_WIDTHS.sum, LINE_HEIGHT, size: 7, style: :italic)
         self.start_new_page
-        self.draw_gl_title(GL_ADDITIONAL_PAGES_Y, title, true)
-        top_y = GL_ADDITIONAL_PAGES_Y
-        y = GL_ADDITIONAL_PAGES_Y - 2 * HEADER_HEIGHT
+        self.draw_gl_title(TABLE_ROLLOVER_Y, title, true)
+        top_y = TABLE_ROLLOVER_Y
+        y = TABLE_ROLLOVER_Y - 2 * HEADER_HEIGHT
         alt = true
       end
       debit = entry[:debits][i]
