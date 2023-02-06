@@ -441,6 +441,7 @@ class VarlandPdf < Prawn::Document
     line_color = options.fetch(:line_color, nil)
     line_width = options.fetch(:line_width, nil)
     symbol = options.fetch(:symbol, "$")
+    debug = options.fetch(:debug, false)
 
     # If stroke/fill options passed, draw rectangle.
     if fill_color || line_color
@@ -495,6 +496,7 @@ class VarlandPdf < Prawn::Document
     h_pad = options.fetch(:h_pad, 0)
     v_pad = options.fetch(:v_pad, 0)
     transform = options.fetch(:transform, nil)
+    debug = options.fetch(:debug, false)
 
     # If stroke/fill options passed, draw rectangle.
     if fill_color || line_color

@@ -31,4 +31,6 @@ Rails.application.routes.draw do
   match "/en_report/:year/:month/:day" => "pdf#en_report", via: [:post, :get]
   match "/en_report" => "pdf#en_report", via: [:post, :get]
 
+  match "/payroll_report" => "pdf#payroll_report", via: [:post, :get]
+
 end

@@ -27,3 +27,6 @@
 yarn-debug.log*
 .yarn-integrity
 .DS_Store
+
+# Ignore local files.
+/lib/payroll/export.json

@@ -115,6 +115,10 @@ class PdfController < ApplicationController
     self.send_pdf(EmployeeLabels.new, 'Labels')
   end
 
+  def payroll_report
+    self.send_pdf(PayrollReport.new, 'PayrollReport')
+  end
+
   def index
     render(layout: false)
   end
