@@ -497,13 +497,13 @@ class Shipper < VarlandPdf
         y -= 2 * height
         sig_y = y
         y-= height * 0.5
-        self.txtb("GREG TURNER", process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
+        self.txtb("TIM HUDSON", process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         self.txtb("QUALITY CONTROL MANAGER", process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
         self.txtb(ship_date, process_x, y, process_width, height, size: 9, style: :bold, h_align: :left, h_pad: 0.05)
         y -= height
-        self.signature(:greg_turner, process_x + 0.1, sig_y + 0.5, process_width - 0.2, 0.5, h_align: :left)
+        self.signature(:tim_hudson, process_x + 0.1, sig_y + 0.5, process_width - 0.2, 0.5, h_align: :left)
         self.hline(process_x + 0.05, sig_y, process_width - 0.1)
         data = true
       else
