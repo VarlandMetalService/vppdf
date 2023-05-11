@@ -13,7 +13,7 @@ class PayrollReport < VarlandPdf
   TABLE_ROLLOVER_Y = 7.5.freeze
   TABLE_BOTTOM = 0.75.freeze
 
-  TOTAL_CELL_WIDTH = (10.5 / 8.0).freeze
+  TOTAL_CELL_WIDTH = (10.5 / 10.0).freeze
 
   def initialize()
 
@@ -53,20 +53,26 @@ class PayrollReport < VarlandPdf
 
   def draw_totals(y)
     self.rect(0.25, y, 5 * TOTAL_CELL_WIDTH, HEADER_HEIGHT, fill_color: "aaaaaa", line_color: nil)
-    self.rect(0.25 + 5 * TOTAL_CELL_WIDTH, y, 3 * TOTAL_CELL_WIDTH, HEADER_HEIGHT, fill_color: "cccccc", line_color: nil)
+    self.rect(0.25 + 5 * TOTAL_CELL_WIDTH, y, 5 * TOTAL_CELL_WIDTH, HEADER_HEIGHT, fill_color: "cccccc", line_color: nil)
     [y, y - HEADER_HEIGHT, y - 3 * HEADER_HEIGHT].each do |line_y|
       self.hline(0.25, line_y, 10.5)
     end
-    [0.25, 1.5625, 2.875, 4.1875, 5.5, 6.8125, 8.125, 9.4375, 10.75].each do |x|
+    x = 0.25
+    loop do
       self.vline(x, y, 0.75)
+      x += TOTAL_CELL_WIDTH
+      break if x > 10.75
     end
+    #[0.25, 1.5625, 2.875, 4.1875, 5.5, 6.8125, 8.125, 9.4375, 10.75].each do |x|
+    #  self.vline(x, y, 0.75)
+    #end
     header_options = {
-      size: 8,
+      size: 7,
       style: :bold
     }
     data_options = {
       h_pad: 0.1,
-      size: 14,
+      size: 13,
       style: :bold
     }
     net = @data[:totals][:earnings] - @data[:totals][:deductions] - @data[:totals][:employee_taxes]
@@ -86,6 +92,10 @@ class PayrollReport < VarlandPdf
     self.acctb(@data[:accumulations][:tax], 0.25 + 6 * TOTAL_CELL_WIDTH, y - HEADER_HEIGHT, TOTAL_CELL_WIDTH, 2 * HEADER_HEIGHT, data_options)
     self.txtb("TRUST ACH", 0.25 + 7 * TOTAL_CELL_WIDTH, y, TOTAL_CELL_WIDTH, 0.25, header_options)
     self.acctb(@data[:accumulations][:trust], 0.25 + 7 * TOTAL_CELL_WIDTH, y - HEADER_HEIGHT, TOTAL_CELL_WIDTH, 2 * HEADER_HEIGHT, data_options)
+    self.txtb("W/C ACH", 0.25 + 8 * TOTAL_CELL_WIDTH, y, TOTAL_CELL_WIDTH, 0.25, header_options)
+    self.acctb(@data[:accumulations][:workers_comp], 0.25 + 8 * TOTAL_CELL_WIDTH, y - HEADER_HEIGHT, TOTAL_CELL_WIDTH, 2 * HEADER_HEIGHT, data_options)
+    self.txtb("GARNISHMENTS ACH", 0.25 + 9 * TOTAL_CELL_WIDTH, y, TOTAL_CELL_WIDTH, 0.25, header_options)
+    self.acctb(@data[:accumulations][:garnishments], 0.25 + 9 * TOTAL_CELL_WIDTH, y - HEADER_HEIGHT, TOTAL_CELL_WIDTH, 2 * HEADER_HEIGHT, data_options)
   end
 
   def draw_payables(y)
