@@ -61,18 +61,19 @@ class PayrollReport < VarlandPdf
     loop do
       self.vline(x, y, 0.75)
       x += TOTAL_CELL_WIDTH
-      break if x > 10.75
+      break if x > 11
     end
     #[0.25, 1.5625, 2.875, 4.1875, 5.5, 6.8125, 8.125, 9.4375, 10.75].each do |x|
     #  self.vline(x, y, 0.75)
     #end
     header_options = {
+      h_pad: 0.1,
       size: 7,
       style: :bold
     }
     data_options = {
       h_pad: 0.1,
-      size: 13,
+      size: 12,
       style: :bold
     }
     net = @data[:totals][:earnings] - @data[:totals][:deductions] - @data[:totals][:employee_taxes]
