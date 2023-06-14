@@ -115,14 +115,12 @@ class BillOfLading < VarlandPdf
           person = :tim_hudson
         when "MITCH"
           person = :mike_mitchell
-        when "TONY"
-          person = :tony_fuson
         when "CAP"
           person = :gerald_cappelletti
-        when "ROBERT"
-          person = :robert_beatty
         when "DALLAS"
           person = :dallas_roll
+        when "JAMES"
+          person = :james_hill
         end
         unless person.blank?
           self.signature(person, 4.35, 2.425, 2.05, 0.5)
