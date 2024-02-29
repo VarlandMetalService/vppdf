@@ -13,6 +13,7 @@ class PdfController < ApplicationController
 
   def shipper
     shipper = Shipper.new(params[:shipper])
+    self.save_to_ftp(shipper, params[:shipper].to_s, "optonas.varland.com", "varland", "Vms.1946!", "/CustomerPortal/ingest/")
     self.print_or_display(shipper, "PS ##{params[:shipper]}", type: "PackingSlip")
   end
 
